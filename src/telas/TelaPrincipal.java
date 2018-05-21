@@ -61,6 +61,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        Desktop.setBackground(new java.awt.Color(0, 153, 153));
+
         javax.swing.GroupLayout DesktopLayout = new javax.swing.GroupLayout(Desktop);
         Desktop.setLayout(DesktopLayout);
         DesktopLayout.setHorizontalGroup(
@@ -152,6 +154,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnInsumo.setForeground(new java.awt.Color(255, 255, 255));
         btnInsumo.setText("Insumo");
         btnInsumo.setContentAreaFilled(false);
+        btnInsumo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsumoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -220,6 +227,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         menCadIns.setText("Insumo");
+        menCadIns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadInsActionPerformed(evt);
+            }
+        });
         menCadastro.add(menCadIns);
 
         menCadRec.setText("Receita");
@@ -277,7 +289,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
     private void menCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadastroActionPerformed
-       
+  
     }//GEN-LAST:event_menCadastroActionPerformed
 
     private void menCadUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadUsuActionPerformed
@@ -286,6 +298,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
         usuario.setVisible(true);
         this.Desktop.add(usuario);
     }//GEN-LAST:event_menCadUsuActionPerformed
+
+    private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
+        // chama a TelaCadInsumos
+        TelaCadInsumos insumos = new TelaCadInsumos();
+        insumos.setVisible(true);
+        this.Desktop.add(insumos);
+        
+    }//GEN-LAST:event_btnInsumoActionPerformed
+
+    private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
+        // chama a TelaCadInsumos
+        TelaCadInsumos insumos = new TelaCadInsumos();
+        insumos.setVisible(true);
+        this.Desktop.add(insumos);
+    }//GEN-LAST:event_menCadInsActionPerformed
 
     /**
      * @param args the command line arguments

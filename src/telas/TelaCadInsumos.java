@@ -27,21 +27,160 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        txtCadInsCod = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        txtCadInsDes = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtCadInsUM = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtCadInsQuant = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtCadInsPreco = new javax.swing.JTextField();
+        tbnCadInsAdicionar = new javax.swing.JButton();
+        tbnCadInsPesquisar = new javax.swing.JButton();
+        tbnCadInsAtualizar = new javax.swing.JButton();
+        tbnCadInsDeletar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblCadInsumos = new javax.swing.JTable();
+
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
+
+        jLabel1.setText("Código");
+
+        jLabel2.setText("Descrição");
+
+        jLabel3.setText("Unidade de Medida");
+
+        jLabel4.setText("Quantidade");
+
+        jLabel5.setText("Preço");
+
+        tbnCadInsAdicionar.setText("Adicionar");
+
+        tbnCadInsPesquisar.setText("Pesquisar");
+
+        tbnCadInsAtualizar.setText("Atualizar");
+
+        tbnCadInsDeletar.setText("Deletar");
+
+        tblCadInsumos.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        tblCadInsumos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Código", "Descrição", "UM", "Quantidade", "Preço"
+            }
+        ));
+        jScrollPane1.setViewportView(tblCadInsumos);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(98, 98, 98)
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtCadInsUM, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                                    .addComponent(txtCadInsCod))
+                                .addComponent(jLabel3))
+                            .addGap(30, 30, 30)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtCadInsDes, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtCadInsQuant, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel4))
+                                    .addGap(29, 29, 29)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel5)
+                                            .addGap(0, 0, Short.MAX_VALUE))
+                                        .addComponent(txtCadInsPreco)))))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(tbnCadInsAdicionar, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                            .addGap(31, 31, 31)
+                            .addComponent(tbnCadInsPesquisar)
+                            .addGap(30, 30, 30)
+                            .addComponent(tbnCadInsAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(30, 30, 30)
+                            .addComponent(tbnCadInsDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCadInsCod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCadInsDes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCadInsUM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCadInsQuant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCadInsPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tbnCadInsAdicionar)
+                    .addComponent(tbnCadInsAtualizar)
+                    .addComponent(tbnCadInsPesquisar)
+                    .addComponent(tbnCadInsDeletar))
+                .addGap(29, 29, 29)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(167, Short.MAX_VALUE))
         );
 
-        pack();
+        setBounds(0, 0, 860, 560);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblCadInsumos;
+    private javax.swing.JButton tbnCadInsAdicionar;
+    private javax.swing.JButton tbnCadInsAtualizar;
+    private javax.swing.JButton tbnCadInsDeletar;
+    private javax.swing.JButton tbnCadInsPesquisar;
+    private javax.swing.JTextField txtCadInsCod;
+    private javax.swing.JTextField txtCadInsDes;
+    private javax.swing.JTextField txtCadInsPreco;
+    private javax.swing.JTextField txtCadInsQuant;
+    private javax.swing.JTextField txtCadInsUM;
     // End of variables declaration//GEN-END:variables
 }

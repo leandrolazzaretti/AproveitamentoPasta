@@ -213,6 +213,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menu.setBackground(new java.awt.Color(255, 255, 255));
 
         menCadastro.setText("Cadastro");
+        menCadastro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadastroActionPerformed(evt);
+            }
+        });
 
         menCadIns.setText("Insumo");
         menCadastro.add(menCadIns);
@@ -221,7 +226,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menCadastro.add(menCadRec);
 
         menCadUsu.setText("Usuário");
-        menCadUsu.setEnabled(false);
+        menCadUsu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadUsuActionPerformed(evt);
+            }
+        });
         menCadastro.add(menCadUsu);
 
         menu.add(menCadastro);
@@ -266,6 +275,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
         this.Desktop.add(usuario);
         
     }//GEN-LAST:event_btnUsuarioActionPerformed
+
+    private void menCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadastroActionPerformed
+       
+    }//GEN-LAST:event_menCadastroActionPerformed
+
+    private void menCadUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadUsuActionPerformed
+        // cahama a TelaCadUsu
+        TelaCadUsuario usuario = new TelaCadUsuario();
+        usuario.setVisible(true);
+        this.Desktop.add(usuario);
+    }//GEN-LAST:event_menCadUsuActionPerformed
 
     /**
      * @param args the command line arguments

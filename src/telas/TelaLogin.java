@@ -35,7 +35,7 @@ public class TelaLogin extends javax.swing.JFrame {
                 String perfil = rs.getString(5);
 
                 //a estrutura abaixo faz o tratamento do perfil do usuário
-                if (perfil.equals("administrador")) {
+                if (perfil.equals("Administrador")) {
                     TelaPrincipal principal = new TelaPrincipal();
                     principal.setVisible(true);                   
                     TelaPrincipal.lblUsuario.setText(rs.getString(5));                                  
@@ -130,7 +130,7 @@ public class TelaLogin extends javax.swing.JFrame {
                 tbnFecharActionPerformed(evt);
             }
         });
-        jPanel1.add(tbnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(247, 0, 50, 40));
+        jPanel1.add(tbnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 0, 50, 30));
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 255));
 

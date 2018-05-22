@@ -68,9 +68,8 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
-            //System.out.println(e);
+            System.out.println(e);
         }
-
     }
 
     public void pesquisarInsumos() {
@@ -154,7 +153,13 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
             }
         }
     }
-
+    //metodo para adicionar uma nova unidade de medida (UM)
+    private void addUM(){
+        String adicionar = JOptionPane.showInputDialog("Digite uma nova UM:");
+        
+        this.cbCadInsUm.addItem(adicionar);
+        this.cbCadInsUm.updateUI();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -185,6 +190,7 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         cbCadInsUm = new javax.swing.JComboBox<>();
         btnCadInsLimpar = new javax.swing.JButton();
+        btnCadInsAddUm = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -218,7 +224,6 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
 
         jLabel6.setText("Código");
 
-        txtCadInsPesquisar.setText("Cadastro ");
         txtCadInsPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtCadInsPesquisarKeyReleased(evt);
@@ -291,12 +296,19 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Código");
 
-        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "mg", "g", "kg", " ", " " }));
+        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "mg", "g", "kg" }));
 
         btnCadInsLimpar.setText("Limpar");
         btnCadInsLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadInsLimparActionPerformed(evt);
+            }
+        });
+
+        btnCadInsAddUm.setText("+");
+        btnCadInsAddUm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadInsAddUmActionPerformed(evt);
             }
         });
 
@@ -315,7 +327,9 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbCadInsUm, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCadInsAddUm)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(txtCadInsQuant, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -341,7 +355,7 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
                 .addComponent(btnCadInsDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnCadInsLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,7 +382,9 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
                         .addGap(25, 25, 25)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbCadInsUm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbCadInsUm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCadInsAddUm))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCadInsAdicionar)
@@ -385,12 +401,11 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(122, 322, Short.MAX_VALUE))))
+                        .addGap(0, 312, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -435,8 +450,14 @@ public class TelaCadInsumos extends javax.swing.JInternalFrame {
         limparCampos();
     }//GEN-LAST:event_btnCadInsLimparActionPerformed
 
+    private void btnCadInsAddUmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAddUmActionPerformed
+        // chama o metodo adicionar UM
+        addUM();
+    }//GEN-LAST:event_btnCadInsAddUmActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCadInsAddUm;
     private javax.swing.JButton btnCadInsAdicionar;
     private javax.swing.JButton btnCadInsAtualizar;
     private javax.swing.JButton btnCadInsDeletar;

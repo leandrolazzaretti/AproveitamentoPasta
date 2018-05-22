@@ -9,6 +9,7 @@ import conexao.ModuloConexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import static java.sql.ResultSet.TYPE_SCROLL_SENSITIVE;
 import javax.swing.JOptionPane;
 
 /**
@@ -70,25 +71,56 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     }
 
-    private void pesquisar() {
+    private void mostarUsuario() {
 
-        String sql = "select * from tbusuarios where iduser=?";
-
+        String sql = "select * from tbusuarios";
+        
+       
         try {
             this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadUsuId.getText());
             this.rs = this.pst.executeQuery();
 
             if (rs.next()) {
+                this.txtCadUsuId.setText(this.rs.getString(1));
                 this.txtCadUsuNome.setText(this.rs.getString(2));
                 this.txtCadUsuLogin.setText(this.rs.getString(3));
                 this.txtCadUsuSenha.setText(this.rs.getString(4));
                 this.cbCadUsuPerfil.setSelectedItem(this.rs.getString(5));
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Digite um [ código ] válido.");
-                limparCampos();
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            //System.out.println(e);
+        }
+    }
+
+    //chama o proximo usuário
+    private void proximo() {        
+        try {
+            this.rs.next();
+            this.txtCadUsuId.setText(this.rs.getString(1));
+            this.txtCadUsuNome.setText(this.rs.getString(2));
+            this.txtCadUsuLogin.setText(this.rs.getString(3));
+            this.txtCadUsuSenha.setText(this.rs.getString(4));
+            this.cbCadUsuPerfil.setSelectedItem(this.rs.getString(5));
+            
+        } catch (java.sql.SQLException e2) {
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);       
+        }
+    }
+    
+    //chama o usuário anterior
+    private void anterior(){
+        try {
+            this.rs.previous();
+
+            this.txtCadUsuId.setText(this.rs.getString(1));
+            this.txtCadUsuNome.setText(this.rs.getString(2));
+            this.txtCadUsuLogin.setText(this.rs.getString(3));
+            this.txtCadUsuSenha.setText(this.rs.getString(4));
+            this.cbCadUsuPerfil.setSelectedItem(this.rs.getString(5));
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -177,22 +209,34 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         txtCadUsuId = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        btnLimpar = new javax.swing.JButton();
+        btnAnterior = new javax.swing.JButton();
+        btnProximo = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setTitle("Cadastro de Usuários");
         setPreferredSize(new java.awt.Dimension(420, 406));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText(" Nome:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 127, -1, -1));
 
         jLabel2.setText(" Login:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 165, -1, -1));
 
         jLabel3.setText(" Senha:");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 203, -1, -1));
 
         jLabel4.setText(" Perfil:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 241, -1, -1));
+        getContentPane().add(txtCadUsuNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 124, 213, -1));
+        getContentPane().add(txtCadUsuLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 162, 213, -1));
+        getContentPane().add(txtCadUsuSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 200, 213, -1));
 
         cbCadUsuPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Usuário" }));
+        getContentPane().add(cbCadUsuPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 238, 213, -1));
 
         btnAdi.setText("Adicionar");
         btnAdi.addActionListener(new java.awt.event.ActionListener() {
@@ -200,6 +244,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnAdiActionPerformed(evt);
             }
         });
+        getContentPane().add(btnAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 288, -1, -1));
 
         btnAtu.setText("Atualizar");
         btnAtu.addActionListener(new java.awt.event.ActionListener() {
@@ -207,113 +252,55 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnAtuActionPerformed(evt);
             }
         });
+        getContentPane().add(btnAtu, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 288, 79, -1));
 
-        btnPes.setText("Pesquisar");
+        btnPes.setText("Mostrar Usuarios");
         btnPes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPesActionPerformed(evt);
             }
         });
+        getContentPane().add(btnPes, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 329, -1, -1));
 
-        btnExc.setText("Excluir");
+        btnExc.setText("Deletar");
         btnExc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcActionPerformed(evt);
             }
         });
+        getContentPane().add(btnExc, new org.netbeans.lib.awtextra.AbsoluteConstraints(207, 288, 73, -1));
 
         jLabel5.setText(" Código:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 89, -1, -1));
+        getContentPane().add(txtCadUsuId, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 86, 213, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel6.setText("Cadastro de Usuários");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, -1, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPes, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAtu, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnExc, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel6))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(jLabel2)
-                        .addGap(83, 83, 83)
-                        .addComponent(txtCadUsuLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(78, 78, 78)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbCadUsuPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCadUsuSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtCadUsuId, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(81, 81, 81)
-                                .addComponent(txtCadUsuNome, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(39, 39, 39))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(jLabel6)
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtCadUsuId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel1))
-                    .addComponent(txtCadUsuNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel2))
-                    .addComponent(txtCadUsuLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCadUsuSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(cbCadUsuPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnPes)
-                        .addComponent(btnAdi))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnAtu)
-                        .addComponent(btnExc)))
-                .addContainerGap(65, Short.MAX_VALUE))
-        );
+        btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(286, 288, 79, -1));
+
+        btnAnterior.setText("<-");
+        btnAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnteriorActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnAnterior, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 330, -1, -1));
+
+        btnProximo.setText("->");
+        btnProximo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProximoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnProximo, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 330, -1, -1));
 
         setBounds(220, 77, 420, 406);
     }// </editor-fold>//GEN-END:initComponents
@@ -330,7 +317,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void btnPesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesActionPerformed
         // chama o metodo pesquisar
-        pesquisar();
+        mostarUsuario();
     }//GEN-LAST:event_btnPesActionPerformed
 
     private void btnExcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcActionPerformed
@@ -338,12 +325,30 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         deletar();
     }//GEN-LAST:event_btnExcActionPerformed
 
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        // chama o metodo limpar
+        limparCampos();
+    }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
+        // chama o metodo anterior
+        anterior();
+    }//GEN-LAST:event_btnAnteriorActionPerformed
+
+    private void btnProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProximoActionPerformed
+        // chama o metodo proximo
+        proximo();
+    }//GEN-LAST:event_btnProximoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdi;
+    private javax.swing.JButton btnAnterior;
     private javax.swing.JButton btnAtu;
     private javax.swing.JButton btnExc;
+    private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnPes;
+    private javax.swing.JButton btnProximo;
     private javax.swing.JComboBox<String> cbCadUsuPerfil;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -5,17 +5,153 @@
  */
 package telas;
 
+import conexao.ModuloConexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
+
 /**
  *
  * @author Leandro
  */
 public class TelaCadReceita extends javax.swing.JInternalFrame {
 
+    Connection conexao = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
     /**
      * Creates new form TelaCadReceita
      */
     public TelaCadReceita() {
         initComponents();
+        this.conexao = ModuloConexao.conector();
+    }
+
+    private void limparCampos() {
+        this.txtCadRecCodigo.setEnabled(true);
+        this.txtCadRecCodigo.setText(null);
+        this.txtCadRecDes.setText(null);
+        this.txtCadRecPan.setText(null);
+        this.txtCadRecTipo.setText(null);
+        this.txtCadRecVal.setText(null);
+
+    }
+
+    public void adicionarReceita() {
+
+        String sql = "insert into tbreceita(codigorec,descricao,pantone,tipodepasta,datavencimento) values(?,?,?,?,?)";
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setString(1, this.txtCadRecCodigo.getText());
+            this.pst.setString(2, this.txtCadRecDes.getText());
+            this.pst.setString(3, this.txtCadRecPan.getText());
+            this.pst.setString(4, this.txtCadRecTipo.getText());
+            this.pst.setString(5, this.txtCadRecVal.getText());
+
+            //Validação dos campos obirgatórios
+            if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecTipo.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+            } else {
+                //Atualiza a tabela receita
+                int adicionado = this.pst.executeUpdate();
+                //Linha abaixo serve de apoio
+                //System.out.println(adicionado);
+                //confirma se realmente foi atualizada
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Receita cadastrada com sucesso!");
+                    limparCampos();
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public void pesquisarReceita() {
+        String sql = "select * from tbreceita where codigorec like ?";
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setString(1, this.txtCadRecPesquisar.getText() + "%");
+            this.rs = this.pst.executeQuery();
+            //Preencher a tabela usando a bibliotéca rs2xml.jar
+            this.tblCadReceita.setModel(DbUtils.resultSetToTableModel(this.rs));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //seta os campos do formulário com o coteúdo da tabela
+    private void setarCampos() {
+        int setar = this.tblCadReceita.getSelectedRow();
+        this.txtCadRecCodigo.setEnabled(false);
+        this.txtCadRecCodigo.setText(this.tblCadReceita.getModel().getValueAt(setar, 0).toString());
+        this.txtCadRecDes.setText(this.tblCadReceita.getModel().getValueAt(setar, 1).toString());
+        this.txtCadRecPan.setText(this.tblCadReceita.getModel().getValueAt(setar, 2).toString());
+        this.txtCadRecTipo.setText(this.tblCadReceita.getModel().getValueAt(setar, 3).toString());
+        this.txtCadRecVal.setText(this.tblCadReceita.getModel().getValueAt(setar, 4).toString());
+    }
+    
+    public void atualizarReceita() {
+        String sql = "update tbreceita set descricao=?, pantone=?, tipodepasta=?, datavencimento=? where codigorec=?";
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setString(1, this.txtCadRecDes.getText());
+            this.pst.setString(2, this.txtCadRecPan.getText());
+            this.pst.setString(3, this.txtCadRecTipo.getText());
+            this.pst.setString(4, this.txtCadRecVal.getText());
+            this.pst.setString(5, this.txtCadRecCodigo.getText());
+
+            //Validação dos campos obirgatórios
+            if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecTipo.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+            } else {
+                //Atualiza a tabela Receita
+                int adicionado = this.pst.executeUpdate();
+                //Linha abaixo serve de apoio
+                //System.out.println(adicionado);
+                //confirma se realmente foi atualizada
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Receita Atualizado com sucesso!");
+                    limparCampos();
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    public void deletarReceita() {
+        if (this.txtCadRecCodigo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Selecione uma receita válida.");
+        } else {
+            int confirmar = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja Deletar esta receita?", "Atenção", JOptionPane.YES_NO_OPTION);
+            if (confirmar == JOptionPane.YES_OPTION) {
+
+                String sql = "delete from tbreceita where codigorec=?";
+
+                try {
+                    this.pst = this.conexao.prepareStatement(sql);
+                    this.pst.setString(1, this.txtCadRecCodigo.getText());
+                    int deletado = this.pst.executeUpdate();
+
+                    if (deletado > 0) {
+                        JOptionPane.showMessageDialog(null, "Receita deletada com sucesso!");
+                        limparCampos();
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+            }
+        }
     }
 
     /**
@@ -45,7 +181,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblCadRecComponentes = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCadReceita = new javax.swing.JTable();
@@ -73,18 +209,38 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel5.setText("Validade");
 
         btnCadRecAdicionar.setText("Adicionar");
+        btnCadRecAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecAdicionarActionPerformed(evt);
+            }
+        });
 
         btnCadRecAtualizar.setText("Atualizar");
+        btnCadRecAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecAtualizarActionPerformed(evt);
+            }
+        });
 
         btnCadRecDeletar.setText("Deletar");
+        btnCadRecDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecDeletarActionPerformed(evt);
+            }
+        });
 
         btnCadRecLimpar.setText("Limpar");
+        btnCadRecLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecLimparActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("Componentes");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblCadRecComponentes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null},
                 {null},
@@ -97,7 +253,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 "Insumos"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(tblCadRecComponentes);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -276,12 +432,33 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void tblCadReceitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadReceitaMouseClicked
         // chama o metodo setarCampos
+        setarCampos();
     }//GEN-LAST:event_tblCadReceitaMouseClicked
 
     private void txtCadRecPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecPesquisarKeyReleased
         // chama o metodo pesquisar
-
+        pesquisarReceita();
     }//GEN-LAST:event_txtCadRecPesquisarKeyReleased
+
+    private void btnCadRecAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarActionPerformed
+        // chama o metodo adicionar
+        adicionarReceita();
+    }//GEN-LAST:event_btnCadRecAdicionarActionPerformed
+
+    private void btnCadRecLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecLimparActionPerformed
+        // chama o metodo limpar campos
+        limparCampos();
+    }//GEN-LAST:event_btnCadRecLimparActionPerformed
+
+    private void btnCadRecAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAtualizarActionPerformed
+        // cahama o metodo atualizar
+        atualizarReceita();
+    }//GEN-LAST:event_btnCadRecAtualizarActionPerformed
+
+    private void btnCadRecDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecDeletarActionPerformed
+        // chama o metodo deletar
+        deletarReceita();
+    }//GEN-LAST:event_btnCadRecDeletarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -302,7 +479,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblCadRecComponentes;
     private javax.swing.JTable tblCadReceita;
     private javax.swing.JTextField txtCadRecCodigo;
     private javax.swing.JTextField txtCadRecDes;

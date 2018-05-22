@@ -5,6 +5,7 @@
  */
 package telas;
 
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,6 +19,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
      */
     public TelaPrincipal() {
         initComponents();
+    }
+
+    public void comandoInternal(JInternalFrame frame) {
+        for (JInternalFrame internal : this.Desktop.getAllFrames()) {
+            if (internal.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
+                return;
+            }
+        }
+        this.Desktop.add(frame);
+        frame.setVisible(true);
     }
 
     /**
@@ -134,6 +145,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnReceita.setForeground(new java.awt.Color(255, 255, 255));
         btnReceita.setText("Receita");
         btnReceita.setContentAreaFilled(false);
+        btnReceita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReceitaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -226,6 +242,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        menCadIns.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
         menCadIns.setText("Insumo");
         menCadIns.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -234,9 +251,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
         menCadastro.add(menCadIns);
 
+        menCadRec.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK));
         menCadRec.setText("Receita");
+        menCadRec.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadRecActionPerformed(evt);
+            }
+        });
         menCadastro.add(menCadRec);
 
+        menCadUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK));
         menCadUsu.setText("Usuário");
         menCadUsu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -249,6 +273,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menControle.setText("Controle");
 
+        menConEst.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
         menConEst.setText("Estoque");
         menControle.add(menConEst);
 
@@ -256,6 +281,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menOpc.setText("Opções");
 
+        menOpcSair.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         menOpcSair.setText("Sair");
         menOpcSair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -274,7 +300,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menOpcSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menOpcSairActionPerformed
         // evento sair
-        int sair = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja sair?","Atenção!", JOptionPane.YES_NO_OPTION);
+        int sair = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja sair?", "Atenção!", JOptionPane.YES_NO_OPTION);
         if (sair == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
@@ -282,37 +308,37 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
         // Chama a tela usuario
-        TelaCadUsuario usuario = new TelaCadUsuario();
-        usuario.setVisible(true);
-        this.Desktop.add(usuario);
-        
+        comandoInternal(new TelaCadUsuario());
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
     private void menCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadastroActionPerformed
-  
+
     }//GEN-LAST:event_menCadastroActionPerformed
 
     private void menCadUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadUsuActionPerformed
         // cahama a TelaCadUsu
-        TelaCadUsuario usuario = new TelaCadUsuario();
-        usuario.setVisible(true);
-        this.Desktop.add(usuario);
+        comandoInternal(new TelaCadUsuario());
     }//GEN-LAST:event_menCadUsuActionPerformed
 
     private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
         // chama a TelaCadInsumos
-        TelaCadInsumos insumos = new TelaCadInsumos();
-        insumos.setVisible(true);
-        this.Desktop.add(insumos);
-        
+        comandoInternal(new TelaCadInsumos());
     }//GEN-LAST:event_btnInsumoActionPerformed
 
     private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
         // chama a TelaCadInsumos
-        TelaCadInsumos insumos = new TelaCadInsumos();
-        insumos.setVisible(true);
-        this.Desktop.add(insumos);
+        comandoInternal(new TelaCadInsumos());
     }//GEN-LAST:event_menCadInsActionPerformed
+
+    private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed
+        // chama a TelaCadReceita
+        comandoInternal(new TelaCadReceita());
+    }//GEN-LAST:event_btnReceitaActionPerformed
+
+    private void menCadRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadRecActionPerformed
+        // chama a TelaCadReceita
+         comandoInternal(new TelaCadReceita());
+    }//GEN-LAST:event_menCadRecActionPerformed
 
     /**
      * @param args the command line arguments

@@ -100,7 +100,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         String sql = "update tbusuarios set nome=?, login=?, senha=?, perfil=? where iduser=?";
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);  
+            this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtCadUsuNome.getText());
             this.pst.setString(2, this.txtCadUsuLogin.getText());
             this.pst.setString(3, this.txtCadUsuSenha.getText());
@@ -125,25 +125,30 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-    private void deletar() {      
-        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
 
-            String sql = "delete from tbusuarios where iduser=?";
+    private void deletar() {
+        if (this.txtCadUsuId.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Selecione um usuário válido.");
+        } else {
 
-            try {
-                this.pst = this.conexao.prepareStatement(sql);
-                this.pst.setString(1, this.txtCadUsuId.getText());
-                int deleta = pst.executeUpdate();                          
-                //confirma o deleta
-                if (deleta > 0) {
-                    JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso!");
-                    limparCampos();
+            int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
+            if (confirma == JOptionPane.YES_OPTION) {
+
+                String sql = "delete from tbusuarios where iduser=?";
+
+                try {
+                    this.pst = this.conexao.prepareStatement(sql);
+                    this.pst.setString(1, this.txtCadUsuId.getText());
+                    int deleta = pst.executeUpdate();
+                    //confirma o deleta
+                    if (deleta > 0) {
+                        JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso!");
+                        limparCampos();
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-
             }
         }
     }
@@ -176,7 +181,8 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
-        setPreferredSize(new java.awt.Dimension(860, 560));
+        setTitle("Cadastro de Usuários");
+        setPreferredSize(new java.awt.Dimension(420, 406));
 
         jLabel1.setText(" Nome:");
 

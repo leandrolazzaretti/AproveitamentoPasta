@@ -322,12 +322,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
         // chama a TelaCadInsumos
-        comandoInternal(new TelaCadInsumos());
+        comandoInternal(new TelaCadInsumo());
     }//GEN-LAST:event_btnInsumoActionPerformed
 
     private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
         // chama a TelaCadInsumos
-        comandoInternal(new TelaCadInsumos());
+        comandoInternal(new TelaCadInsumo());
     }//GEN-LAST:event_menCadInsActionPerformed
 
     private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed

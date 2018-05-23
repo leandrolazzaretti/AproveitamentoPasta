@@ -6,10 +6,13 @@
 package telas;
 
 import conexao.ModuloConexao;
+import dao.UsuarioDao;
+import dto.UsuarioDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import static java.sql.ResultSet.TYPE_SCROLL_SENSITIVE;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,6 +25,9 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
+    UsuarioDao lista = new UsuarioDao();
+    private int index;
+
     /**
      * Creates new form TelaCadUsuario
      */
@@ -29,8 +35,10 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         initComponents();
 
         this.conexao = ModuloConexao.conector();
+        mostarUsuario();
     }
 
+    //limpa todos os campos da tela
     private void limparCampos() {
         this.txtCadUsuId.setText(null);
         this.txtCadUsuNome.setText(null);
@@ -39,6 +47,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         this.cbCadUsuPerfil.setSelectedItem("Administrador");
     }
 
+    // adiciona um novo usuario
     public void adicionar() {
         String sql = "insert into tbusuarios(iduser,nome,login,senha,perfil) values(?,?,?,?,?)";
 
@@ -71,11 +80,11 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     }
 
+    //mostra todas as informações de um usuario nos campos da tela
     private void mostarUsuario() {
 
         String sql = "select * from tbusuarios";
-        
-       
+
         try {
             this.pst = this.conexao.prepareStatement(sql);
             this.rs = this.pst.executeQuery();
@@ -93,41 +102,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         }
     }
 
-    //chama o proximo usuário
-    private void proximo() {        
-        try {
-            this.rs.next();
-            this.txtCadUsuId.setText(this.rs.getString(1));
-            this.txtCadUsuNome.setText(this.rs.getString(2));
-            this.txtCadUsuLogin.setText(this.rs.getString(3));
-            this.txtCadUsuSenha.setText(this.rs.getString(4));
-            this.cbCadUsuPerfil.setSelectedItem(this.rs.getString(5));
-            
-        } catch (java.sql.SQLException e2) {
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            System.out.println(e);       
-        }
-    }
-    
-    //chama o usuário anterior
-    private void anterior(){
-        try {
-            this.rs.previous();
-
-            this.txtCadUsuId.setText(this.rs.getString(1));
-            this.txtCadUsuNome.setText(this.rs.getString(2));
-            this.txtCadUsuLogin.setText(this.rs.getString(3));
-            this.txtCadUsuSenha.setText(this.rs.getString(4));
-            this.cbCadUsuPerfil.setSelectedItem(this.rs.getString(5));
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            System.out.println(e);
-        }
-    }
-
+    // atualiza o cadastro de um usuário
     private void atualizar() {
         String sql = "update tbusuarios set nome=?, login=?, senha=?, perfil=? where iduser=?";
 
@@ -158,6 +133,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         }
     }
 
+    //Deleta um usuário
     private void deletar() {
         if (this.txtCadUsuId.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione um usuário válido.");
@@ -185,6 +161,14 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         }
     }
 
+    private void setarCampos(UsuarioDto user) {
+        this.txtCadUsuId.setText(String.valueOf(user.getIduser()));
+        this.txtCadUsuNome.setText(user.getNome());
+        this.txtCadUsuLogin.setText(user.getLogin());
+        this.txtCadUsuSenha.setText(user.getSenha());
+        this.cbCadUsuPerfil.setSelectedItem(user.getPerfil());
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -204,7 +188,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         cbCadUsuPerfil = new javax.swing.JComboBox<>();
         btnAdi = new javax.swing.JButton();
         btnAtu = new javax.swing.JButton();
-        btnPes = new javax.swing.JButton();
         btnExc = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         txtCadUsuId = new javax.swing.JTextField();
@@ -212,6 +195,9 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         btnLimpar = new javax.swing.JButton();
         btnAnterior = new javax.swing.JButton();
         btnProximo = new javax.swing.JButton();
+        btnPrimeiro = new javax.swing.JButton();
+        btnUltimo = new javax.swing.JButton();
+        btnPesquisar = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -239,6 +225,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         getContentPane().add(cbCadUsuPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 238, 213, -1));
 
         btnAdi.setText("Adicionar");
+        btnAdi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAdiActionPerformed(evt);
@@ -247,6 +234,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         getContentPane().add(btnAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 288, -1, -1));
 
         btnAtu.setText("Atualizar");
+        btnAtu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAtu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAtuActionPerformed(evt);
@@ -254,15 +242,8 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnAtu, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 288, 79, -1));
 
-        btnPes.setText("Mostrar Usuarios");
-        btnPes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPesActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnPes, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 329, -1, -1));
-
         btnExc.setText("Deletar");
+        btnExc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcActionPerformed(evt);
@@ -272,13 +253,14 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
         jLabel5.setText(" Código:");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 89, -1, -1));
-        getContentPane().add(txtCadUsuId, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 86, 213, -1));
+        getContentPane().add(txtCadUsuId, new org.netbeans.lib.awtextra.AbsoluteConstraints(152, 86, 150, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel6.setText("Cadastro de Usuários");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, -1, -1));
 
         btnLimpar.setText("Limpar");
+        btnLimpar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLimparActionPerformed(evt);
@@ -286,21 +268,56 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(286, 288, 79, -1));
 
-        btnAnterior.setText("<-");
+        btnAnterior.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        btnAnterior.setText("<");
+        btnAnterior.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAnterior.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAnteriorActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAnterior, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 330, -1, -1));
+        getContentPane().add(btnAnterior, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 330, -1, -1));
 
-        btnProximo.setText("->");
+        btnProximo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        btnProximo.setText(">");
+        btnProximo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnProximo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProximoActionPerformed(evt);
             }
         });
-        getContentPane().add(btnProximo, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 330, -1, -1));
+        getContentPane().add(btnProximo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 330, -1, -1));
+
+        btnPrimeiro.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        btnPrimeiro.setText("<<");
+        btnPrimeiro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrimeiroActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnPrimeiro, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, -1, -1));
+
+        btnUltimo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        btnUltimo.setText(">>");
+        btnUltimo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUltimo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUltimoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnUltimo, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 330, -1, -1));
+
+        btnPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
+        btnPesquisar.setToolTipText("Pesquisar");
+        btnPesquisar.setContentAreaFilled(false);
+        btnPesquisar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 80, 35, 34));
 
         setBounds(220, 77, 420, 406);
     }// </editor-fold>//GEN-END:initComponents
@@ -315,11 +332,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         atualizar();
     }//GEN-LAST:event_btnAtuActionPerformed
 
-    private void btnPesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesActionPerformed
-        // chama o metodo pesquisar
-        mostarUsuario();
-    }//GEN-LAST:event_btnPesActionPerformed
-
     private void btnExcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcActionPerformed
         // chamad o metodo deletar
         deletar();
@@ -331,14 +343,57 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
-        // chama o metodo anterior
-        anterior();
+        // registro anterior
+        this.index--;
+        if (index >= 0) {
+            setarCampos(this.lista.list().get(index));
+            this.btnProximo.setEnabled(true);
+            this.btnUltimo.setEnabled(true);
+        } else {
+            this.index = 0;
+            setarCampos(this.lista.list().get(index));
+            this.btnAnterior.setEnabled(false);
+            this.btnPrimeiro.setEnabled(false);
+        }
     }//GEN-LAST:event_btnAnteriorActionPerformed
 
     private void btnProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProximoActionPerformed
-        // chama o metodo proximo
-        proximo();
+        // proximo registro
+        this.index++;
+        if (index <= ) {
+            setarCampos(this.lista.list().get(index));
+            this.btnAnterior.setEnabled(true);
+            this.btnPrimeiro.setEnabled(true);
+        } else {
+            this.btnProximo.setEnabled(false);
+            this.btnUltimo.setEnabled(false);
+        }
     }//GEN-LAST:event_btnProximoActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        // TODO add your handling code here:
+        new TelaProcurarUsuarios().setVisible(true);
+        //painel.setVisible(true);
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
+    private void btnPrimeiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimeiroActionPerformed
+        // primeiro registro
+        this.index = 0;
+        if (index == 0) {
+            setarCampos(this.lista.list().get(index));
+            this.btnProximo.setEnabled(true);
+            this.btnUltimo.setEnabled(true);
+        } else {           
+            this.btnPrimeiro.setEnabled(false);
+        }
+        setarCampos(this.lista.list().get(index));
+    }//GEN-LAST:event_btnPrimeiroActionPerformed
+
+    private void btnUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUltimoActionPerformed
+//        // ultimo registro
+//        this.index = 
+//        setarCampos(this.lista.list().get(index));
+    }//GEN-LAST:event_btnUltimoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -347,8 +402,10 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnAtu;
     private javax.swing.JButton btnExc;
     private javax.swing.JButton btnLimpar;
-    private javax.swing.JButton btnPes;
+    private javax.swing.JButton btnPesquisar;
+    private javax.swing.JButton btnPrimeiro;
     private javax.swing.JButton btnProximo;
+    private javax.swing.JButton btnUltimo;
     private javax.swing.JComboBox<String> cbCadUsuPerfil;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

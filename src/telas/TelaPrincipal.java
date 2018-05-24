@@ -376,7 +376,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDesktopPane Desktop;
+    public static javax.swing.JDesktopPane Desktop;
     private javax.swing.JButton btnInsumo;
     private javax.swing.JButton btnReceita;
     public static javax.swing.JButton btnUsuario;

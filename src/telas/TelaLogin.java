@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import util.HashUtil;
 
 /**
  *
@@ -29,7 +30,7 @@ public class TelaLogin extends javax.swing.JFrame {
         try {
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtUsuario.getText());
-            this.pst.setString(2, this.txtSenha.getText());
+            this.pst.setString(2, HashUtil.stringMD5(this.txtSenha.getText()));
             this.rs = this.pst.executeQuery();
             
             if (this.rs.next()) {

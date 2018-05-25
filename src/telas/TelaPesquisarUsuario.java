@@ -103,7 +103,6 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         TelaCadUsuario.txtCadUsuId.setText(this.tblCadUsuario.getModel().getValueAt(setar, 0).toString());
         TelaCadUsuario.txtCadUsuNome.setText(this.tblCadUsuario.getModel().getValueAt(setar, 1).toString());
         TelaCadUsuario.txtCadUsuLogin.setText(this.tblCadUsuario.getModel().getValueAt(setar, 2).toString());
-        TelaCadUsuario.txtCadUsuSenha.setText(this.tblCadUsuario.getModel().getValueAt(setar, 3).toString());
         TelaCadUsuario.cbCadUsuPerfil.setSelectedItem(this.tblCadUsuario.getModel().getValueAt(setar, 4).toString());
     }
 

@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -22,6 +23,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
+    private String cbPesquisar = "codigo";
+
     /**
      * Creates new form TelaCadInsumos
      */
@@ -29,6 +32,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         addUMComboBox();
+        carregarTabela();
     }
 
     private void limparCampos() {
@@ -74,7 +78,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }
 
     public void pesquisarInsumos() {
-        String sql = "select * from tbinsumos where codigo like ?";
+        String sql = "select * from tbinsumos where " + this.cbPesquisar + "like ?";
 
         try {
             this.pst = this.conexao.prepareStatement(sql);
@@ -219,6 +223,35 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
+    private void carregarTabela() {
+        String sql = "select * from tbinsumos";
+
+        DefaultTableModel modelo = (DefaultTableModel) this.tblCadInsumos.getModel();
+        modelo.setNumRows(0);
+
+        this.tblCadInsumos.getColumnModel().getColumn(0).setPreferredWidth(20);
+        this.tblCadInsumos.getColumnModel().getColumn(1).setPreferredWidth(80);
+        this.tblCadInsumos.getColumnModel().getColumn(2).setPreferredWidth(40);
+        this.tblCadInsumos.getColumnModel().getColumn(3).setPreferredWidth(40);
+        this.tblCadInsumos.getColumnModel().getColumn(4).setPreferredWidth(40);
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.rs = this.pst.executeQuery();
+
+            while (this.rs.next()) {
+                modelo.addRow(new Object[]{
+                    this.rs.getInt(1),
+                    this.rs.getString(2),
+                    this.rs.getString(3),
+                    this.rs.getDouble(4),
+                    this.rs.getDouble(5)});
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -233,7 +266,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         tblCadInsumos = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         txtCadInsPesquisar = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         txtCadInsPreco = new javax.swing.JTextField();
         btnCadInsAdicionar = new javax.swing.JButton();
@@ -256,6 +289,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setTitle("Cadastro de Insumos");
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -290,7 +324,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Descrição", "UM", "Quantidade", "Preço" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -299,29 +338,30 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(10, 10, 10)
-                        .addComponent(txtCadInsPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel7)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(txtCadInsPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtCadInsPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel6)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(txtCadInsPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35))
+                .addContainerGap())
         );
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 241, -1, -1));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -462,28 +502,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 .addGap(27, 27, 27))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(94, 267, Short.MAX_VALUE))))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
 
         setBounds(0, 0, 860, 560);
     }// </editor-fold>//GEN-END:initComponents
@@ -529,6 +548,27 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         removerUM();
     }//GEN-LAST:event_btnCadInsRemoverUmActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+       // adiciona um valor a variável cbPesquizar
+        if (this.cbCadInsUm.getSelectedItem().equals("Código")) {
+            this.cbPesquisar = "codigo";
+        } else {
+            if (this.cbCadInsUm.getSelectedItem().equals("Descrição")) {
+                this.cbPesquisar = "descricao";
+            } else {
+                if (this.cbCadInsUm.getSelectedItem().equals("UM")) {
+                    this.cbPesquisar = "UM";
+                } else{
+                    if (this.cbCadInsUm.getSelectedItem().equals("Quantidade")) {
+                        this.cbPesquisar = "quantidade";
+                    } else{
+                        this.cbPesquisar = "preco";
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadInsAddUm;
@@ -538,13 +578,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCadInsLimpar;
     private javax.swing.JButton btnCadInsRemoverUm;
     private javax.swing.JComboBox<String> cbCadInsUm;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;

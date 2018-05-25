@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import util.HashUtil;
 
 /**
  *
@@ -26,6 +27,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     UsuarioDao lista = new UsuarioDao();
     private int index = -1;
+    private int codigo;
 
     /**
      * Creates new form TelaCadUsuario
@@ -35,9 +37,9 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
         this.conexao = ModuloConexao.conector();
         //this.txtCadUsuId.setDocument(new SoNumeros());
-        
+
         setarCodigo();
-        
+
     }
 
     //limpa todos os campos da tela
@@ -47,6 +49,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         this.txtCadUsuNome.setText(null);
         this.txtCadUsuLogin.setText(null);
         this.txtCadUsuSenha.setText(null);
+        this.txtCadUsuConfirmarSenha.setText(null);
         this.cbCadUsuPerfil.setSelectedItem("Administrador");
         this.btnProximo.setEnabled(true);
         this.btnUltimo.setEnabled(true);
@@ -56,30 +59,54 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         setarCodigo();
     }
 
+//    private String quiptografarSenha(String senhaHex){
+//        String senha= this.txtCadUsuSenha.getText();
+//        try {
+//            MessageDigest md = MessageDigest.getInstance("MD5");
+//            byte messageDigest[] = md.digest(senha.getBytes("UTF-8"));
+//            
+//            StringBuilder sb = new StringBuilder();
+//            
+//            for(byte b : messageDigest){
+//                sb.append(String.format("%02X", 0xFF & b));
+//                
+//            }
+//                 senhaHex = sb.toString();
+//                
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e);
+//        }
+//        return senhaHex;
+//    }
     // adiciona um novo usuario
     public void adicionar() {
         String sql = "insert into tbusuarios(codigo,nome,login,senha,perfil) values(?,?,?,?,?)";
 
         try {
+
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtCadUsuId.getText());
             this.pst.setString(2, this.txtCadUsuNome.getText());
             this.pst.setString(3, this.txtCadUsuLogin.getText());
-            this.pst.setString(4, this.txtCadUsuSenha.getText());
+            this.pst.setString(4, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
             this.pst.setString(5, this.cbCadUsuPerfil.getSelectedItem().toString());
 
             //Validação dos campos obirgatórios
-            if ((this.txtCadUsuId.getText().isEmpty()) || (this.txtCadUsuNome.getText().isEmpty()) || (this.txtCadUsuLogin.getText().isEmpty()) || (this.txtCadUsuSenha.getText().isEmpty())) {
+            if ((this.txtCadUsuId.getText().isEmpty()) || (this.txtCadUsuNome.getText().isEmpty()) || (this.txtCadUsuLogin.getText().isEmpty()) || (this.txtCadUsuSenha.getText().isEmpty()) || (this.txtCadUsuConfirmarSenha.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
             } else {
-                //Atualiza a tabela usuarios
-                int adicionado = this.pst.executeUpdate();
-                //Linha abaixo serve de apoio
-                //System.out.println(adicionado);
-                //confirma se realmente foi atualizada
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
-                    limparCampos();
+                if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
+                    //Atualiza a tabela usuarios
+                    int adicionado = this.pst.executeUpdate();
+                    //Linha abaixo serve de apoio
+                    //System.out.println(adicionado);
+                    //confirma se realmente foi atualizada
+                    if (adicionado > 0) {
+                        JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
+                        limparCampos();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
                 }
             }
         } catch (SQLException sqle) {
@@ -98,22 +125,27 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtCadUsuNome.getText());
             this.pst.setString(2, this.txtCadUsuLogin.getText());
-            this.pst.setString(3, this.txtCadUsuSenha.getText());
+            this.pst.setString(3, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
             this.pst.setString(4, this.cbCadUsuPerfil.getSelectedItem().toString());
             this.pst.setString(5, this.txtCadUsuId.getText());
 
             //Validação dos campos obirgatórios
-            if ((this.txtCadUsuId.getText().isEmpty()) || (this.txtCadUsuNome.getText().isEmpty()) || (this.txtCadUsuLogin.getText().isEmpty()) || (this.txtCadUsuSenha.getText().isEmpty())) {
+            if ((this.txtCadUsuId.getText().isEmpty()) || (this.txtCadUsuNome.getText().isEmpty()) || (this.txtCadUsuLogin.getText().isEmpty()) || (this.txtCadUsuSenha.getText().isEmpty()) || (this.txtCadUsuConfirmarSenha.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
             } else {
-                //Atualiza a tabela usuarios
-                int adicionado = this.pst.executeUpdate();
-                //Linha abaixo serve de apoio
-                //System.out.println(adicionado);
-                //confirma se realmente foi atualizada
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "Usuário Atualizado com sucesso!");
-                    limparCampos();
+                if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
+
+                    //Atualiza a tabela usuarios
+                    int adicionado = this.pst.executeUpdate();
+                    //Linha abaixo serve de apoio
+                    //System.out.println(adicionado);
+                    //confirma se realmente foi atualizada
+                    if (adicionado > 0) {
+                        JOptionPane.showMessageDialog(null, "Usuário Atualizado com sucesso!");
+                        limparCampos();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
                 }
             }
         } catch (Exception e) {
@@ -123,8 +155,8 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     //Deleta um usuário
     private void deletar() {
-        if (this.txtCadUsuId.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Selecione um usuário válido.");
+        if ((this.txtCadUsuId.getText().isEmpty())) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         } else {
 
             int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
@@ -145,7 +177,10 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, e);
 
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
             }
+
         }
     }
 
@@ -154,18 +189,23 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         this.txtCadUsuId.setText(String.valueOf(user.getIduser()));
         this.txtCadUsuNome.setText(user.getNome());
         this.txtCadUsuLogin.setText(user.getLogin());
-        this.txtCadUsuSenha.setText(user.getSenha());
         this.cbCadUsuPerfil.setSelectedItem(user.getPerfil());
     }
 
+    private void setarCodigo() {
+        String sql = "select max(codigo)+1 from tbusuarios";
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.rs = this.pst.executeQuery();
+            this.txtCadUsuId.setText(this.rs.getString(1));
 
-    private void setarCodigo(){
-        int codig = this.lista.list().size()+1;
-        this.txtCadUsuId.setEnabled(false);
-        this.txtCadUsuId.setText(String.valueOf(codig));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+       this.txtCadUsuId.setEnabled(false);
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -181,7 +221,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         txtCadUsuNome = new javax.swing.JTextField();
         txtCadUsuLogin = new javax.swing.JTextField();
-        txtCadUsuSenha = new javax.swing.JTextField();
         cbCadUsuPerfil = new javax.swing.JComboBox<>();
         btnAdi = new javax.swing.JButton();
         btnAtu = new javax.swing.JButton();
@@ -195,6 +234,9 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         btnPrimeiro = new javax.swing.JButton();
         btnUltimo = new javax.swing.JButton();
         btnCadUsePesquisar = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        txtCadUsuSenha = new javax.swing.JPasswordField();
+        txtCadUsuConfirmarSenha = new javax.swing.JPasswordField();
 
         setClosable(true);
         setIconifiable(true);
@@ -213,13 +255,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, -1, -1));
 
         jLabel4.setText(" Perfil:");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 220, -1, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, -1, -1));
         getContentPane().add(txtCadUsuNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 130, 213, -1));
         getContentPane().add(txtCadUsuLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 213, -1));
-        getContentPane().add(txtCadUsuSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 190, 213, -1));
 
         cbCadUsuPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Usuário" }));
-        getContentPane().add(cbCadUsuPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 220, 213, -1));
+        getContentPane().add(cbCadUsuPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 250, 213, -1));
 
         btnAdi.setText("Salvar");
         btnAdi.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -228,7 +269,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnAdiActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 280, 80, -1));
+        getContentPane().add(btnAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 80, -1));
 
         btnAtu.setText("Atualizar");
         btnAtu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -237,7 +278,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnAtuActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAtu, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 280, 79, -1));
+        getContentPane().add(btnAtu, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 79, -1));
 
         btnExc.setText("Deletar");
         btnExc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -246,7 +287,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnExcActionPerformed(evt);
             }
         });
-        getContentPane().add(btnExc, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 280, 73, -1));
+        getContentPane().add(btnExc, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 290, 73, -1));
 
         jLabel5.setText(" Código:");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
@@ -263,7 +304,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnLimparActionPerformed(evt);
             }
         });
-        getContentPane().add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, 79, -1));
+        getContentPane().add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 79, -1));
 
         btnAnterior.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnAnterior.setText("<");
@@ -273,7 +314,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnAnteriorActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAnterior, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 320, -1, -1));
+        getContentPane().add(btnAnterior, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 330, -1, -1));
 
         btnProximo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnProximo.setText(">");
@@ -283,7 +324,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnProximoActionPerformed(evt);
             }
         });
-        getContentPane().add(btnProximo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 320, -1, -1));
+        getContentPane().add(btnProximo, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 330, -1, -1));
 
         btnPrimeiro.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnPrimeiro.setText("<<");
@@ -293,7 +334,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnPrimeiroActionPerformed(evt);
             }
         });
-        getContentPane().add(btnPrimeiro, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, -1, -1));
+        getContentPane().add(btnPrimeiro, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, -1, -1));
 
         btnUltimo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnUltimo.setText(">>");
@@ -303,7 +344,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 btnUltimoActionPerformed(evt);
             }
         });
-        getContentPane().add(btnUltimo, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 320, -1, -1));
+        getContentPane().add(btnUltimo, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 330, -1, -1));
 
         btnCadUsePesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         btnCadUsePesquisar.setToolTipText("Pesquisar");
@@ -316,7 +357,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnCadUsePesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 90, 30, 30));
 
-        setBounds(221, 77, 417, 407);
+        jLabel7.setText("Confirmar Senha:");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 221, -1, -1));
+        getContentPane().add(txtCadUsuSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 190, 210, -1));
+        getContentPane().add(txtCadUsuConfirmarSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 220, 210, -1));
+
+        setBounds(221, 77, 417, 409);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadUsePesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadUsePesquisarActionPerformed
@@ -416,9 +462,11 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPasswordField txtCadUsuConfirmarSenha;
     public static javax.swing.JTextField txtCadUsuId;
     public static javax.swing.JTextField txtCadUsuLogin;
     public static javax.swing.JTextField txtCadUsuNome;
-    public static javax.swing.JTextField txtCadUsuSenha;
+    public static javax.swing.JPasswordField txtCadUsuSenha;
     // End of variables declaration//GEN-END:variables
 }

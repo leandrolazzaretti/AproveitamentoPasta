@@ -6,6 +6,7 @@
 package telas;
 
 import conexao.ModuloConexao;
+import dto.UsuarioDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,8 +22,10 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
+
     private String cbPesquisar = "codigo";
+    
+    public UsuarioDto guardar = new UsuarioDto();
 
     /**
      * Creates new form TelaPesquisarUsuario
@@ -62,7 +65,7 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     public void pesquisarUsuario() {
         String sql = "select * from tbusuarios where " + this.cbPesquisar + " like ?";
 
@@ -93,6 +96,16 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
+    
+     private void setarCampos() {
+        int setar = this.tblCadUsuario.getSelectedRow();
+        TelaCadUsuario.txtCadUsuId.setEnabled(false);
+        TelaCadUsuario.txtCadUsuId.setText(this.tblCadUsuario.getModel().getValueAt(setar, 0).toString());
+        TelaCadUsuario.txtCadUsuNome.setText(this.tblCadUsuario.getModel().getValueAt(setar, 1).toString());
+        TelaCadUsuario.txtCadUsuLogin.setText(this.tblCadUsuario.getModel().getValueAt(setar, 2).toString());
+        TelaCadUsuario.txtCadUsuSenha.setText(this.tblCadUsuario.getModel().getValueAt(setar, 3).toString());
+        TelaCadUsuario.cbCadUsuPerfil.setSelectedItem(this.tblCadUsuario.getModel().getValueAt(setar, 4).toString());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,7 +135,15 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
             new String [] {
                 "Código", "Nome", "Login", "Senha", "Perfil"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblCadUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblCadUsuarioMouseClicked(evt);
@@ -156,6 +177,11 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
     private void tblCadUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadUsuarioMouseClicked
         // seta os campos do formulário através da tabela
         //TelaCadUsuario.
+        if (evt.getClickCount() > 1) {
+            setarCampos();
+            this.dispose();
+        }
+       
     }//GEN-LAST:event_tblCadUsuarioMouseClicked
 
     private void txtCadUsuarioPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadUsuarioPesquisarKeyReleased

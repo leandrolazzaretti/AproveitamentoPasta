@@ -5,6 +5,7 @@
  */
 package telas;
 
+import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import java.awt.Color;
 import java.sql.Connection;
@@ -103,6 +104,11 @@ public class TelaLogin extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPanel1KeyPressed(evt);
+            }
+        });
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 100, 190, -1));
         jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 190, 10));
@@ -116,6 +122,11 @@ public class TelaLogin extends javax.swing.JFrame {
         btnAcessar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAcessarActionPerformed(evt);
+            }
+        });
+        btnAcessar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnAcessarKeyPressed(evt);
             }
         });
         jPanel1.add(btnAcessar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 190, 30));
@@ -164,6 +175,11 @@ public class TelaLogin extends javax.swing.JFrame {
                 txtSenhaFocusGained(evt);
             }
         });
+        txtSenha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSenhaKeyPressed(evt);
+            }
+        });
         jPanel1.add(txtSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 190, 20));
 
         txtUsuario.setBackground(new java.awt.Color(102, 102, 102));
@@ -174,6 +190,11 @@ public class TelaLogin extends javax.swing.JFrame {
         txtUsuario.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtUsuarioFocusGained(evt);
+            }
+        });
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyPressed(evt);
             }
         });
         jPanel1.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, 190, 20));
@@ -205,6 +226,32 @@ public class TelaLogin extends javax.swing.JFrame {
         this.jLabel1.setForeground(new Color(153,153,255));
         this.jLabel2.setForeground(new Color(153,153,153));
     }//GEN-LAST:event_txtUsuarioFocusGained
+
+    
+    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
+      
+    }//GEN-LAST:event_jPanel1KeyPressed
+//logar clicando a tecla ENTER
+    private void txtSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSenhaKeyPressed
+           // chama o metodo logar
+        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+            logar();
+        }
+    }//GEN-LAST:event_txtSenhaKeyPressed
+//logar clicando a tecla ENTER
+    private void btnAcessarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnAcessarKeyPressed
+      // chama o metodo logar
+        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+            logar();
+        }
+    }//GEN-LAST:event_btnAcessarKeyPressed
+//logar clicando a tecla ENTER
+    private void txtUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyPressed
+        // chama o metodo logar
+        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+            logar();
+        }
+    }//GEN-LAST:event_txtUsuarioKeyPressed
 
     /**
      * @param args the command line arguments

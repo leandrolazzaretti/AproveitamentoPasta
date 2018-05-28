@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import net.proteanit.sql.DbUtils;
 import util.SoNumeros;
 
 /**
@@ -29,10 +27,9 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     /**
      * Creates new form TelaCadInsumos
      */
-    public TelaCadInsumo() {
+    public TelaCadInsumo() {      
         initComponents();
         this.conexao = ModuloConexao.conector();
-        addUMComboBox();
         this.txtCadInsCodigo.setDocument(new SoNumeros());
         this.txtCadInsPreco.setDocument(new SoNumeros());
         this.txtCadInsQuant.setDocument(new SoNumeros());
@@ -137,76 +134,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
-    //metodo para adicionar uma nova unidade de medida (UM)
-    private void addUM(String adicionar) {
-        String sql = "insert into tbUM(UM) values('" + adicionar + "')";
-
-        try {
-            this.pst = this.conexao.prepareStatement(sql);
-            int adicionado = this.pst.executeUpdate();
-            this.cbCadInsUm.addItem(adicionar);
-            this.cbCadInsUm.updateUI();
-            if (adicionado > 0) {
-                JOptionPane.showMessageDialog(null, "UM adicionada.");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            //System.out.println(e);
-        }
-    }
-
-    //metodo para remover uma unidade de medida(UM)
-    private void removerUM(String remover) {
-        String sql = "delete from tbUM where UM='" + remover + "'";
-
-        try {
-            this.pst = this.conexao.prepareStatement(sql);
-            int deletado = this.pst.executeUpdate();
-            if (deletado > 0) {
-                this.cbCadInsUm.removeItem(remover);
-                this.cbCadInsUm.updateUI();
-                JOptionPane.showMessageDialog(null, "UM apagada.");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            //System.out.println(e);
-        }
-
-    }
-
-    //Adiciona as UM do banco no combo box
-    private void addUMComboBox() {
-        String sql = "Select * from tbUM";
-        try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            while (this.rs.next()) {
-                this.cbCadInsUm.addItem(this.rs.getString(1));
-            }
-            this.cbCadInsUm.updateUI();
-        } catch (Exception e) {
-        }
-    }
-
-    //Confirma  se existe determinada UM no banco
-    private boolean confirmaUM(String uni) {
-        String sql = "select count (UM) as total from tbUM where UM ='" + uni + "';";
-        int total = 0;
-
-        try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            total = Integer.parseInt(this.rs.getString(1));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-        if (total > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -229,8 +156,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         cbCadInsUm = new javax.swing.JComboBox<>();
         btnCadInsLimpar = new javax.swing.JButton();
-        btnCadInsAddUm = new javax.swing.JButton();
-        btnCadInsRemoverUm = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         txtCadInsDes = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -282,6 +207,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jLabel1.setText("Código:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
 
+        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "g", "mg", "L" }));
         getContentPane().add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, 140, -1));
 
         btnCadInsLimpar.setText("Novo");
@@ -291,22 +217,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 330, 79, -1));
-
-        btnCadInsAddUm.setText("+");
-        btnCadInsAddUm.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadInsAddUmActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadInsAddUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 190, -1, -1));
-
-        btnCadInsRemoverUm.setText("-");
-        btnCadInsRemoverUm.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadInsRemoverUmActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadInsRemoverUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 190, -1, -1));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         jButton1.setToolTipText("Pesquisar");
@@ -347,40 +257,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         limparCampos();
     }//GEN-LAST:event_btnCadInsLimparActionPerformed
 
-    private void btnCadInsAddUmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAddUmActionPerformed
-        // chama o metodo adicionar UM
-        boolean confirma;
-        String adicionar = JOptionPane.showInputDialog("Digite uma nova UM:");
-        if (adicionar.equals("")) {
-            JOptionPane.showMessageDialog(null, "UM inválida");
-        } else {
-            confirma = confirmaUM(adicionar);
-            if (confirma == false) {
-                addUM(adicionar);
-            } else {
-                JOptionPane.showMessageDialog(null, "UM já existe.");
-            }
-        }
-    }//GEN-LAST:event_btnCadInsAddUmActionPerformed
-
-    private void btnCadInsRemoverUmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsRemoverUmActionPerformed
-        // chama o metodo remover UM
-        boolean confirma;
-        String remover = JOptionPane.showInputDialog("Digite uma UM para ser apagada:");
-        if (remover.equals("")) {
-            JOptionPane.showMessageDialog(null, "UM inválida");
-        } else {
-            confirma = confirmaUM(remover);
-            if (confirma == true) {
-                removerUM(remover);
-            } else {
-                JOptionPane.showMessageDialog(null, "UM inválida");
-            }
-        }
-
-
-    }//GEN-LAST:event_btnCadInsRemoverUmActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Chama a TelePesquisarInsumos
         TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
@@ -391,12 +267,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCadInsAddUm;
     private javax.swing.JButton btnCadInsAdicionar;
     private javax.swing.JButton btnCadInsAtualizar;
     private javax.swing.JButton btnCadInsDeletar;
     private javax.swing.JButton btnCadInsLimpar;
-    private javax.swing.JButton btnCadInsRemoverUm;
     public static javax.swing.JComboBox<String> cbCadInsUm;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

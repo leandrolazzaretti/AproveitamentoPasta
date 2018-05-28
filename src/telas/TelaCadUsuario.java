@@ -230,7 +230,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setTitle("Cadastro de Usuários");
         setMaximumSize(new java.awt.Dimension(417, 409));
         setPreferredSize(new java.awt.Dimension(420, 406));

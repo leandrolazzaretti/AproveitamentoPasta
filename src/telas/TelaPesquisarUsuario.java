@@ -40,7 +40,7 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
   
     // pesquizar/ carregar usuarios atraves da tabela
     public void pesquisarUsuario() {
-        String sql = "select * from tbusuarios where " + this.cbPesquisar + " like ?";
+        String sql = "select codigo, nome, login, perfil from tbusuarios where " + this.cbPesquisar + " like ?";
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblCadUsuario.getModel();
         modelo.setNumRows(0);
@@ -49,7 +49,7 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         this.tblCadUsuario.getColumnModel().getColumn(1).setPreferredWidth(80);
         this.tblCadUsuario.getColumnModel().getColumn(2).setPreferredWidth(40);
         this.tblCadUsuario.getColumnModel().getColumn(3).setPreferredWidth(40);
-        this.tblCadUsuario.getColumnModel().getColumn(4).setPreferredWidth(40);
+        
 
         try {
             this.pst = this.conexao.prepareStatement(sql);
@@ -61,8 +61,7 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
                     this.rs.getInt(1),
                     this.rs.getString(2),
                     this.rs.getString(3),
-                    this.rs.getString(4),
-                    this.rs.getString(5)});
+                    this.rs.getString(4)});
             }
 
         } catch (Exception e) {
@@ -76,7 +75,7 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         TelaCadUsuario.txtCadUsuId.setText(this.tblCadUsuario.getModel().getValueAt(setar, 0).toString());
         TelaCadUsuario.txtCadUsuNome.setText(this.tblCadUsuario.getModel().getValueAt(setar, 1).toString());
         TelaCadUsuario.txtCadUsuLogin.setText(this.tblCadUsuario.getModel().getValueAt(setar, 2).toString());
-        TelaCadUsuario.cbCadUsuPerfil.setSelectedItem(this.tblCadUsuario.getModel().getValueAt(setar, 4).toString());
+        TelaCadUsuario.cbCadUsuPerfil.setSelectedItem(this.tblCadUsuario.getModel().getValueAt(setar, 3).toString());
     }
 
     /**
@@ -104,11 +103,11 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Nome", "Login", "Senha", "Perfil"
+                "Código", "Nome", "Login", "Perfil"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

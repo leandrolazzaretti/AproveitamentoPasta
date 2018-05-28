@@ -126,6 +126,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         tbnEstoque.setForeground(new java.awt.Color(255, 255, 255));
         tbnEstoque.setText("Estoque");
         tbnEstoque.setContentAreaFilled(false);
+        tbnEstoque.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tbnEstoqueActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -276,6 +281,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menConEst.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
         menConEst.setText("Estoque");
+        menConEst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menConEstActionPerformed(evt);
+            }
+        });
         menControle.add(menConEst);
 
         menu.add(menControle);
@@ -340,6 +350,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama a TelaCadReceita
          comandoInternal(new TelaCadReceita());
     }//GEN-LAST:event_menCadRecActionPerformed
+
+    private void tbnEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnEstoqueActionPerformed
+        // chamat TelaEstoque
+        comandoInternal(new TelaEstoque());
+    }//GEN-LAST:event_tbnEstoqueActionPerformed
+
+    private void menConEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConEstActionPerformed
+         // chamat TelaEstoque
+        comandoInternal(new TelaEstoque());
+    }//GEN-LAST:event_menConEstActionPerformed
 
     /**
      * @param args the command line arguments

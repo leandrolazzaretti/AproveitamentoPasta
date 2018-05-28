@@ -30,7 +30,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         initComponents();
         
         this.conexao = ModuloConexao.conector();
-        pesquisarReceita();
+        pesquisarReceita();      
     }
 
     public void pesquisarReceita() {
@@ -73,6 +73,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaCadReceita.txtCadRecTipo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
     }
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -90,7 +91,6 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setToolTipText("Pesquisar Receita");
         setMaximumSize(null);
 
@@ -164,7 +164,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        setBounds(0, 0, 860, 367);
+        setBounds(0, 96, 860, 367);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblPesquisarReceitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesquisarReceitaMouseClicked

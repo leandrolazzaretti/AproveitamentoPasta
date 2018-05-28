@@ -33,39 +33,12 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
     public TelaPesquisarUsuario() {
         initComponents();
         this.conexao = ModuloConexao.conector();
-        carregarTabela();
+        pesquisarUsuario();
     }
 
-    //carregar tabela
-    private void carregarTabela() {
-        String sql = "select * from tbusuarios";
-
-        DefaultTableModel modelo = (DefaultTableModel) this.tblCadUsuario.getModel();
-        modelo.setNumRows(0);
-
-        this.tblCadUsuario.getColumnModel().getColumn(0).setPreferredWidth(20);
-        this.tblCadUsuario.getColumnModel().getColumn(1).setPreferredWidth(80);
-        this.tblCadUsuario.getColumnModel().getColumn(2).setPreferredWidth(40);
-        this.tblCadUsuario.getColumnModel().getColumn(3).setPreferredWidth(40);
-        this.tblCadUsuario.getColumnModel().getColumn(4).setPreferredWidth(40);
-
-        try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-
-            while (this.rs.next()) {
-                modelo.addRow(new Object[]{
-                    this.rs.getInt(1),
-                    this.rs.getString(2),
-                    this.rs.getString(3),
-                    this.rs.getString(4),
-                    this.rs.getString(5)});
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-
+    
+  
+    // pesquizar/ carregar usuarios atraves da tabela
     public void pesquisarUsuario() {
         String sql = "select * from tbusuarios where " + this.cbPesquisar + " like ?";
 
@@ -123,7 +96,6 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setTitle("Tabela de Usuários");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 

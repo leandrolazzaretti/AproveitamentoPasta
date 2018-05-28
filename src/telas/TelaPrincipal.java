@@ -29,6 +29,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         this.Desktop.add(frame);
         frame.setVisible(true);
+        
     }
 
     /**

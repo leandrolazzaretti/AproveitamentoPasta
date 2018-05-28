@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
+import util.SoNumeros;
 
 /**
  *
@@ -32,7 +33,9 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         addUMComboBox();
-        carregarTabela();
+        this.txtCadInsCodigo.setDocument(new SoNumeros());
+        this.txtCadInsPreco.setDocument(new SoNumeros());
+        this.txtCadInsQuant.setDocument(new SoNumeros());
     }
 
     private void limparCampos() {
@@ -54,8 +57,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             this.pst.setString(1, this.txtCadInsCodigo.getText());
             this.pst.setString(2, this.txtCadInsDes.getText());
             this.pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
-            this.pst.setString(4, this.txtCadInsQuant.getText());
-            this.pst.setString(5, this.txtCadInsPreco.getText());
+            this.pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
+            this.pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
 
             //Validação dos campos obirgatórios
             if ((this.txtCadInsCodigo.getText().isEmpty()) || (this.txtCadInsDes.getText().isEmpty()) || (this.txtCadInsQuant.getText().isEmpty()) || (this.txtCadInsPreco.getText().isEmpty())) {
@@ -77,31 +80,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
-    public void pesquisarInsumos() {
-        String sql = "select * from tbinsumos where " + this.cbPesquisar + "like ?";
-
-        try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadInsPesquisar.getText() + "%");
-            this.rs = this.pst.executeQuery();
-            //Preencher a tabela usando a bibliotéca rs2xml.jar
-            this.tblCadInsumos.setModel(DbUtils.resultSetToTableModel(this.rs));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-
-    //seta os campos do formulário com o coteúdo da tabela
-    private void setarCampos() {
-        int setar = this.tblCadInsumos.getSelectedRow();
-        this.txtCadInsCodigo.setEnabled(false);
-        this.txtCadInsCodigo.setText(this.tblCadInsumos.getModel().getValueAt(setar, 0).toString());
-        this.txtCadInsDes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
-        this.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
-        this.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString());
-        this.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString());
-    }
-
     public void atualizarInsumos() {
         String sql = "update tbinsumos set descricao=?, UM=?, quantidade=?, preco=? where codigo=?";
 
@@ -109,8 +87,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtCadInsDes.getText());
             this.pst.setString(2, this.cbCadInsUm.getSelectedItem().toString());
-            this.pst.setString(3, this.txtCadInsQuant.getText());
-            this.pst.setString(4, this.txtCadInsPreco.getText());
+            this.pst.setString(3, this.txtCadInsQuant.getText().replace(",", "."));
+            this.pst.setString(4, this.txtCadInsPreco.getText().replace(",", "."));
             this.pst.setString(5, this.txtCadInsCodigo.getText());
 
             //Validação dos campos obirgatórios
@@ -160,56 +138,43 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }
 
     //metodo para adicionar uma nova unidade de medida (UM)
-    private void addUM() {
-        String adicionar = JOptionPane.showInputDialog("Digite uma nova UM:");
-        if (adicionar.equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite uma UM válida.");
-        } else {
-            String sql = "insert into tbUM(UM) values('" + adicionar + "')";
+    private void addUM(String adicionar) {
+        String sql = "insert into tbUM(UM) values('" + adicionar + "')";
 
-            try {
-                this.pst = this.conexao.prepareStatement(sql);
-                int adicionado = this.pst.executeUpdate();
-                this.cbCadInsUm.addItem(adicionar);
-                this.cbCadInsUm.updateUI();
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "UM adicionada.");
-                }
-            } catch (java.sql.SQLException e2) {
-                JOptionPane.showMessageDialog(null, "UM já existe.");
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-                //System.out.println(e);
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            int adicionado = this.pst.executeUpdate();
+            this.cbCadInsUm.addItem(adicionar);
+            this.cbCadInsUm.updateUI();
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "UM adicionada.");
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            //System.out.println(e);
         }
     }
 
-    //metodo para remover uma nova unidade de medida (UM)
-    private void removerUM() {
-        String adicionar = JOptionPane.showInputDialog("Digite uma UM para ser apagada:");
-
-        String sql = "delete from tbUM where UM='" + adicionar + "'";
+    //metodo para remover uma unidade de medida(UM)
+    private void removerUM(String remover) {
+        String sql = "delete from tbUM where UM='" + remover + "'";
 
         try {
             this.pst = this.conexao.prepareStatement(sql);
             int deletado = this.pst.executeUpdate();
             if (deletado > 0) {
-                this.cbCadInsUm.removeItem(adicionar);
+                this.cbCadInsUm.removeItem(remover);
                 this.cbCadInsUm.updateUI();
                 JOptionPane.showMessageDialog(null, "UM apagada.");
-
-            } else {
-                JOptionPane.showMessageDialog(null, "UM inválida.");
             }
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
-            System.out.println(e);
+            //System.out.println(e);
         }
+
     }
 
-    //Adiciona as UM do bando no combo box
+    //Adiciona as UM do banco no combo box
     private void addUMComboBox() {
         String sql = "Select * from tbUM";
         try {
@@ -223,32 +188,22 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
-    private void carregarTabela() {
-        String sql = "select * from tbinsumos";
-
-        DefaultTableModel modelo = (DefaultTableModel) this.tblCadInsumos.getModel();
-        modelo.setNumRows(0);
-
-        this.tblCadInsumos.getColumnModel().getColumn(0).setPreferredWidth(20);
-        this.tblCadInsumos.getColumnModel().getColumn(1).setPreferredWidth(80);
-        this.tblCadInsumos.getColumnModel().getColumn(2).setPreferredWidth(40);
-        this.tblCadInsumos.getColumnModel().getColumn(3).setPreferredWidth(40);
-        this.tblCadInsumos.getColumnModel().getColumn(4).setPreferredWidth(40);
+    //Confirma  se existe determinada UM no banco
+    private boolean confirmaUM(String uni) {
+        String sql = "select count (UM) as total from tbUM where UM ='" + uni + "';";
+        int total = 0;
 
         try {
             this.pst = this.conexao.prepareStatement(sql);
             this.rs = this.pst.executeQuery();
-
-            while (this.rs.next()) {
-                modelo.addRow(new Object[]{
-                    this.rs.getInt(1),
-                    this.rs.getString(2),
-                    this.rs.getString(3),
-                    this.rs.getDouble(4),
-                    this.rs.getDouble(5)});
-            }
+            total = Integer.parseInt(this.rs.getString(1));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+        if (total > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -261,20 +216,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblCadInsumos = new javax.swing.JTable();
-        jLabel6 = new javax.swing.JLabel();
-        txtCadInsPesquisar = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jPanel3 = new javax.swing.JPanel();
         txtCadInsPreco = new javax.swing.JTextField();
         btnCadInsAdicionar = new javax.swing.JButton();
         txtCadInsCodigo = new javax.swing.JTextField();
         btnCadInsAtualizar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         btnCadInsDeletar = new javax.swing.JButton();
-        txtCadInsDes = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtCadInsQuant = new javax.swing.JTextField();
@@ -284,93 +231,24 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         btnCadInsLimpar = new javax.swing.JButton();
         btnCadInsAddUm = new javax.swing.JButton();
         btnCadInsRemoverUm = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        txtCadInsDes = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setTitle("Cadastro de Insumos");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 270, -1));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        tblCadInsumos.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        tblCadInsumos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Código", "Descrição", "UM", "Quantidade", "Preço"
-            }
-        ));
-        tblCadInsumos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblCadInsumosMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tblCadInsumos);
-
-        jLabel6.setText("Código");
-
-        txtCadInsPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCadInsPesquisarKeyReleased(evt);
-            }
-        });
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Descrição", "UM", "Quantidade", "Preço" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(txtCadInsPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addComponent(txtCadInsPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 241, -1, -1));
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        btnCadInsAdicionar.setText("Adicionar");
+        btnCadInsAdicionar.setText("Salvar");
         btnCadInsAdicionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadInsAdicionarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 330, 79, -1));
+        getContentPane().add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 140, -1));
 
         btnCadInsAtualizar.setText("Atualizar");
         btnCadInsAtualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -378,8 +256,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsAtualizarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCadInsAtualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 330, 79, -1));
 
-        jLabel2.setText("Descrição");
+        jLabel2.setText("Descrição:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, -1, -1));
 
         btnCadInsDeletar.setText("Deletar");
         btnCadInsDeletar.addActionListener(new java.awt.event.ActionListener() {
@@ -387,21 +267,30 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsDeletarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 330, 79, -1));
 
-        jLabel3.setText("Unidade de Medida (UM)");
+        jLabel3.setText("Unidade de Medida (UM):");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, -1, -1));
 
-        jLabel4.setText("Quantidade");
+        jLabel4.setText("Quantidade:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, -1, -1));
+        getContentPane().add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 270, -1));
 
-        jLabel5.setText("Preço");
+        jLabel5.setText("Preço:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, -1, -1));
 
-        jLabel1.setText("Código");
+        jLabel1.setText("Código:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
 
-        btnCadInsLimpar.setText("Limpar");
+        getContentPane().add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, 140, -1));
+
+        btnCadInsLimpar.setText("Novo");
         btnCadInsLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadInsLimparActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 330, 79, -1));
 
         btnCadInsAddUm.setText("+");
         btnCadInsAddUm.addActionListener(new java.awt.event.ActionListener() {
@@ -409,6 +298,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsAddUmActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCadInsAddUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 190, -1, -1));
 
         btnCadInsRemoverUm.setText("-");
         btnCadInsRemoverUm.addActionListener(new java.awt.event.ActionListener() {
@@ -416,112 +306,31 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsRemoverUmActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCadInsRemoverUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 190, -1, -1));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(txtCadInsCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addComponent(txtCadInsDes))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(160, 160, 160)
-                                .addComponent(jLabel2)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cbCadInsUm, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCadInsAddUm)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCadInsRemoverUm)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(txtCadInsQuant, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(txtCadInsPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel4))))
-                .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addComponent(btnCadInsAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnCadInsAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnCadInsDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnCadInsLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtCadInsDes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtCadInsQuant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCadInsPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtCadInsCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbCadInsUm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnCadInsAddUm)
-                            .addComponent(btnCadInsRemoverUm))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCadInsAdicionar)
-                    .addComponent(btnCadInsAtualizar)
-                    .addComponent(btnCadInsDeletar)
-                    .addComponent(btnCadInsLimpar))
-                .addGap(27, 27, 27))
-        );
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
+        jButton1.setToolTipText("Pesquisar");
+        jButton1.setContentAreaFilled(false);
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 100, 30, 30));
+        getContentPane().add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 150, 270, -1));
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel6.setText("Cadastro de Insumos");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
 
-        setBounds(0, 0, 860, 560);
+        setBounds(148, 72, 564, 416);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadInsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarActionPerformed
         // chama o metodo adicionar
         adicionarInsumos();
     }//GEN-LAST:event_btnCadInsAdicionarActionPerformed
-
-    // evento do tipo "enquanto digita"
-    private void txtCadInsPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadInsPesquisarKeyReleased
-        // chama o metodo pesquisar
-        pesquisarInsumos();
-    }//GEN-LAST:event_txtCadInsPesquisarKeyReleased
-    //evento do tipo "clicar com o mouse"
-    private void tblCadInsumosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadInsumosMouseClicked
-        // chama o metodo setarCampos
-        setarCampos();
-    }//GEN-LAST:event_tblCadInsumosMouseClicked
 
     private void btnCadInsAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAtualizarActionPerformed
         // chama o metodo atualizar
@@ -540,34 +349,45 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnCadInsAddUmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAddUmActionPerformed
         // chama o metodo adicionar UM
-        addUM();
+        boolean confirma;
+        String adicionar = JOptionPane.showInputDialog("Digite uma nova UM:");
+        if (adicionar.equals("")) {
+            JOptionPane.showMessageDialog(null, "UM inválida");
+        } else {
+            confirma = confirmaUM(adicionar);
+            if (confirma == false) {
+                addUM(adicionar);
+            } else {
+                JOptionPane.showMessageDialog(null, "UM já existe.");
+            }
+        }
     }//GEN-LAST:event_btnCadInsAddUmActionPerformed
 
     private void btnCadInsRemoverUmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsRemoverUmActionPerformed
         // chama o metodo remover UM
-        removerUM();
-    }//GEN-LAST:event_btnCadInsRemoverUmActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-       // adiciona um valor a variável cbPesquizar
-        if (this.cbCadInsUm.getSelectedItem().equals("Código")) {
-            this.cbPesquisar = "codigo";
+        boolean confirma;
+        String remover = JOptionPane.showInputDialog("Digite uma UM para ser apagada:");
+        if (remover.equals("")) {
+            JOptionPane.showMessageDialog(null, "UM inválida");
         } else {
-            if (this.cbCadInsUm.getSelectedItem().equals("Descrição")) {
-                this.cbPesquisar = "descricao";
+            confirma = confirmaUM(remover);
+            if (confirma == true) {
+                removerUM(remover);
             } else {
-                if (this.cbCadInsUm.getSelectedItem().equals("UM")) {
-                    this.cbPesquisar = "UM";
-                } else{
-                    if (this.cbCadInsUm.getSelectedItem().equals("Quantidade")) {
-                        this.cbPesquisar = "quantidade";
-                    } else{
-                        this.cbPesquisar = "preco";
-                    }
-                }
+                JOptionPane.showMessageDialog(null, "UM inválida");
             }
         }
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+
+    }//GEN-LAST:event_btnCadInsRemoverUmActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //Chama a TelePesquisarInsumos
+        TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
+        TelaPrincipal.Desktop.add(insumos);
+        insumos.setVisible(true);
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -577,22 +397,17 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCadInsDeletar;
     private javax.swing.JButton btnCadInsLimpar;
     private javax.swing.JButton btnCadInsRemoverUm;
-    private javax.swing.JComboBox<String> cbCadInsUm;
-    private javax.swing.JComboBox<String> jComboBox1;
+    public static javax.swing.JComboBox<String> cbCadInsUm;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblCadInsumos;
-    private javax.swing.JTextField txtCadInsCodigo;
-    private javax.swing.JTextField txtCadInsDes;
-    private javax.swing.JTextField txtCadInsPesquisar;
-    private javax.swing.JTextField txtCadInsPreco;
-    private javax.swing.JTextField txtCadInsQuant;
+    public static javax.swing.JTextField txtCadInsCodigo;
+    public static javax.swing.JTextField txtCadInsDes;
+    public static javax.swing.JTextField txtCadInsPreco;
+    public static javax.swing.JTextField txtCadInsQuant;
     // End of variables declaration//GEN-END:variables
 }

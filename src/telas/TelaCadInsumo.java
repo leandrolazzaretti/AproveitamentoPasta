@@ -27,7 +27,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     /**
      * Creates new form TelaCadInsumos
      */
-    public TelaCadInsumo() {      
+    public TelaCadInsumo() {
         initComponents();
         this.conexao = ModuloConexao.conector();
         this.txtCadInsCodigo.setDocument(new SoNumeros());
@@ -56,20 +56,14 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             this.pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
             this.pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
             this.pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
-
-            //Validação dos campos obirgatórios
-            if ((this.txtCadInsCodigo.getText().isEmpty()) || (this.txtCadInsDes.getText().isEmpty()) || (this.txtCadInsQuant.getText().isEmpty()) || (this.txtCadInsPreco.getText().isEmpty())) {
-                JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-            } else {
-                //Atualiza a tabela insumos
-                int adicionado = this.pst.executeUpdate();
-                //Linha abaixo serve de apoio
-                //System.out.println(adicionado);
-                //confirma se realmente foi atualizada
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "Insumo cadastrado com sucesso!");
-                    limparCampos();
-                }
+            //Atualiza a tabela insumos
+            int adicionado = this.pst.executeUpdate();
+            //Linha abaixo serve de apoio
+            //System.out.println(adicionado);
+            //confirma se realmente foi atualizada
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Insumo cadastrado com sucesso!");
+                limparCampos();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -87,22 +81,15 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             this.pst.setString(3, this.txtCadInsQuant.getText().replace(",", "."));
             this.pst.setString(4, this.txtCadInsPreco.getText().replace(",", "."));
             this.pst.setString(5, this.txtCadInsCodigo.getText());
-
-            //Validação dos campos obirgatórios
-            if ((this.txtCadInsCodigo.getText().isEmpty()) || (this.txtCadInsQuant.getText().isEmpty()) || (this.txtCadInsPreco.getText().isEmpty())) {
-                JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-            } else {
-                //Atualiza a tabela insumos
-                int adicionado = this.pst.executeUpdate();
-                //Linha abaixo serve de apoio
-                //System.out.println(adicionado);
-                //confirma se realmente foi atualizada
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, "Insumo Atualizado com sucesso!");
-                    limparCampos();
-                }
+            //Atualiza a tabela insumos
+            int adicionado = this.pst.executeUpdate();
+            //Linha abaixo serve de apoio
+            //System.out.println(adicionado);
+            //confirma se realmente foi atualizada
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Insumo Atualizado com sucesso!");
+                limparCampos();
             }
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -131,6 +118,35 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, e);
                 }
             }
+        }
+    }
+
+    //confirma se o codigo já existe
+    private boolean confirmaCodigo(String codigo) {
+        String sql = "select count (codigo) as total from tbinsumos where codigo ='" + codigo + "';";
+        int total = 0;
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.rs = this.pst.executeQuery();
+            total = Integer.parseInt(this.rs.getString(1));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        if (total > 0) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    // confirma se os campos estão setados
+    private boolean verificaCampos() {
+        if ((this.txtCadInsCodigo.getText().isEmpty()) || (this.txtCadInsDes.getText().isEmpty()) || (this.txtCadInsPreco.getText().isEmpty()) || (this.txtCadInsQuant.getText().isEmpty())) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -239,12 +255,41 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnCadInsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarActionPerformed
         // chama o metodo adicionar
-        adicionarInsumos();
+        boolean total;
+        boolean campos;
+        // verifica os campos
+        campos = verificaCampos();
+        if (campos == false) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+        } else {
+            //chama o metodo para confirmar se o codigo já existe
+            total = confirmaCodigo(this.txtCadInsCodigo.getText());
+            if (total == false) {
+                JOptionPane.showMessageDialog(null, "Código já existe.");
+            } else {
+                adicionarInsumos();
+            }
+
+        }
     }//GEN-LAST:event_btnCadInsAdicionarActionPerformed
 
     private void btnCadInsAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAtualizarActionPerformed
-        // chama o metodo atualizar
-        atualizarInsumos();
+        // cahama o metodo atualizar
+        boolean total;
+        boolean campos;
+        // verifica os campos
+        campos = verificaCampos();
+        if (campos == false) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+        } else {
+            total = confirmaCodigo(this.txtCadInsCodigo.getText());
+            if (total == true) {
+                JOptionPane.showMessageDialog(null, "Código inválido.");
+            } else {
+                atualizarInsumos();
+            }
+        }
+
     }//GEN-LAST:event_btnCadInsAtualizarActionPerformed
 
     private void btnCadInsDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsDeletarActionPerformed
@@ -262,6 +307,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
         TelaPrincipal.Desktop.add(insumos);
         insumos.setVisible(true);
+        insumos.confimaTela = true;
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

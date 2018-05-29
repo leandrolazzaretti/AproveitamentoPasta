@@ -27,7 +27,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     UsuarioDao lista = new UsuarioDao();
     private int index = -1;
-    private int codigo; 
+    private int codigo;
 
     /**
      * Creates new form TelaCadUsuario
@@ -37,8 +37,8 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
         this.conexao = ModuloConexao.conector();
         //this.txtCadUsuId.setDocument(new SoNumeros());
-    
-        setarCodigo();       
+
+        setarCodigo();
     }
 
     // adiciona um novo usuario
@@ -133,7 +133,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         }
     }
 
-    //confirma se o metodo já existe
+    //confirma se o login já existe
     private boolean confirmaLogin(String login) {
         String sql = "select count (login) as total from tbusuarios where login ='" + login + "';";
         int total = 0;
@@ -145,12 +145,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        if(total > 0){
+        if (total > 0) {
             return false;
-        }else{
+        } else {
             return true;
         }
-        
+
     }
 
     //seta os campos através da lista
@@ -193,8 +193,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         this.index = -1;
         setarCodigo();
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -424,8 +422,8 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void btnAtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtuActionPerformed
         // chama o metodo atualizar
+        boolean total;
         boolean campos;
-
         //verifica os campos
         campos = verificaCampos();
         if (campos == false) {
@@ -491,5 +489,4 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     public static javax.swing.JPasswordField txtCadUsuSenha;
     // End of variables declaration//GEN-END:variables
 
-    
 }

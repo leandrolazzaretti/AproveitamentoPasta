@@ -23,6 +23,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     ResultSet rs = null;
 
     private String cbPesquisar = "codigo";
+    public boolean confimaTela;
 
     /**
      * Creates new form TelaPesquisarInsumos
@@ -33,7 +34,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         this.conexao = ModuloConexao.conector();
         pesquisarInsumos();
     }
-     
+
     public void pesquisarInsumos() {
         String sql = "select * from tbinsumos where " + this.cbPesquisar + " like ?";
 
@@ -74,6 +75,12 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
         TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString().replace(".", ","));
         TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace(".", ","));
+    }
+
+    //seta os campos do formulário com o coteúdo da tabela
+    private void setarCamposTbReceita() {
+        int setar = this.tblCadInsumos.getSelectedRow();
+        TelaCadReceita.txtCadRecComponentes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
     }
 
     /**
@@ -151,8 +158,13 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         // seta os campos do formulário através da tabela
         //TelaCadUsuario.
         if (evt.getClickCount() > 1) {
-            setarCampos();
-            this.dispose();
+            if (this.confimaTela == true) {
+                setarCampos();
+                this.dispose();
+            }else {
+                setarCamposTbReceita();
+                this.dispose();
+            }
         }
 
     }//GEN-LAST:event_tblCadInsumosMouseClicked

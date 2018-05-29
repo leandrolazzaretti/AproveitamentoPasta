@@ -23,27 +23,27 @@ public class TelaLogin extends javax.swing.JFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
-    public void logar(){
+
+    public void logar() {
         String sql = "select * from tbusuarios where login=? and senha=?";
-        
+
         try {
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtUsuario.getText());
             this.pst.setString(2, HashUtil.stringMD5(this.txtSenha.getText()));
             this.rs = this.pst.executeQuery();
-            
+
             if (this.rs.next()) {
                 String perfil = rs.getString(5);
 
                 //a estrutura abaixo faz o tratamento do perfil do usuário
                 if (perfil.equals("Administrador")) {
                     TelaPrincipal principal = new TelaPrincipal();
-                    principal.setVisible(true);                   
-                    TelaPrincipal.lblUsuario.setText(rs.getString(5));                                  
-                    this.dispose();  
-                    
-                }else{
+                    principal.setVisible(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(5));
+                    this.dispose();
+
+                } else {
                     TelaPrincipal principal = new TelaPrincipal();
                     principal.setVisible(true);
                     TelaPrincipal.menCadUsu.setEnabled(false);
@@ -52,28 +52,29 @@ public class TelaLogin extends javax.swing.JFrame {
                     TelaPrincipal.lblUsuario.setText(rs.getString(5));
                     this.dispose();
                 }
-                
-            }else{
+
+            } else {
                 JOptionPane.showMessageDialog(null, "Usuário e/ou senha inválido(s)!");
             }
-            
-        } catch(java.lang.NullPointerException e){
+
+        } catch (java.lang.NullPointerException e) {
             JOptionPane.showMessageDialog(null, "Usuário e/ou senha inválido(s)!");
         } catch (Exception e1) {
             JOptionPane.showMessageDialog(null, e1);
             //System.out.println(e1);
         }
     }
+
     /**
      * Creates new form TelaLogin
      */
     public TelaLogin() {
         initComponents();
-        this.conexao = ModuloConexao.conector();  
+        this.conexao = ModuloConexao.conector();
         if (this.conexao != null) {
             System.out.println("Conectado!");
         } else {
-           System.out.println("Desconectado!");
+            System.out.println("Desconectado!");
         }
     }
 
@@ -218,38 +219,38 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void txtSenhaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSenhaFocusGained
         // muda cor da lblSenha
-        this.jLabel2.setForeground(new Color(153,153,255));
-        this.jLabel1.setForeground(new Color(153,153,153));
+        this.jLabel2.setForeground(new Color(153, 153, 255));
+        this.jLabel1.setForeground(new Color(153, 153, 153));
     }//GEN-LAST:event_txtSenhaFocusGained
 
     private void txtUsuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUsuarioFocusGained
         // muda cor da lblusuario
-        this.jLabel1.setForeground(new Color(153,153,255));
-        this.jLabel2.setForeground(new Color(153,153,153));
+        this.jLabel1.setForeground(new Color(153, 153, 255));
+        this.jLabel2.setForeground(new Color(153, 153, 153));
     }//GEN-LAST:event_txtUsuarioFocusGained
 
-    
+
     private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
-      
+
     }//GEN-LAST:event_jPanel1KeyPressed
 //logar clicando a tecla ENTER
     private void txtSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSenhaKeyPressed
-           // chama o metodo logar
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+        // chama o metodo logar
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             logar();
         }
     }//GEN-LAST:event_txtSenhaKeyPressed
 //logar clicando a tecla ENTER
     private void btnAcessarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnAcessarKeyPressed
-      // chama o metodo logar
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+        // chama o metodo logar
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             logar();
         }
     }//GEN-LAST:event_btnAcessarKeyPressed
 //logar clicando a tecla ENTER
     private void txtUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyPressed
         // chama o metodo logar
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             logar();
         }
     }//GEN-LAST:event_txtUsuarioKeyPressed

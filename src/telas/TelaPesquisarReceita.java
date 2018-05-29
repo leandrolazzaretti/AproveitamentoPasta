@@ -91,7 +91,8 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setToolTipText("Pesquisar Receita");
+        setTitle("Pesquisar Receita");
+        setToolTipText("");
         setMaximumSize(null);
 
         jLabel6.setText("Pesquisar por:");

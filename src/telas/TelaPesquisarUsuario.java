@@ -72,6 +72,7 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
      private void setarCampos() {
         int setar = this.tblCadUsuario.getSelectedRow();
         TelaCadUsuario.txtCadUsuId.setEnabled(false);
+        TelaCadUsuario.txtCadUsuLogin.setEnabled(false);
         TelaCadUsuario.txtCadUsuId.setText(this.tblCadUsuario.getModel().getValueAt(setar, 0).toString());
         TelaCadUsuario.txtCadUsuNome.setText(this.tblCadUsuario.getModel().getValueAt(setar, 1).toString());
         TelaCadUsuario.txtCadUsuLogin.setText(this.tblCadUsuario.getModel().getValueAt(setar, 2).toString());

@@ -11,10 +11,13 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
 
 /**
@@ -27,7 +30,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
-    boolean mascara;
+    
     /**
      * Creates new form TelaCadReceita
      */
@@ -39,6 +42,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecConsumo.setDocument(new SoNumeros());
         this.tblCadRecComponentes.getColumnModel().getColumn(1).setPreferredWidth(20);
         popupTabela();
+        mascaraConsu();
         
     }
 
@@ -50,7 +54,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecTipo.setText(null);
         this.txtCadRecVal.setText(null);
         this.txtCadRecComponentes.setText(null);
-        this.txtCadRecConsumo.setText(null);
+        this.txtCadRecConsumo.setValue(null);
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
 
     }
@@ -212,11 +216,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             return true;
         }
     }
-
-    private void mascaraNumero(){
-        this.mascara = true;
-        this.txtCadRecConsumo.setText(",00");
+    //mascara para o campo Consumo(foramato de moeda)
+    private void mascaraConsu(){
+        DecimalFormat dFormat = new DecimalFormat("###.00") ;
+        NumberFormatter formatter = new NumberFormatter(dFormat) ;
+        formatter.setFormat(dFormat) ;
+        formatter.setAllowsInvalid(false) ; 
+        
+        this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
+   
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -251,7 +260,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         btnInsumoPesquisar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        txtCadRecConsumo = new javax.swing.JTextField();
+        txtCadRecConsumo = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -376,20 +385,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 37, 30, -1));
-
-        txtCadRecConsumo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCadRecConsumoActionPerformed(evt);
-            }
-        });
-        txtCadRecConsumo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCadRecConsumoKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCadRecConsumoKeyTyped(evt);
-            }
-        });
         jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 110, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 820, 360));
@@ -479,20 +474,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_tblCadRecComponentesMouseReleased
 
-    private void txtCadRecConsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCadRecConsumoActionPerformed
-       // mascaraNumero();
-    }//GEN-LAST:event_txtCadRecConsumoActionPerformed
-
-    private void txtCadRecConsumoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecConsumoKeyReleased
-        if (this.mascara != true) {
-        mascaraNumero();         
-        } 
-    }//GEN-LAST:event_txtCadRecConsumoKeyReleased
-
-    private void txtCadRecConsumoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecConsumoKeyTyped
-        //mascaraNumero();
-    }//GEN-LAST:event_txtCadRecConsumoKeyTyped
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadRecAdicionar;
@@ -515,7 +496,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tblCadRecComponentes;
     public static javax.swing.JTextField txtCadRecCodigo;
     public static javax.swing.JTextField txtCadRecComponentes;
-    private javax.swing.JTextField txtCadRecConsumo;
+    public static javax.swing.JFormattedTextField txtCadRecConsumo;
     public static javax.swing.JTextField txtCadRecDes;
     public static javax.swing.JTextField txtCadRecPan;
     public static javax.swing.JTextField txtCadRecTipo;

@@ -180,6 +180,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     //limpa todos os campos da tela
     private void limparCampos() {
         this.txtCadUsuId.setEnabled(true);
+        this.txtCadUsuLogin.setEnabled(true);
         this.txtCadUsuId.setText(null);
         this.txtCadUsuNome.setText(null);
         this.txtCadUsuLogin.setText(null);

@@ -23,18 +23,22 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     ResultSet rs = null;
 
     private String cbPesquisar = "codigorec";
+
     /**
      * Creates new form TelaPesquisarReceita
      */
     public TelaPesquisarReceita() {
         initComponents();
-        
+
         this.conexao = ModuloConexao.conector();
-        pesquisarReceita();      
+        pesquisarReceita();
     }
 
     public void pesquisarReceita() {
-        String sql = "select * from tbreceita where " + this.cbPesquisar + " like ?";
+        String sql = "select r.codigorec, r.descricao, r.pantone, t.descricao, r.datavencimento "
+                + "from tbreceita as r "
+                + "inner join tbTipoPasta as t on r.codigoTipoPasta = t.codigo "
+                + "where " + this.cbPesquisar + " like ?";
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblPesquisarReceita.getModel();
         modelo.setNumRows(0);
@@ -63,17 +67,18 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-     private void setarCampos() {
+
+    //pantone datavencimento
+    private void setarCampos() {
         int setar = this.tblPesquisarReceita.getSelectedRow();
         TelaCadReceita.txtCadRecCodigo.setEnabled(false);
         TelaCadReceita.txtCadRecCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
         TelaCadReceita.txtCadRecDes.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 1).toString());
         TelaCadReceita.txtCadRecPan.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 2).toString());
-        TelaCadReceita.txtCadRecTipo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
+        TelaCadReceita.cbCadReceitaTipo.setSelectedItem(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
     }
- 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -183,20 +188,20 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtPesquisarReceitaKeyReleased
 
     private void cbPesquisarReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPesquisarReceitaActionPerformed
-         // adiciona um valor a variável cbPesquizar
+        // adiciona um valor a variável cbPesquizar
         if (this.cbPesquisarReceita.getSelectedItem().equals("Código")) {
-            this.cbPesquisar = "codigorec";
+            this.cbPesquisar = "r.codigorec";
         } else {
             if (this.cbPesquisarReceita.getSelectedItem().equals("Descrição")) {
-                this.cbPesquisar = "descricao";
+                this.cbPesquisar = "r.descricao";
             } else {
                 if (this.cbPesquisarReceita.getSelectedItem().equals("Pantone")) {
-                    this.cbPesquisar = "pantone";
+                    this.cbPesquisar = "r.pantone";
                 } else {
                     if (this.cbPesquisarReceita.getSelectedItem().equals("Tipo")) {
-                        this.cbPesquisar = "tipodepasta";
+                        this.cbPesquisar = "t.descricao";
                     } else {
-                        this.cbPesquisar = "datavencimento";
+                        this.cbPesquisar = "r.datavencimento";
                     }
                 }
             }

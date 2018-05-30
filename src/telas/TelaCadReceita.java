@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -29,8 +30,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
+    public int codigoTipo;
 
-    
     /**
      * Creates new form TelaCadReceita
      */
@@ -43,7 +44,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.tblCadRecComponentes.getColumnModel().getColumn(1).setPreferredWidth(20);
         popupTabela();
         mascaraConsu();
-        
+        setarComboBox();
+        AutoCompleteDecorator.decorate(cbCadReceitaTipo);
+        this.cbCadReceitaTipo.setSelectedItem(null);
     }
 
     private void limparCampos() {
@@ -51,24 +54,40 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecCodigo.setText(null);
         this.txtCadRecDes.setText(null);
         this.txtCadRecPan.setText(null);
-        this.txtCadRecTipo.setText(null);
         this.txtCadRecVal.setText(null);
         this.txtCadRecComponentes.setText(null);
         this.txtCadRecConsumo.setValue(null);
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
+        this.cbCadReceitaTipo.setSelectedItem(null);
 
     }
 
-    public void adicionarReceita() {
+    //busca o código do tipo de pasta atraves do da descrição
+    private int buscaCodTipoPasta() {
+        int codigo = 0;
+        String sql = "select codigo from tbTipoPasta where descricao=?";
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
+            this.rs = this.pst.executeQuery();
+            if (this.rs.next()) {
+                codigo = this.rs.getInt(1);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return codigo;
+    }
 
-        String sql = "insert into tbreceita(codigorec,descricao,pantone,tipodepasta,datavencimento) values(?,?,?,?,?)";
+    public void adicionarReceita() {
+        String sql = "insert into tbreceita(codigorec,descricao,pantone,codigoTipoPasta,datavencimento) values(?,?,?,?,?)";
 
         try {
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtCadRecCodigo.getText());
             this.pst.setString(2, this.txtCadRecDes.getText());
             this.pst.setString(3, this.txtCadRecPan.getText());
-            this.pst.setString(4, this.txtCadRecTipo.getText());
+            this.pst.setInt(4, this.codigoTipo);
             this.pst.setString(5, this.txtCadRecVal.getText());
             //Atualiza a tabela receita
             int adicionado = this.pst.executeUpdate();
@@ -85,7 +104,25 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             //System.out.println(e);
         }
     }
+    
+//    //Adiciona na tabela de relacionamento tbReceitaInsumo os itens adicionados na tabela 
+//     public void adicionarReceitaInsumo() {
+//        String sql = "insert into tbReceitaInsumo (codigoReceita, codigoInsumo, consumo) values(?,?,?)";
+//
+//        try {
+//            this.pst = this.conexao.prepareStatement(sql);
+//            for(int x = 0; x < this.tblCadRecComponentes.getRowCount();x++){
+//                
+//            }
+//            //Atualiza a tabela receita
+//            this.pst.executeUpdate();
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e);
+//            //System.out.println(e);
+//        }
+//    }
 
+     
     public void atualizarReceita() {
         String sql = "update tbreceita set descricao=?, pantone=?, tipodepasta=?, datavencimento=? where codigorec=?";
 
@@ -93,7 +130,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             this.pst = this.conexao.prepareStatement(sql);
             this.pst.setString(1, this.txtCadRecDes.getText());
             this.pst.setString(2, this.txtCadRecPan.getText());
-            this.pst.setString(3, this.txtCadRecTipo.getText());
+            this.pst.setInt(3, this.codigoTipo);
             this.pst.setString(4, this.txtCadRecVal.getText());
             this.pst.setString(5, this.txtCadRecCodigo.getText());
             //Atualiza a tabela Receita
@@ -137,22 +174,78 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }
 
-//    private void setarComboBox() {
-//        String sql = "select descricao from tbinsumos";
-//
-//        try {
-//            this.pst = this.conexao.prepareStatement(sql);
-//            this.rs = this.pst.executeQuery();
-//
-//            while (this.rs.next()) {
-//                this.cbCadReceita.addItem(this.rs.getString(1));
-//            }
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e);
-//        }
-//    }
-//
+    //Seta o combobox tipo de pastas com os dados do banco
+    private void setarComboBox() {
+        String sql = "select descricao from tbTipoPasta";
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.rs = this.pst.executeQuery();
+
+            while (this.rs.next()) {
+                this.cbCadReceitaTipo.addItem(this.rs.getString(1));
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //Adiciona um novo tipo de pasta no combobox
+    private void addComboBox() {
+        String sql = "insert into tbTipoPasta(descricao) values(?)";
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
+            int adicionado = this.pst.executeUpdate();
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Adicionado com sucesso.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //Remove um tipo de pasta no combobox
+    private void removeComboBox() {
+        String sql = "delete from tbTipoPasta where descricao=?";
+
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
+            int adicionado = this.pst.executeUpdate();
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Apagado com sucesso.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //verifica se o tipo de pasta esta ligado a alguma receita
+    private boolean verificaTipoPasta(int tipo) {
+        String sql = "select codigoTipoPasta from tbreceita where codigoTipoPasta=?";
+        int conf = 0;
+        try {
+            this.pst = this.conexao.prepareStatement(sql);
+            this.pst.setInt(1, tipo);
+            this.rs = this.pst.executeQuery();
+            if (this.rs.next()) {
+                conf = 1;
+            } else {
+                conf = 2;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        if (conf == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //evento para setar tblCadRecComponentes
     private void setarTabela() {
 
@@ -210,23 +303,23 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
     private boolean verificaCampos() {
-        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecTipo.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
+        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
             return false;
         } else {
             return true;
         }
     }
+
     //mascara para o campo Consumo(foramato de moeda)
-    private void mascaraConsu(){
-        DecimalFormat dFormat = new DecimalFormat("###.00") ;
-        NumberFormatter formatter = new NumberFormatter(dFormat) ;
-        formatter.setFormat(dFormat) ;
-        formatter.setAllowsInvalid(false) ; 
-        
+    private void mascaraConsu() {
+        DecimalFormat dFormat = new DecimalFormat("###.00");
+        NumberFormatter formatter = new NumberFormatter(dFormat);
+        formatter.setFormat(dFormat);
+        formatter.setAllowsInvalid(false);
+
         this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
-   
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -241,7 +334,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         txtCadRecDes = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtCadRecTipo = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtCadRecVal = new javax.swing.JTextField();
         btnCadRecAdicionar = new javax.swing.JButton();
@@ -261,6 +353,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         btnInsumoPesquisar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         txtCadRecConsumo = new javax.swing.JFormattedTextField();
+        cbCadReceitaTipo = new javax.swing.JComboBox<>();
+        tbnCadRecTipo = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -268,22 +363,21 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Código:");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
         jLabel2.setText("Pantone:");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 50, -1, -1));
-        getContentPane().add(txtCadRecDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 80, 190, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 50, -1, -1));
+        getContentPane().add(txtCadRecDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 190, -1));
 
         jLabel3.setText("Tipo de pasta:");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 50, -1, -1));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 50, -1, -1));
 
         jLabel4.setText("Descrição:");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 50, -1, -1));
-        getContentPane().add(txtCadRecTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 80, 170, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, -1, -1));
 
         jLabel5.setText("Validade:");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 50, -1, -1));
-        getContentPane().add(txtCadRecVal, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 80, 120, -1));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 50, -1, -1));
+        getContentPane().add(txtCadRecVal, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 80, 120, -1));
 
         btnCadRecAdicionar.setText("Salvar");
         btnCadRecAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -316,8 +410,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(btnCadRecLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 79, -1));
-        getContentPane().add(txtCadRecCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 130, -1));
-        getContentPane().add(txtCadRecPan, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 80, 130, -1));
+        getContentPane().add(txtCadRecCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 130, -1));
+        getContentPane().add(txtCadRecPan, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 80, 130, -1));
 
         btnReceitaPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         btnReceitaPesquisar.setToolTipText("Pesquisar");
@@ -328,11 +422,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 btnReceitaPesquisarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnReceitaPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 28, 31));
+        getContentPane().add(btnReceitaPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, 28, 31));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setText("Cadastro de Receita");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -375,7 +469,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jPanel1.add(btnInsumoPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 0, 30, 30));
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++.png"))); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
         jButton2.setToolTipText("Adicionar");
         jButton2.setContentAreaFilled(false);
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -384,16 +478,42 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 37, 30, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 30, -1));
         jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 110, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 820, 360));
+
+        cbCadReceitaTipo.setEditable(true);
+        getContentPane().add(cbCadReceitaTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, 150, -1));
+
+        tbnCadRecTipo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
+        tbnCadRecTipo.setToolTipText("Adicionar");
+        tbnCadRecTipo.setContentAreaFilled(false);
+        tbnCadRecTipo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tbnCadRecTipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tbnCadRecTipoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(tbnCadRecTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 80, 20, -1));
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/x.png"))); // NOI18N
+        jButton1.setToolTipText("Apagar");
+        jButton1.setContentAreaFilled(false);
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 80, 20, -1));
 
         setBounds(0, 0, 860, 560);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadRecAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarActionPerformed
         // chama o metodo adicionar
+        codigoTipo = buscaCodTipoPasta();
         boolean total;
         boolean campos;
         // verifica os campos
@@ -413,7 +533,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCadRecAdicionarActionPerformed
 
     private void btnCadRecLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecLimparActionPerformed
-        // chama o metodo limpar campos
+        // chama o metodo limpar campos;     
         limparCampos();
     }//GEN-LAST:event_btnCadRecLimparActionPerformed
 
@@ -466,13 +586,41 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         } else {
             setarTabela();
             this.txtCadRecComponentes.setText(null);
-            this.txtCadRecConsumo.setText(null);
+            this.txtCadRecConsumo.setValue(null);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tblCadRecComponentesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseReleased
 
     }//GEN-LAST:event_tblCadRecComponentesMouseReleased
+
+    private void tbnCadRecTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnCadRecTipoActionPerformed
+        // chama o metodo adicionar tipo de pasta
+        boolean conf = verificaTipoPasta(buscaCodTipoPasta());
+        if (this.cbCadReceitaTipo.getSelectedItem().equals("")) {
+            JOptionPane.showMessageDialog(null, "Tipo de pasta inválido.");
+        } else {
+            if (conf == true) {
+                JOptionPane.showMessageDialog(null, "Tipo de pasta já existe.");
+            } else {
+                addComboBox();
+                this.cbCadReceitaTipo.removeAllItems();
+                setarComboBox();
+            }
+        }
+    }//GEN-LAST:event_tbnCadRecTipoActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //Chama o metodo remover tipo de pasta
+        boolean conf = verificaTipoPasta(buscaCodTipoPasta());
+        if (conf == true) {
+            JOptionPane.showMessageDialog(null, "Esse Tipo de pasta não pode ser removido.");
+        } else {
+            removeComboBox();
+            this.cbCadReceitaTipo.removeAllItems();
+            setarComboBox();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -482,6 +630,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCadRecLimpar;
     private javax.swing.JButton btnInsumoPesquisar;
     private javax.swing.JButton btnReceitaPesquisar;
+    public static javax.swing.JComboBox<String> cbCadReceitaTipo;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -494,12 +644,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     public static javax.swing.JTable tblCadRecComponentes;
+    private javax.swing.JButton tbnCadRecTipo;
     public static javax.swing.JTextField txtCadRecCodigo;
     public static javax.swing.JTextField txtCadRecComponentes;
     public static javax.swing.JFormattedTextField txtCadRecConsumo;
     public static javax.swing.JTextField txtCadRecDes;
     public static javax.swing.JTextField txtCadRecPan;
-    public static javax.swing.JTextField txtCadRecTipo;
     public static javax.swing.JTextField txtCadRecVal;
     // End of variables declaration//GEN-END:variables
 }

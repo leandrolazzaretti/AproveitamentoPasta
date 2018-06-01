@@ -65,6 +65,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menCadUsu = new javax.swing.JMenuItem();
         menControle = new javax.swing.JMenu();
         menConEst = new javax.swing.JMenuItem();
+        menRelatorio = new javax.swing.JMenu();
+        menRelIns = new javax.swing.JMenuItem();
+        menRelRec = new javax.swing.JMenuItem();
+        menRelUsu = new javax.swing.JMenuItem();
         menOpc = new javax.swing.JMenu();
         menOpcSair = new javax.swing.JMenuItem();
 
@@ -290,6 +294,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menu.add(menControle);
 
+        menRelatorio.setText("Relatório");
+
+        menRelIns.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK));
+        menRelIns.setText("Insumo");
+        menRelatorio.add(menRelIns);
+
+        menRelRec.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK));
+        menRelRec.setText("Receita");
+        menRelatorio.add(menRelRec);
+
+        menRelUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK));
+        menRelUsu.setText("Usuário");
+        menRelatorio.add(menRelUsu);
+
+        menu.add(menRelatorio);
+
         menOpc.setText("Opções");
 
         menOpcSair.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
@@ -421,6 +441,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu menControle;
     private javax.swing.JMenu menOpc;
     private javax.swing.JMenuItem menOpcSair;
+    private javax.swing.JMenuItem menRelIns;
+    private javax.swing.JMenuItem menRelRec;
+    private javax.swing.JMenuItem menRelUsu;
+    private javax.swing.JMenu menRelatorio;
     private javax.swing.JMenuBar menu;
     private javax.swing.JButton tbnEstoque;
     // End of variables declaration//GEN-END:variables

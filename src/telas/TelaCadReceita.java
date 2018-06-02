@@ -28,8 +28,6 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
     public int codigoTipo;
     private String descIns;
 
@@ -67,15 +65,19 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private int buscaCodTipoPasta() {
         int codigo = 0;
         String sql = "select codigo from tbTipoPasta where descricao=?";
+        
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
-            this.rs = this.pst.executeQuery();
-            if (this.rs.next()) {
-                codigo = this.rs.getInt(1);
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                codigo = rs.getInt(1);
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+            //pst.close();
         }
         return codigo;
     }
@@ -83,15 +85,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public void adicionarReceita() {
         String sql = "insert into tbreceita(codigorec,descricao,pantone,codigoTipoPasta,datavencimento) values(?,?,?,?,?)";
 
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadRecCodigo.getText());
-            this.pst.setString(2, this.txtCadRecDes.getText());
-            this.pst.setString(3, this.txtCadRecPan.getText());
-            this.pst.setInt(4, this.codigoTipo);
-            this.pst.setString(5, this.txtCadRecVal.getText());
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadRecCodigo.getText());
+            pst.setString(2, this.txtCadRecDes.getText());
+            pst.setString(3, this.txtCadRecPan.getText());
+            pst.setInt(4, this.codigoTipo);
+            pst.setString(5, this.txtCadRecVal.getText());
             //Atualiza a tabela receita
-            int adicionado = this.pst.executeUpdate();
+            int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
@@ -100,7 +103,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 adicionarComponentes();
                 limparCampos();
             }
-
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
@@ -111,11 +114,13 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public void adicionarComponentes() {
         String sql = "insert into tbReceitaInsumo(codigoReceita,codigoInsumo,consumo)values(?,?,?)";
         for (int x = 0; x < this.tblCadRecComponentes.getRowCount(); x++) {
+            
+            PreparedStatement pst;
             try {
 
-                this.pst = this.conexao.prepareStatement(sql);
+                pst = this.conexao.prepareStatement(sql);
 
-                this.descIns = (String) this.tblCadRecComponentes.getModel().getValueAt(x, 0);
+                descIns = (String) this.tblCadRecComponentes.getModel().getValueAt(x, 0);
                 String cons = (String) this.tblCadRecComponentes.getModel().getValueAt(x, 1);
                 int ins = codIns();
                 String rec = this.txtCadRecCodigo.getText();
@@ -123,16 +128,17 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 //                System.out.println(ins);
 //                System.out.println(rec);
 //                System.out.println(cons);
-                this.pst.setString(1, rec);
-                this.pst.setInt(2, ins);
-                this.pst.setString(3, cons);
-//                this.pst.setInt(1, rec);
-//                this.pst.setInt(2, ins);
-//                this.pst.setDouble(3, cons);
-                int adicionado = this.pst.executeUpdate();
+                pst.setString(1, rec);
+                pst.setInt(2, ins);
+                pst.setString(3, cons);
+//                pst.setInt(1, rec);
+//                pst.setInt(2, ins);
+//                pst.setDouble(3, cons);
+                int adicionado = pst.executeUpdate();
                 if (adicionado > 0) {
                     System.out.println("Deu boa.");
                 }
+                pst.close();
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
@@ -144,12 +150,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private int codIns() {
         String sql = "select i.codigo from tbinsumos as i where descricao ='" + this.descIns + "'";
         int retorno = 0;
+        
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            if (this.rs.next()) {
-                retorno = this.rs.getInt(1);
+            pst = this.conexao.prepareStatement(sql);
+            
+            ResultSet rs =  pst.executeQuery();
+            if (rs.next()) {
+                retorno = rs.getInt(1);
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -159,15 +169,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public void atualizarReceita() {
         String sql = "update tbreceita set descricao=?, pantone=?, codigoTipoPasta=?, datavencimento=? where codigorec=?";
 
+        PreparedStatement pst ;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadRecDes.getText());
-            this.pst.setString(2, this.txtCadRecPan.getText());
-            this.pst.setInt(3, this.codigoTipo);
-            this.pst.setString(4, this.txtCadRecVal.getText());
-            this.pst.setString(5, this.txtCadRecCodigo.getText());
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadRecDes.getText());
+            pst.setString(2, this.txtCadRecPan.getText());
+            pst.setInt(3, this.codigoTipo);
+            pst.setString(4, this.txtCadRecVal.getText());
+            pst.setString(5, this.txtCadRecCodigo.getText());
             //Atualiza a tabela Receita
-            int adicionado = this.pst.executeUpdate();
+            int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
@@ -175,7 +186,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Receita Atualizado com sucesso!");
                 limparCampos();
             }
-
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
@@ -190,17 +201,18 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             if (confirmar == JOptionPane.YES_OPTION) {
 
                 String sql = "delete from tbreceita where codigorec=?";
-
+                
+                PreparedStatement pst = null;
                 try {
-                    this.pst = this.conexao.prepareStatement(sql);
-                    this.pst.setString(1, this.txtCadRecCodigo.getText());
-                    int deletado = this.pst.executeUpdate();
+                    pst = this.conexao.prepareStatement(sql);
+                    pst.setString(1, this.txtCadRecCodigo.getText());
+                    int deletado = pst.executeUpdate();
 
                     if (deletado > 0) {
                         JOptionPane.showMessageDialog(null, "Receita deletada com sucesso!");
                         limparCampos();
                     }
-
+                    pst.close();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
                 }
@@ -212,13 +224,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void setarComboBox() {
         String sql = "select descricao from tbTipoPasta";
 
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
+            pst = this.conexao.prepareStatement(sql);
+            
+            ResultSet rs = pst.executeQuery();
 
-            while (this.rs.next()) {
-                this.cbCadReceitaTipo.addItem(this.rs.getString(1));
+            while (rs.next()) {
+                this.cbCadReceitaTipo.addItem(rs.getString(1));
             }
+            pst.close();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -229,13 +244,15 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void addComboBox() {
         String sql = "insert into tbTipoPasta(descricao) values(?)";
 
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
-            int adicionado = this.pst.executeUpdate();
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
+            int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
                 JOptionPane.showMessageDialog(null, "Adicionado com sucesso.");
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -245,13 +262,15 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void removeComboBox() {
         String sql = "delete from tbTipoPasta where descricao=?";
 
+        PreparedStatement pst = null;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
-            int adicionado = this.pst.executeUpdate();
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.cbCadReceitaTipo.getSelectedItem().toString());
+            int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
                 JOptionPane.showMessageDialog(null, "Apagado com sucesso.");
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -261,23 +280,22 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private boolean verificaTipoPasta(int tipo) {
         String sql = "select codigoTipoPasta from tbreceita where codigoTipoPasta=?";
         int conf = 0;
+        
+        PreparedStatement pst ;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setInt(1, tipo);
-            this.rs = this.pst.executeQuery();
-            if (this.rs.next()) {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setInt(1, tipo);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
                 conf = 1;
             } else {
                 conf = 2;
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        if (conf == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return conf == 1;
     }
 
     //evento para setar tblCadRecComponentes
@@ -320,19 +338,17 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private boolean confirmaCodigo(String codigo) {
         String sql = "select count (codigorec) as total from tbreceita where codigorec ='" + codigo + "';";
         int total = 0;
-
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            total = Integer.parseInt(this.rs.getString(1));
+            pst = this.conexao.prepareStatement(sql);
+            
+            ResultSet rs =  pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        if (total > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return total <= 0;
 
     }
 

@@ -21,9 +21,7 @@ import util.HashUtil;
  */
 public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
+    Connection conexao = null;   
 
     UsuarioDao lista = new UsuarioDao();
     private int index = -1;
@@ -44,17 +42,19 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     // adiciona um novo usuario
     public void adicionar() {
         String sql = "insert into tbusuarios(codigo,nome,login,senha,perfil) values(?,?,?,?,?)";
+        
+        PreparedStatement pst;
         try {
 
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadUsuId.getText());
-            this.pst.setString(2, this.txtCadUsuNome.getText());
-            this.pst.setString(3, this.txtCadUsuLogin.getText());
-            this.pst.setString(4, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
-            this.pst.setString(5, this.cbCadUsuPerfil.getSelectedItem().toString());
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadUsuId.getText());
+            pst.setString(2, this.txtCadUsuNome.getText());
+            pst.setString(3, this.txtCadUsuLogin.getText());
+            pst.setString(4, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
+            pst.setString(5, this.cbCadUsuPerfil.getSelectedItem().toString());
 
             //Atualiza a tabela usuarios                       
-            int adicionado = this.pst.executeUpdate();
+            int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
@@ -62,6 +62,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
                 limparCampos();
             }
+            pst.close();
         } catch (SQLException sqle) {
             JOptionPane.showMessageDialog(null, sqle);
             System.out.println(sqle);
@@ -74,16 +75,18 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void atualizar() {
         String sql = "update tbusuarios set nome=?, login=?, senha=?, perfil=? where codigo=?";
+        
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadUsuNome.getText());
-            this.pst.setString(2, this.txtCadUsuLogin.getText());
-            this.pst.setString(3, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
-            this.pst.setString(4, this.cbCadUsuPerfil.getSelectedItem().toString());
-            this.pst.setString(5, this.txtCadUsuId.getText());
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadUsuNome.getText());
+            pst.setString(2, this.txtCadUsuLogin.getText());
+            pst.setString(3, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
+            pst.setString(4, this.cbCadUsuPerfil.getSelectedItem().toString());
+            pst.setString(5, this.txtCadUsuId.getText());
 
             //Atualiza a tabela usuarios
-            int adicionado = this.pst.executeUpdate();
+            int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
@@ -91,6 +94,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Usuário Atualizado com sucesso!");
                 limparCampos();
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -106,16 +110,19 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             if (confirma == JOptionPane.YES_OPTION) {
 
                 String sql = "delete from tbusuarios where codigo=?";
-
+                
+                PreparedStatement pst;
+                
                 try {
-                    this.pst = this.conexao.prepareStatement(sql);
-                    this.pst.setString(1, this.txtCadUsuId.getText());
+                    pst = this.conexao.prepareStatement(sql);
+                    pst.setString(1, this.txtCadUsuId.getText());
                     int deleta = pst.executeUpdate();
                     //confirma o deleta
                     if (deleta > 0) {
                         JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso!");
                         limparCampos();
                     }
+                    pst.close();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
 
@@ -136,12 +143,16 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     //confirma se o login já existe
     private boolean confirmaLogin(String login) {
         String sql = "select count (login) as total from tbusuarios where login ='" + login + "';";
+        
+        PreparedStatement pst;
         int total = 0;
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            total = Integer.parseInt(this.rs.getString(1));
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -165,11 +176,14 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     //seta o código do usuário
     private void setarCodigo() {
         String sql = "select max(codigo)+1 from tbusuarios";
+        
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            this.txtCadUsuId.setText(this.rs.getString(1));
-
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            this.txtCadUsuId.setText(rs.getString(1));
+            
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }

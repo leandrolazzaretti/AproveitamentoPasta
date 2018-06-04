@@ -19,8 +19,6 @@ import util.SoNumeros;
 public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
 
     private String cbPesquisar = "codigo";
 
@@ -46,18 +44,19 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }
 
     public void adicionarInsumos() {
-
         String sql = "insert into tbinsumos(codigo,descricao,UM,quantidade,preco) values(?,?,?,?,?)";
 
+        PreparedStatement pst;
+
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadInsCodigo.getText());
-            this.pst.setString(2, this.txtCadInsDes.getText());
-            this.pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
-            this.pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
-            this.pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadInsCodigo.getText());
+            pst.setString(2, this.txtCadInsDes.getText());
+            pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
+            pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
+            pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
             //Atualiza a tabela insumos
-            int adicionado = this.pst.executeUpdate();
+            int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
@@ -65,6 +64,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Insumo cadastrado com sucesso!");
                 limparCampos();
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
@@ -74,15 +74,17 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     public void atualizarInsumos() {
         String sql = "update tbinsumos set descricao=?, UM=?, quantidade=?, preco=? where codigo=?";
 
+        PreparedStatement pst;
+
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadInsDes.getText());
-            this.pst.setString(2, this.cbCadInsUm.getSelectedItem().toString());
-            this.pst.setString(3, this.txtCadInsQuant.getText().replace(",", "."));
-            this.pst.setString(4, this.txtCadInsPreco.getText().replace(",", "."));
-            this.pst.setString(5, this.txtCadInsCodigo.getText());
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadInsDes.getText());
+            pst.setString(2, this.cbCadInsUm.getSelectedItem().toString());
+            pst.setString(3, this.txtCadInsQuant.getText().replace(",", "."));
+            pst.setString(4, this.txtCadInsPreco.getText().replace(",", "."));
+            pst.setString(5, this.txtCadInsCodigo.getText());
             //Atualiza a tabela insumos
-            int adicionado = this.pst.executeUpdate();
+            int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
@@ -90,6 +92,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Insumo Atualizado com sucesso!");
                 limparCampos();
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -104,16 +107,18 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
                 String sql = "delete from tbinsumos where codigo=?";
 
+                PreparedStatement pst;
+
                 try {
-                    this.pst = this.conexao.prepareStatement(sql);
-                    this.pst.setString(1, this.txtCadInsCodigo.getText());
-                    int deletado = this.pst.executeUpdate();
+                    pst = this.conexao.prepareStatement(sql);
+                    pst.setString(1, this.txtCadInsCodigo.getText());
+                    int deletado = pst.executeUpdate();
 
                     if (deletado > 0) {
                         JOptionPane.showMessageDialog(null, "Insumo deletado com sucesso!");
                         limparCampos();
                     }
-
+                    pst.close();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
                 }
@@ -124,12 +129,16 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     //confirma se o codigo já existe
     private boolean confirmaCodigo(String codigo) {
         String sql = "select count (codigo) as total from tbinsumos where codigo ='" + codigo + "';";
+
+        PreparedStatement pst;
         int total = 0;
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
-            total = Integer.parseInt(this.rs.getString(1));
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }

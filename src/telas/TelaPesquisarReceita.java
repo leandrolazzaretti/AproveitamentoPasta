@@ -19,8 +19,6 @@ import javax.swing.table.DefaultTableModel;
 public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
 
     private String cbPesquisar = "codigorec";
     private int codRecIns = 0;
@@ -41,6 +39,8 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 + "from tbreceita as r "
                 + "inner join tbTipoPasta as t on r.codigoTipoPasta = t.codigo "
                 + "where " + this.cbPesquisar + " like ?";
+        
+        PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblPesquisarReceita.getModel();
         modelo.setNumRows(0);
@@ -52,19 +52,20 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         this.tblPesquisarReceita.getColumnModel().getColumn(4).setPreferredWidth(40);
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtPesquisarReceita.getText() + "%");
-            this.rs = this.pst.executeQuery();
-            this.codRecIns = this.rs.getInt(1);
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtPesquisarReceita.getText() + "%");
+            ResultSet rs = pst.executeQuery();
+            this.codRecIns = rs.getInt(1);
             //Preencher a tabela usando a bibliotéca rs2xml.jar
-            while (this.rs.next()) {
+            while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    this.rs.getInt(1),
-                    this.rs.getString(2),
-                    this.rs.getString(3),
-                    this.rs.getString(4),
-                    this.rs.getString(5)});
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getString(5)});
             }           
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -76,23 +77,24 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 + "inner join tbReceitaInsumo as ri on ri.codigoReceita = r.codigorec "
                 + "inner join tbinsumos as i on i.codigo = ri.codigoInsumo "
                 + "where r.codigorec ='"+this.codRecIns+"'";
+        
+        PreparedStatement pst;
 
-        DefaultTableModel modelo = (DefaultTableModel) TelaCadReceita.tblCadRecComponentes.getModel();
-        modelo.setNumRows(0);
-
-        this.tblPesquisarReceita.getColumnModel().getColumn(0).setPreferredWidth(80);
-        this.tblPesquisarReceita.getColumnModel().getColumn(1).setPreferredWidth(40);
+        DefaultTableModel modelo = (DefaultTableModel) TelaCadReceita.tblCadRecComponentes.getModel();       
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar            
-            while (this.rs.next()) {
-                modelo.addRow(new Object[]{
-                    this.rs.getString(1),
-                    this.rs.getDouble(2)});
+            while (rs.next()) {
+                
+                String comp = rs.getString(1);
+                String cons = rs.getString(2);
+                
+                modelo.addRow(new String[]{comp, cons});
             }
-
+            
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             //System.out.println(e);

@@ -19,8 +19,6 @@ import javax.swing.table.DefaultTableModel;
 public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
 
     private String cbPesquisar = "codigo";
     public boolean confimaTela;
@@ -37,6 +35,8 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
     public void pesquisarInsumos() {
         String sql = "select * from tbinsumos where " + this.cbPesquisar + " like ?";
+        
+        PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblCadInsumos.getModel();
         modelo.setNumRows(0);
@@ -48,19 +48,20 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         this.tblCadInsumos.getColumnModel().getColumn(4).setPreferredWidth(40);
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtPesquisarInsumos.getText() + "%");
-            this.rs = this.pst.executeQuery();
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtPesquisarInsumos.getText() + "%");
+            ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar
-            while (this.rs.next()) {
+            while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    this.rs.getInt(1),
-                    this.rs.getString(2),
-                    this.rs.getString(3),
-                    this.rs.getString(4),
-                    this.rs.getString(5)});
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getString(5)});
             }
-
+            
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }

@@ -21,19 +21,19 @@ import util.HashUtil;
 public class TelaLogin extends javax.swing.JFrame {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
 
     public void logar() {
         String sql = "select * from tbusuarios where login=? and senha=?";
+        
+        PreparedStatement pst;
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtUsuario.getText());
-            this.pst.setString(2, HashUtil.stringMD5(this.txtSenha.getText()));
-            this.rs = this.pst.executeQuery();
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtUsuario.getText());
+            pst.setString(2, HashUtil.stringMD5(this.txtSenha.getText()));
+            ResultSet rs = pst.executeQuery();
 
-            if (this.rs.next()) {
+            if (rs.next()) {
                 String perfil = rs.getString(5);
 
                 //a estrutura abaixo faz o tratamento do perfil do usuário
@@ -56,7 +56,8 @@ public class TelaLogin extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Usuário e/ou senha inválido(s)!");
             }
-
+            
+            pst.close();
         } catch (java.lang.NullPointerException e) {
             JOptionPane.showMessageDialog(null, "Usuário e/ou senha inválido(s)!");
         } catch (Exception e1) {
@@ -171,6 +172,7 @@ public class TelaLogin extends javax.swing.JFrame {
         txtSenha.setBackground(new java.awt.Color(102, 102, 102));
         txtSenha.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtSenha.setForeground(new java.awt.Color(255, 255, 255));
+        txtSenha.setText("admin");
         txtSenha.setBorder(null);
         txtSenha.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -187,11 +189,17 @@ public class TelaLogin extends javax.swing.JFrame {
         txtUsuario.setBackground(new java.awt.Color(102, 102, 102));
         txtUsuario.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtUsuario.setForeground(new java.awt.Color(255, 255, 255));
+        txtUsuario.setText("admin");
         txtUsuario.setBorder(null);
         txtUsuario.setCaretColor(new java.awt.Color(255, 255, 255));
         txtUsuario.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtUsuarioFocusGained(evt);
+            }
+        });
+        txtUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsuarioActionPerformed(evt);
             }
         });
         txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -255,6 +263,10 @@ public class TelaLogin extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtUsuarioKeyPressed
 
+    private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
+
+    }//GEN-LAST:event_txtUsuarioActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -284,6 +296,7 @@ public class TelaLogin extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new TelaLogin().setVisible(true);
             }

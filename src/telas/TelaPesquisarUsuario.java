@@ -20,8 +20,6 @@ import javax.swing.table.DefaultTableModel;
 public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
 
     private String cbPesquisar = "codigo";
     
@@ -41,6 +39,8 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
     // pesquizar/ carregar usuarios atraves da tabela
     public void pesquisarUsuario() {
         String sql = "select codigo, nome, login, perfil from tbusuarios where " + this.cbPesquisar + " like ?";
+        
+        PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblCadUsuario.getModel();
         modelo.setNumRows(0);
@@ -52,18 +52,19 @@ public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         
 
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.pst.setString(1, this.txtCadUsuarioPesquisar.getText() + "%");
-            this.rs = this.pst.executeQuery();
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, this.txtCadUsuarioPesquisar.getText() + "%");
+            ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar
-            while (this.rs.next()) {
+            while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    this.rs.getInt(1),
-                    this.rs.getString(2),
-                    this.rs.getString(3),
-                    this.rs.getString(4)});
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4)});
             }
-
+            
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }

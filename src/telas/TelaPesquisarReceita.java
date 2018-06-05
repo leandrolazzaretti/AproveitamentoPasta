@@ -39,7 +39,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 + "from tbreceita as r "
                 + "inner join tbTipoPasta as t on r.codigoTipoPasta = t.codigo "
                 + "where " + this.cbPesquisar + " like ?";
-        
+
         PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblPesquisarReceita.getModel();
@@ -64,41 +64,46 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                     rs.getString(3),
                     rs.getString(4),
                     rs.getString(5)});
-            }           
+            }
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
 
     }
+
     //seta a tabela tblCadRecComponentes com os dados do banco
     public void setarTbComponentes() {
         String sql = "select i.descricao, ri.consumo from tbreceita as r "
                 + "inner join tbReceitaInsumo as ri on ri.codigoReceita = r.codigorec "
                 + "inner join tbinsumos as i on i.codigo = ri.codigoInsumo "
-                + "where r.codigorec ='"+this.codRecIns+"'";
-        
+                + "where r.codigorec ='" + this.codRecIns + "'";
+
         PreparedStatement pst;
 
-        DefaultTableModel modelo = (DefaultTableModel) TelaCadReceita.tblCadRecComponentes.getModel();       
+        DefaultTableModel modelo = (DefaultTableModel) TelaCadReceita.tblCadRecComponentes.getModel();
+        modelo.setNumRows(0);
+
+        this.tblPesquisarReceita.getColumnModel().getColumn(0).setPreferredWidth(80);
+        this.tblPesquisarReceita.getColumnModel().getColumn(1).setPreferredWidth(40);
 
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar            
             while (rs.next()) {
-                
+
                 String comp = rs.getString(1);
                 String cons = rs.getString(2);
-                
-                modelo.addRow(new String[]{comp, cons});
+
+                modelo.addRow(new Object[]{comp, cons});
             }
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             //System.out.println(e);
-        }      
+        }
     }
 
     //pantone datavencimento
@@ -111,7 +116,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaCadReceita.cbCadReceitaTipo.setSelectedItem(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
         this.codRecIns = Integer.parseInt(TelaCadReceita.txtCadRecCodigo.getText());
-        setarTbComponentes();
+        setarTbComponentes();      
     }
 
     /**
@@ -210,7 +215,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     private void tblPesquisarReceitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesquisarReceitaMouseClicked
         // seta os campos do formulário através da tabela
-        //TelaCadReceita.
+        //TelaCadReceita.       
         if (evt.getClickCount() > 1) {
             setarCampos();
             this.dispose();
@@ -219,7 +224,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     private void txtPesquisarReceitaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisarReceitaKeyReleased
         // chama o metodo pesquisar
-        pesquisarReceita();    
+        pesquisarReceita();
     }//GEN-LAST:event_txtPesquisarReceitaKeyReleased
 
     private void cbPesquisarReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPesquisarReceitaActionPerformed

@@ -9,7 +9,10 @@ import conexao.ModuloConexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
 
 /**
@@ -31,6 +34,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsCodigo.setDocument(new SoNumeros());
         this.txtCadInsPreco.setDocument(new SoNumeros());
         this.txtCadInsQuant.setDocument(new SoNumeros());
+        mascaraInsumo();
     }
 
     private void limparCampos() {
@@ -38,8 +42,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsCodigo.setText(null);
         this.txtCadInsDes.setText(null);
         this.cbCadInsUm.setSelectedItem("mg");
-        this.txtCadInsQuant.setText(null);
-        this.txtCadInsPreco.setText(null);
+        this.txtCadInsQuant.setValue(null);
+        this.txtCadInsPreco.setValue(null);
 
     }
 
@@ -89,8 +93,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             //System.out.println(adicionado);
             //confirma se realmente foi atualizada
             if (adicionado > 0) {
-                JOptionPane.showMessageDialog(null, "Insumo Atualizado com sucesso!");
-                limparCampos();
+                JOptionPane.showMessageDialog(null, "Insumo Atualizado com sucesso!");                
             }
             pst.close();
         } catch (Exception e) {
@@ -158,6 +161,22 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             return true;
         }
     }
+    
+        //mascara para o campo preço/ quantidade(foramato de moeda)
+    private void mascaraInsumo() {
+        DecimalFormat dFormat = new DecimalFormat("###.00");
+        NumberFormatter formatter = new NumberFormatter(dFormat);
+        DecimalFormat dFormat2 = new DecimalFormat("#,###.00");
+        NumberFormatter formatter2 = new NumberFormatter(dFormat);
+        
+        formatter.setFormat(dFormat);
+        formatter.setAllowsInvalid(false);  
+        formatter2.setFormat(dFormat2);
+        formatter2.setAllowsInvalid(false);  
+
+        this.txtCadInsQuant.setFormatterFactory(new DefaultFormatterFactory(formatter));
+        this.txtCadInsPreco.setFormatterFactory(new DefaultFormatterFactory(formatter2));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -168,15 +187,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtCadInsPreco = new javax.swing.JTextField();
         btnCadInsAdicionar = new javax.swing.JButton();
         txtCadInsCodigo = new javax.swing.JTextField();
-        btnCadInsAtualizar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         btnCadInsDeletar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtCadInsQuant = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         cbCadInsUm = new javax.swing.JComboBox<>();
@@ -184,12 +200,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         txtCadInsDes = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        txtCadInsQuant = new javax.swing.JFormattedTextField();
+        txtCadInsPreco = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("Cadastro de Insumos");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 270, -1));
 
         btnCadInsAdicionar.setText("Salvar");
         btnCadInsAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -200,31 +217,22 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         getContentPane().add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 330, 79, -1));
         getContentPane().add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 140, -1));
 
-        btnCadInsAtualizar.setText("Atualizar");
-        btnCadInsAtualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadInsAtualizarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadInsAtualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 330, 79, -1));
-
         jLabel2.setText("Descrição:");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, -1, -1));
 
-        btnCadInsDeletar.setText("Deletar");
+        btnCadInsDeletar.setText("Eliminar");
         btnCadInsDeletar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadInsDeletarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 330, 79, -1));
+        getContentPane().add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 330, 79, -1));
 
         jLabel3.setText("Unidade de Medida (UM):");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, -1, -1));
 
         jLabel4.setText("Quantidade:");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, -1, -1));
-        getContentPane().add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 270, -1));
 
         jLabel5.setText("Preço:");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, -1, -1));
@@ -258,6 +266,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setText("Cadastro de Insumos");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
+        getContentPane().add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 270, -1));
+        getContentPane().add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 270, -1));
 
         setBounds(148, 72, 564, 416);
     }// </editor-fold>//GEN-END:initComponents
@@ -274,32 +284,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             //chama o metodo para confirmar se o codigo já existe
             total = confirmaCodigo(this.txtCadInsCodigo.getText());
             if (total == false) {
-                JOptionPane.showMessageDialog(null, "Código já existe.");
+                atualizarInsumos();
             } else {
                 adicionarInsumos();
             }
 
         }
     }//GEN-LAST:event_btnCadInsAdicionarActionPerformed
-
-    private void btnCadInsAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAtualizarActionPerformed
-        // cahama o metodo atualizar
-        boolean total;
-        boolean campos;
-        // verifica os campos
-        campos = verificaCampos();
-        if (campos == false) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-        } else {
-            total = confirmaCodigo(this.txtCadInsCodigo.getText());
-            if (total == true) {
-                JOptionPane.showMessageDialog(null, "Código inválido.");
-            } else {
-                atualizarInsumos();
-            }
-        }
-
-    }//GEN-LAST:event_btnCadInsAtualizarActionPerformed
 
     private void btnCadInsDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsDeletarActionPerformed
         // chama o metodo deletar
@@ -323,7 +314,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadInsAdicionar;
-    private javax.swing.JButton btnCadInsAtualizar;
     private javax.swing.JButton btnCadInsDeletar;
     private javax.swing.JButton btnCadInsLimpar;
     public static javax.swing.JComboBox<String> cbCadInsUm;
@@ -336,7 +326,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     public static javax.swing.JTextField txtCadInsCodigo;
     public static javax.swing.JTextField txtCadInsDes;
-    public static javax.swing.JTextField txtCadInsPreco;
-    public static javax.swing.JTextField txtCadInsQuant;
+    public static javax.swing.JFormattedTextField txtCadInsPreco;
+    public static javax.swing.JFormattedTextField txtCadInsQuant;
     // End of variables declaration//GEN-END:variables
 }

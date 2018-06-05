@@ -5,6 +5,7 @@
  */
 package telas;
 
+import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +47,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         setarComboBox();
         AutoCompleteDecorator.decorate(cbCadReceitaTipo);
         this.cbCadReceitaTipo.setSelectedItem(null);
+
     }
 
     private void limparCampos() {
@@ -61,7 +63,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     }
 
-    //busca o código do tipo de pasta atraves do da descrição
+    //busca o código do tipo de pasta atraves da descrição
     private int buscaCodTipoPasta() {
         int codigo = 0;
         String sql = "select codigo from tbTipoPasta where descricao=?";
@@ -128,7 +130,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
-                System.out.println("Deu boa.");
+                //System.out.println("Deu boa.");
             }
             pst.close();
 
@@ -140,40 +142,35 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
     // atualiza todos os componente
-    private void atualizarComponentes() {
+    public void atualizarComponentes() {
         String sql = "update tbReceitaInsumo"
-                + " set codigoReceita =?, codigoInsumo =?, consumo =?"
-                + " where codigoReceita =?";
+                + " set consumo =?"
+                + " where codigoReceita =? and codigoInsumo =?";
         //int count = contarTabela();
-        System.out.println(this.tblCadRecComponentes.getModel().getRowCount());
 
-        for (int x = 0; x < this.tblCadRecComponentes.getRowCount(); x++) {
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
 
-            System.out.println("Deu boa");          
-            PreparedStatement pst;
-            try {
-                pst = this.conexao.prepareStatement(sql);
+            int linha = this.tblCadRecComponentes.getSelectedRow();
+            String descIns = (String) this.tblCadRecComponentes.getModel().getValueAt(linha, 0);
+            String cons = (String) this.tblCadRecComponentes.getModel().getValueAt(linha, 1);
+            String rec = this.txtCadRecCodigo.getText();
+            int ins = codIns(descIns);
 
-                String descIns = (String) this.tblCadRecComponentes.getModel().getValueAt(x, 0);
-                String cons = (String) this.tblCadRecComponentes.getModel().getValueAt(x, 1);
-                String rec = this.txtCadRecCodigo.getText();
-                int ins = codIns(descIns);
+            pst.setString(1, cons.replace(",", "."));
+            pst.setString(2, rec);
+            pst.setInt(3, ins);
 
-                pst.setString(1, this.txtCadRecCodigo.getText());
-                pst.setInt(2, ins);
-                pst.setString(3, cons);
-                pst.setString(4, this.txtCadRecCodigo.getText());
-
-                int adicionado = pst.executeUpdate();
-                if (adicionado > 0) {
-                    System.out.println("Deu boa.");
-                }
-
-                pst.close();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-                System.out.println(e);
+            int adicionado = pst.executeUpdate();
+            if (adicionado > 0) {
+                //System.out.println("Deu boa.");
             }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
         }
     }
 
@@ -187,7 +184,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         int setar = this.tblCadRecComponentes.getSelectedRow();
         int ins = codIns(this.tblCadRecComponentes.getModel().getValueAt(setar, 0).toString());
-        System.out.println(ins);
+        //System.out.println(ins);
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, this.txtCadRecCodigo.getText());
@@ -237,7 +234,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             //confirma se realmente foi atualizada
             if (adicionado > 0) {
                 JOptionPane.showMessageDialog(null, "Receita Atualizada com sucesso!");
-                limparCampos();
             }
             pst.close();
         } catch (Exception e) {
@@ -246,25 +242,37 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }
 
+    @SuppressWarnings("null")
     public void deletarReceita() {
         if (this.txtCadRecCodigo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione uma receita válida.");
         } else {
-            int confirmar = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja Deletar esta receita?", "Atenção", JOptionPane.YES_NO_OPTION);
+            int confirmar = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja Eliminar esta receita?", "Atenção", JOptionPane.YES_NO_OPTION);
             if (confirmar == JOptionPane.YES_OPTION) {
 
+                String sqlComp = "delete from tbReceitaInsumo"
+                        + " where codigoReceita =?";
                 String sql = "delete from tbreceita where codigorec=?";
 
                 PreparedStatement pst = null;
+                PreparedStatement pstComp;
+
                 try {
-                    pst = this.conexao.prepareStatement(sql);
-                    pst.setString(1, this.txtCadRecCodigo.getText());
-                    int deletado = pst.executeUpdate();
+                    pstComp = this.conexao.prepareStatement(sqlComp);
+                    pstComp.setString(1, this.txtCadRecCodigo.getText());
+
+                    int deletado = pstComp.executeUpdate();
 
                     if (deletado > 0) {
-                        JOptionPane.showMessageDialog(null, "Receita deletada com sucesso!");
-                        limparCampos();
+                        pst = this.conexao.prepareStatement(sql);
+                        pst.setString(1, this.txtCadRecCodigo.getText());
+                        deletado = pst.executeUpdate();
+                        if (deletado > 0) {
+                            JOptionPane.showMessageDialog(null, "Receita deletada com sucesso!");
+                            limparCampos();
+                        }
                     }
+                    pstComp.close();
                     pst.close();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e);
@@ -331,24 +339,19 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     //verifica se o tipo de pasta esta ligado a alguma receita
     private boolean verificaTipoPasta(int tipo) {
-        String sql = "select codigoTipoPasta from tbreceita where codigoTipoPasta=?";
-        int conf = 0;
-
+        String sql = "select count (codigoTipoPasta) as total from tbreceita where codigoTipoPasta=?";
+        int total = 0;     
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
             pst.setInt(1, tipo);
             ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                conf = 1;
-            } else {
-                conf = 2;
-            }
-            pst.close();
+            total = Integer.parseInt(rs.getString(1));
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        return conf == 1;
+        return total <= 0;
     }
 
     //evento para setar tblCadRecComponentes
@@ -389,7 +392,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.tblCadRecComponentes.setComponentPopupMenu(popupMenu);
     }
 
-    //confirma se o codigo já existe
+    //confirma se o codigo da receita já existe
     private boolean confirmaCodigo(String codigo) {
         String sql = "select count (codigorec) as total from tbreceita where codigorec ='" + codigo + "';";
         int total = 0;
@@ -419,19 +422,15 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void mascaraConsu() {
         DecimalFormat dFormat = new DecimalFormat("###.00");
         NumberFormatter formatter = new NumberFormatter(dFormat);
+        
         formatter.setFormat(dFormat);
-        formatter.setAllowsInvalid(false);
+        formatter.setAllowsInvalid(false);  
 
         this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
 
-    private void setarTbComponentes() {
-        int setar = this.tblCadRecComponentes.getSelectedRow();
-        this.txtCadRecComponentes.setText(this.tblCadRecComponentes.getModel().getValueAt(setar, 0).toString());
-        this.txtCadRecConsumo.setText(this.tblCadRecComponentes.getModel().getValueAt(setar, 1).toString());
-    }
-
-    private boolean verificaCadastro() {
+    // verifica se existe algum insumo duplicado na tabela de componentes
+    private boolean verificaInsumo() {
         String sql = "select count (codigoReceita) as total from tbReceitaInsumo where codigoReceita =? and codigoInsumo =?";
         int codinsumo = codIns(this.txtCadRecComponentes.getText());
         int total = 0;
@@ -443,15 +442,48 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             pst.setInt(2, codinsumo);
             ResultSet rs = pst.executeQuery();
             total = Integer.parseInt(rs.getString(1));
-            System.out.println(total);
+            //System.out.println(total);
 
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        return total != 0;
+        return total <= 0;
     }
 
+    //confirma se o insumo existe
+    private boolean confirmaInsumo(String insumo) {
+        String sql = "select count (descricao) as total from tbinsumos where descricao ='" + insumo + "';";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <= 0;
+
+    }
+//    // abilita os campos referente a os componentes
+//    public void abilitarCampos(){
+//        this.btnInsumoPesquisar.setEnabled(true);
+//        this.txtCadRecComponentes.setEnabled(true);
+//        this.txtCadRecConsumo.setEnabled(true);
+//        this.jButton2.setEnabled(true);
+//        this.tblCadRecComponentes.setEnabled(true);
+//    }
+
+//    // Desabilita os campos referente a os componentes
+//    public void desabilitarCampos(){
+//        this.btnInsumoPesquisar.setEnabled(false);
+//        this.txtCadRecComponentes.setEnabled(false);
+//        this.txtCadRecConsumo.setEnabled(false);
+//        this.jButton2.setEnabled(false);
+//        this.tblCadRecComponentes.setEnabled(false);
+//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -469,7 +501,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         txtCadRecVal = new javax.swing.JTextField();
         btnCadRecAdicionar = new javax.swing.JButton();
-        btnCadRecAtualizar = new javax.swing.JButton();
         btnCadRecDeletar = new javax.swing.JButton();
         btnCadRecLimpar = new javax.swing.JButton();
         txtCadRecCodigo = new javax.swing.JTextField();
@@ -519,21 +550,13 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnCadRecAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 79, -1));
 
-        btnCadRecAtualizar.setText("Atualizar");
-        btnCadRecAtualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadRecAtualizarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadRecAtualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 79, -1));
-
         btnCadRecDeletar.setText("Eliminar");
         btnCadRecDeletar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadRecDeletarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCadRecDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 120, 79, -1));
+        getContentPane().add(btnCadRecDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 79, -1));
 
         btnCadRecLimpar.setText("Novo");
         btnCadRecLimpar.addActionListener(new java.awt.event.ActionListener() {
@@ -570,13 +593,29 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             new String [] {
                 "Componentes", "Consumo"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblCadRecComponentes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblCadRecComponentesMouseClicked(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 tblCadRecComponentesMouseReleased(evt);
+            }
+        });
+        tblCadRecComponentes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tblCadRecComponentesKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblCadRecComponentesKeyReleased(evt);
             }
         });
         jScrollPane2.setViewportView(tblCadRecComponentes);
@@ -644,7 +683,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadRecAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarActionPerformed
-        // chama o metodo adicionar
+        // chama o metodo adicionar / ou Atualizar
         codigoTipo = buscaCodTipoPasta();
         boolean total;
         boolean campos;
@@ -656,7 +695,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             //chama o metodo para confirmar se o codigo já existe
             total = confirmaCodigo(this.txtCadRecCodigo.getText());
             if (total == false) {
-                JOptionPane.showMessageDialog(null, "Código já existe.");
+                atualizarReceita();
             } else {
                 adicionarReceita();
             }
@@ -667,28 +706,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void btnCadRecLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecLimparActionPerformed
         // chama o metodo limpar campos;     
         limparCampos();
+        //desabilitarCampos();
     }//GEN-LAST:event_btnCadRecLimparActionPerformed
-
-    private void btnCadRecAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAtualizarActionPerformed
-        // cahama o metodo atualizar
-        codigoTipo = buscaCodTipoPasta();
-        boolean total;
-        boolean campos;
-        System.out.println(this.tblCadRecComponentes.getModel().getRowCount());
-        // verifica os campos
-        campos = verificaCampos();
-        if (campos == false) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-        } else {
-            total = confirmaCodigo(this.txtCadRecCodigo.getText());
-            if (total == true) {
-                JOptionPane.showMessageDialog(null, "Código inválido.");
-            } else {
-                atualizarReceita();
-                atualizarComponentes();
-            }
-        }
-    }//GEN-LAST:event_btnCadRecAtualizarActionPerformed
 
     private void btnCadRecDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecDeletarActionPerformed
         // chama o metodo deletar
@@ -703,9 +722,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
     private void tblCadRecComponentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseClicked
-        if (evt.getClickCount() > 1) {
-            setarTbComponentes();
-        }
+
     }//GEN-LAST:event_tblCadRecComponentesMouseClicked
 
     private void btnInsumoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoPesquisarActionPerformed
@@ -718,13 +735,30 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // chama metodo para setar a tabela
+        boolean total;
         if ((this.txtCadRecComponentes.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         } else {
-            adicionarComponentes();
-            setarTabela();
-            this.txtCadRecComponentes.setText(null);
-            this.txtCadRecConsumo.setValue(null);
+            // chamaa o metodo para verificar se o insumo é válido
+            total = confirmaInsumo(this.txtCadRecComponentes.getText());
+            if (total == true) {
+                JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
+            } else {
+                if (this.txtCadRecCodigo.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
+
+                } else {
+                    total = verificaInsumo();
+                    if (total == false) {
+                        JOptionPane.showMessageDialog(null, "Componente já existe.");
+                    } else {
+                        adicionarComponentes();
+                        setarTabela();
+                        this.txtCadRecComponentes.setText(null);
+                        this.txtCadRecConsumo.setValue(null);
+                    }
+                }
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -738,7 +772,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         if (this.cbCadReceitaTipo.getSelectedItem().equals("")) {
             JOptionPane.showMessageDialog(null, "Tipo de pasta inválido.");
         } else {
-            if (conf == true) {
+            if (conf == false) {
                 JOptionPane.showMessageDialog(null, "Tipo de pasta já existe.");
             } else {
                 addComboBox();
@@ -760,17 +794,28 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void tblCadRecComponentesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyPressed
+        // Chama o metodo atualizar atraves da tecla Enter
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            atualizarComponentes();
+        }
+    }//GEN-LAST:event_tblCadRecComponentesKeyPressed
+
+    private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
+        // Chama o metodo atualizar enquanto digita
+        atualizarComponentes();
+    }//GEN-LAST:event_tblCadRecComponentesKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadRecAdicionar;
-    private javax.swing.JButton btnCadRecAtualizar;
     private javax.swing.JButton btnCadRecDeletar;
     private javax.swing.JButton btnCadRecLimpar;
-    private javax.swing.JButton btnInsumoPesquisar;
+    public static javax.swing.JButton btnInsumoPesquisar;
     private javax.swing.JButton btnReceitaPesquisar;
     public static javax.swing.JComboBox<String> cbCadReceitaTipo;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    public static javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -21,7 +21,7 @@ import util.HashUtil;
  */
 public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;   
+    Connection conexao = null;
 
     UsuarioDao lista = new UsuarioDao();
     private int index = -1;
@@ -42,7 +42,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     // adiciona um novo usuario
     public void adicionar() {
         String sql = "insert into tbusuarios(codigo,nome,login,senha,perfil) values(?,?,?,?,?)";
-        
+
         PreparedStatement pst;
         try {
 
@@ -75,7 +75,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void atualizar() {
         String sql = "update tbusuarios set nome=?, login=?, senha=?, perfil=? where codigo=?";
-        
+
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
@@ -92,7 +92,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             //confirma se realmente foi atualizada
             if (adicionado > 0) {
                 JOptionPane.showMessageDialog(null, "Usuário Atualizado com sucesso!");
-                limparCampos();
             }
             pst.close();
         } catch (Exception e) {
@@ -110,9 +109,9 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             if (confirma == JOptionPane.YES_OPTION) {
 
                 String sql = "delete from tbusuarios where codigo=?";
-                
+
                 PreparedStatement pst;
-                
+
                 try {
                     pst = this.conexao.prepareStatement(sql);
                     pst.setString(1, this.txtCadUsuId.getText());
@@ -143,7 +142,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     //confirma se o login já existe
     private boolean confirmaLogin(String login) {
         String sql = "select count (login) as total from tbusuarios where login ='" + login + "';";
-        
+
         PreparedStatement pst;
         int total = 0;
 
@@ -151,7 +150,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             total = Integer.parseInt(rs.getString(1));
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -162,6 +161,25 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             return true;
         }
 
+    }
+    
+      //confirma se o login já existe
+    private boolean confirmaCodigo(String codigo) {
+        String sql = "select count (codigo) as total from tbusuarios where codigo ='" + codigo + "';";
+
+        PreparedStatement pst;
+        int total = 0;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <=0;
     }
 
     //seta os campos através da lista
@@ -176,13 +194,13 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     //seta o código do usuário
     private void setarCodigo() {
         String sql = "select max(codigo)+1 from tbusuarios";
-        
+
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             this.txtCadUsuId.setText(rs.getString(1));
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -226,7 +244,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         txtCadUsuLogin = new javax.swing.JTextField();
         cbCadUsuPerfil = new javax.swing.JComboBox<>();
         btnAdi = new javax.swing.JButton();
-        btnAtu = new javax.swing.JButton();
         btnExc = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         txtCadUsuId = new javax.swing.JTextField();
@@ -274,23 +291,14 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 80, -1));
 
-        btnAtu.setText("Atualizar");
-        btnAtu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAtu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAtuActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnAtu, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 79, -1));
-
-        btnExc.setText("Deletar");
+        btnExc.setText("Eliminar");
         btnExc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcActionPerformed(evt);
             }
         });
-        getContentPane().add(btnExc, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 290, 73, -1));
+        getContentPane().add(btnExc, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 80, -1));
 
         jLabel5.setText(" Código:");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
@@ -435,25 +443,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         deletar();
     }//GEN-LAST:event_btnExcActionPerformed
 
-    private void btnAtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtuActionPerformed
-        // chama o metodo atualizar
-        boolean total;
-        boolean campos;
-        //verifica os campos
-        campos = verificaCampos();
-        if (campos == false) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-        } else {
-            //verifica a compatibilidade das senhas
-            if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
-                atualizar();
-            } else {
-                JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
-            }
-        }
-
-    }//GEN-LAST:event_btnAtuActionPerformed
-
     private void btnAdiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdiActionPerformed
         // chama o metodo adicionar
         boolean total;
@@ -463,16 +452,26 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         if (campos == false) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
         } else {
-            //chama o metodo para confirmar se o login já existe
-            total = confirmaLogin(this.txtCadUsuLogin.getText());
+            total = confirmaCodigo(this.txtCadUsuId.getText());
             if (total == false) {
-                JOptionPane.showMessageDialog(null, "Login já existe.");
-            } else {
-                //verifica a compatibilidade das senhas
                 if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
-                    adicionar();
+                    atualizar();
                 } else {
                     JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
+                }
+            } else {
+                //chama o metodo para confirmar se o login já existe
+                total = confirmaLogin(this.txtCadUsuLogin.getText());
+                if (total == false) {
+                    JOptionPane.showMessageDialog(null, "Login já existe.");
+
+                } else {
+                    //verifica a compatibilidade das senhas
+                    if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
+                        adicionar();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
+                    }
                 }
             }
         }
@@ -482,7 +481,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdi;
     private javax.swing.JButton btnAnterior;
-    private javax.swing.JButton btnAtu;
     private javax.swing.JButton btnCadUsePesquisar;
     private javax.swing.JButton btnExc;
     private javax.swing.JButton btnLimpar;

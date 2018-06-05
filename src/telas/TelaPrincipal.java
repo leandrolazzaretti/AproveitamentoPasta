@@ -5,6 +5,9 @@
  */
 package telas;
 
+import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -29,7 +32,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         this.Desktop.add(frame);
         frame.setVisible(true);
-        
+
     }
 
     /**
@@ -53,6 +56,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnInsumo = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
         jPanel4 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -201,17 +206,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Controle");
-        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 60, -1));
+        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 60, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setText("Cadastro");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, -1));
+        jPanel3.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 160, -1));
+        jPanel3.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, 160, 10));
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 240, 620));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 220, 620));
 
         jPanel4.setBackground(new java.awt.Color(102, 102, 102));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 0, 830, 20));
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 0, 860, 20));
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 102));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -226,7 +233,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         lblUsuario.setText("Usuário");
         jPanel1.add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 10, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 580, 830, 40));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 580, 860, 40));
 
         jPanel2.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -234,14 +241,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
+            .addGap(0, 20, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 620, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 620));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 20, 620));
 
         menu.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -368,17 +375,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menCadRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadRecActionPerformed
         // chama a TelaCadReceita
-         comandoInternal(new TelaCadReceita());
+        comandoInternal(new TelaCadReceita());
     }//GEN-LAST:event_menCadRecActionPerformed
 
     private void tbnEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnEstoqueActionPerformed
         // chamat TelaEstoque
         comandoInternal(new TelaEstoque());
+
+        // altera txtEstData pela data atual
+        Date data = new Date();
+        DateFormat formatador = DateFormat.getDateInstance(DateFormat.SHORT);
+        TelaEstoque.txtEstData.setText(java.time.LocalDate.now().toString());
+        TelaEstoque.txtEstHora.setText(java.time.LocalTime.now().toString());
     }//GEN-LAST:event_tbnEstoqueActionPerformed
 
     private void menConEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConEstActionPerformed
-         // chamat TelaEstoque
+        // chamat TelaEstoque
         comandoInternal(new TelaEstoque());
+
+        // altera txtEstData pela data atual
+        Date data = new Date();
+        DateFormat formatador = DateFormat.getDateInstance(DateFormat.SHORT);
+        TelaEstoque.txtEstData.setText(formatador.format(data));
     }//GEN-LAST:event_menConEstActionPerformed
 
     /**
@@ -433,6 +451,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     public static javax.swing.JLabel lblUsuario;
     private javax.swing.JMenuItem menCadIns;
     private javax.swing.JMenuItem menCadRec;

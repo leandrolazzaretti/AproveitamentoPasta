@@ -620,7 +620,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblCadRecComponentes);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 650, 270));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 660, 270));
 
         jLabel8.setText("Componentes:");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));

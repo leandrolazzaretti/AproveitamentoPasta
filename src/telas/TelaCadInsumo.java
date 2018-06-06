@@ -35,14 +35,15 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsPreco.setDocument(new SoNumeros());
         this.txtCadInsQuant.setDocument(new SoNumeros());
         mascaraInsumo();
+        limparCampos();
     }
 
     private void limparCampos() {
         this.txtCadInsCodigo.setEnabled(true);
         this.txtCadInsCodigo.setText(null);
         this.txtCadInsDes.setText(null);
-        this.cbCadInsUm.setSelectedItem("mg");
-        this.txtCadInsQuant.setValue(null);
+        this.cbCadInsUm.setSelectedItem("kg");
+        this.txtCadInsQuant.setText("0");
         this.txtCadInsPreco.setValue(null);
 
     }
@@ -163,18 +164,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }
     
         //mascara para o campo preço/ quantidade(foramato de moeda)
-    private void mascaraInsumo() {
-        DecimalFormat dFormat = new DecimalFormat("###.00");
-        NumberFormatter formatter = new NumberFormatter(dFormat);
+    private void mascaraInsumo() {       
         DecimalFormat dFormat2 = new DecimalFormat("#,###.00");
-        NumberFormatter formatter2 = new NumberFormatter(dFormat);
-        
-        formatter.setFormat(dFormat);
-        formatter.setAllowsInvalid(false);  
+        NumberFormatter formatter2 = new NumberFormatter(dFormat2);      
+      
         formatter2.setFormat(dFormat2);
         formatter2.setAllowsInvalid(false);  
-
-        this.txtCadInsQuant.setFormatterFactory(new DefaultFormatterFactory(formatter));
+   
         this.txtCadInsPreco.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
@@ -200,8 +196,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         txtCadInsDes = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtCadInsQuant = new javax.swing.JFormattedTextField();
         txtCadInsPreco = new javax.swing.JFormattedTextField();
+        txtCadInsQuant = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -266,8 +262,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setText("Cadastro de Insumos");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
-        getContentPane().add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 270, -1));
         getContentPane().add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 270, -1));
+
+        txtCadInsQuant.setEnabled(false);
+        getContentPane().add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 270, -1));
 
         setBounds(148, 72, 564, 416);
     }// </editor-fold>//GEN-END:initComponents
@@ -327,6 +325,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtCadInsCodigo;
     public static javax.swing.JTextField txtCadInsDes;
     public static javax.swing.JFormattedTextField txtCadInsPreco;
-    public static javax.swing.JFormattedTextField txtCadInsQuant;
+    public static javax.swing.JTextField txtCadInsQuant;
     // End of variables declaration//GEN-END:variables
 }

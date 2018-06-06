@@ -101,7 +101,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Pesquisar Insumos");
         setToolTipText("");

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -78,7 +79,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             }
             pst.close();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e);     
             //pst.close();
         }
         return codigo;
@@ -314,8 +315,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Adicionado com sucesso.");
             }
             pst.close();
-        } catch (Exception e) {
+        } catch(SQLException e2) {
+             JOptionPane.showMessageDialog(null, "Tipo de pasta já existe.");
+        }catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+             System.out.println(e);
         }
     }
 
@@ -652,7 +656,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 30, -1));
         jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 110, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 820, 360));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 830, 360));
 
         cbCadReceitaTipo.setEditable(true);
         getContentPane().add(cbCadReceitaTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, 150, -1));
@@ -719,6 +723,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         TelaPesquisarReceita receita = new TelaPesquisarReceita();
         TelaPrincipal.Desktop.add(receita);
         receita.setVisible(true);
+        receita.confirmarEscolha = true;
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
     private void tblCadRecComponentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseClicked

@@ -23,6 +23,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     private String cbPesquisar = "codigorec";
     private int codRecIns = 0;
     public int codIns = 0;
+    public boolean confirmarEscolha;
 
     /**
      * Creates new form TelaPesquisarReceita
@@ -106,7 +107,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         }
     }
 
-    //pantone datavencimento
+    //seta os campos na tela de cadastro de receita
     private void setarCampos() {
         int setar = this.tblPesquisarReceita.getSelectedRow();
         TelaCadReceita.txtCadRecCodigo.setEnabled(false);
@@ -116,7 +117,13 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaCadReceita.cbCadReceitaTipo.setSelectedItem(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
         this.codRecIns = Integer.parseInt(TelaCadReceita.txtCadRecCodigo.getText());
-        setarTbComponentes();      
+        setarTbComponentes();
+    }
+
+    //seta os campos na tela de movimentação de estoque
+    private void setarCampos2() {
+        int setar = this.tblPesquisarReceita.getSelectedRow();
+        TelaMovimentacaoEstoque.txtDescricao.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 1).toString());
     }
 
     /**
@@ -217,7 +224,11 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         // seta os campos do formulário através da tabela
         //TelaCadReceita.       
         if (evt.getClickCount() > 1) {
-            setarCampos();
+            if (this.confirmarEscolha == true) {
+                setarCampos();
+            } else {
+                setarCampos2();
+            }
             this.dispose();
         }
     }//GEN-LAST:event_tblPesquisarReceitaMouseClicked

@@ -595,7 +595,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Componentes", "Consumo"
+                "Componentes", "Consumo %"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -630,7 +630,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
         jPanel1.add(txtCadRecComponentes, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 260, -1));
 
-        jLabel7.setText("Consumo:");
+        jLabel7.setText("Consumo por kg:");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
 
         btnInsumoPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
@@ -736,6 +736,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         TelaPrincipal.Desktop.add(insumos);
         insumos.setVisible(true);
         insumos.confimaTela = false;
+        insumos.confirmarEscolha = true;
     }//GEN-LAST:event_btnInsumoPesquisarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

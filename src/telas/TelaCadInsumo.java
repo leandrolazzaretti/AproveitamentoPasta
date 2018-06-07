@@ -306,6 +306,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         TelaPrincipal.Desktop.add(insumos);
         insumos.setVisible(true);
         insumos.confimaTela = true;
+        insumos.confirmarEscolha = true;
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

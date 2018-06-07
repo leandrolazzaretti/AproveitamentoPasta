@@ -22,6 +22,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
     private String cbPesquisar = "codigo";
     public boolean confimaTela;
+    public boolean confirmarEscolha;
 
     /**
      * Creates new form TelaPesquisarInsumos
@@ -35,7 +36,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
     public void pesquisarInsumos() {
         String sql = "select * from tbinsumos where " + this.cbPesquisar + " like ?";
-        
+
         PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblCadInsumos.getModel();
@@ -60,7 +61,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
                     rs.getString(4),
                     rs.getString(5)});
             }
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -76,6 +77,14 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
         TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString().replace(".", ","));
         TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace(".", ","));
+    }
+
+    //seta o campo da descrição na tela de movimentação de estoque
+    private void setarCampos2() {
+        int setar = this.tblCadInsumos.getSelectedRow();
+        TelaMovimentacaoEstoque.txtDescricao.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
+        TelaMovimentacaoEstoque.txtEstUM.setText(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
+        TelaMovimentacaoEstoque.txtEstUM.setEnabled(false);
     }
 
     //seta os campos do formulário com o coteúdo da tabela
@@ -158,11 +167,17 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         // seta os campos do formulário através da tabela
         //TelaCadUsuario.
         if (evt.getClickCount() > 1) {
-            if (this.confimaTela == true) {
-                setarCampos();
-                this.dispose();
-            }else {
-                setarCamposTbReceita();
+            if (this.confirmarEscolha == true) {
+
+                if (this.confimaTela == true) {
+                    setarCampos();
+                    this.dispose();
+                } else {
+                    setarCamposTbReceita();
+                    this.dispose();
+                }
+            } else {
+                setarCampos2();
                 this.dispose();
             }
         }

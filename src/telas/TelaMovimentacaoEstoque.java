@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import util.Buscar;
+import util.Util;
 import util.SoNumeros;
 
 /**
@@ -49,6 +49,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             pst.setString(4, inverterData(this.txtEstData.getText()));
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
+                movimentacao(buscaCodigoReceita(), this.txtEstQuantidade.getText());
                 JOptionPane.showMessageDialog(null, "Entrada de pasta efetuada com sucesso.");
             }
 
@@ -61,20 +62,40 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     // da saída na pasta desejada 
     private void saidaPasta() {
-        String sql = "update tbEstoquePasta set quantidade = quantidade - ? where ID =? and codigoReceita =? and data =?";
+        double total = Integer.parseInt(this.txtEstQuantidade.getText());
+
+        String sql = "select  ep.quantidade, ep.ID from tbEstoquePasta as ep"
+                + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
+                + " where ep.codigoReceita = '" + buscaCodigoReceita() + "'"
+                + " order by ep.data asc";
         PreparedStatement pst;
-        Buscar buscar = new Buscar();
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtEstQuantidade.getText());
-            pst.setString(2, buscar.buscarID(buscaCodigoReceita()));
-            pst.setInt(3, buscaCodigoReceita());
-            pst.setString(4, buscar.buscarDataMenor(buscaCodigoReceita()));
-
-            int confirmar = pst.executeUpdate();
-            if (confirmar > 0) {
-                JOptionPane.showMessageDialog(null, "Saída de pasta realizada com sucesso.");
+            ResultSet rs = pst.executeQuery();
+            while (total > 0) {
+                rs.next();
+                total -= rs.getDouble(1);
+                if (total >= 0) {
+                    updateSaidaPasta(rs.getInt(2), 0);
+                }else{
+                    total += rs.getDouble(1);
+                    updateSaidaPasta(rs.getInt(2), rs.getDouble(1) - total);
+                    total = 0;
+                }
             }
+            pst.close();
+            movimentacao(buscaCodigoReceita(), "-" + this.txtEstQuantidade.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    private void updateSaidaPasta(int ID, double quantidade){
+        String sql = "update tbEstoquePasta set quantidade ='"+quantidade+"' where ID ='"+ID+"'";
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.executeUpdate();
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -94,6 +115,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             int confirmar = pst.executeUpdate();
 
             if (confirmar > 0) {
+                movimentacao(buscaCodigoInsumo(), this.txtEstQuantidade.getText());
                 JOptionPane.showMessageDialog(null, "Entrada de insumo realizada com sucesso.");
             }
             pst.close();
@@ -115,6 +137,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             int confirmar = pst.executeUpdate();
 
             if (confirmar > 0) {
+                movimentacao(buscaCodigoInsumo(), "-" + this.txtEstQuantidade.getText());
                 JOptionPane.showMessageDialog(null, "Saida de insumo realizada com sucesso.");
             }
             pst.close();
@@ -133,7 +156,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblEstPasta.getModel();
         modelo.setNumRows(0);
-        Buscar buscarDes = new Buscar();
+        Util buscarDes = new Util();
 
         this.tblEstPasta.getColumnModel().getColumn(0).setPreferredWidth(20);
         this.tblEstPasta.getColumnModel().getColumn(1).setPreferredWidth(40);
@@ -178,6 +201,24 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    private int somaPastas() {
+        String sql = "select  sum(ep.quantidade) from tbEstoquePasta as ep"
+                + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
+                + " where r.descricao = '" + this.txtDescricao.getText() + "'";
+
+        PreparedStatement pst;
+        int soma = 0;
+        try {
+            pst = conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            soma = rs.getInt(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return soma;
     }
 
     // busca o codigo da tabela de receita através da descrição
@@ -474,25 +515,28 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         } else {
             //confirma se é pasta ou insumo
             if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
-                //confirma se é entrada ou saida
-                int receita = buscaCodigoReceita();
+                //confirma se é entrada ou saida                
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
                     entradaPasta();
-                    movimentacao(receita, this.txtEstQuantidade.getText());
                     setarTabelaPasta();
                 } else {
-                    saidaPasta();
-                    movimentacao(receita, "-" + this.txtEstQuantidade.getText());
-                    setarTabelaPasta();
+                    int quantidade = Integer.parseInt(this.txtEstQuantidade.getText());
+                    if (somaPastas() < quantidade) {
+                        int confirma = JOptionPane.showConfirmDialog(null, "Quantidade em estoque não atende a sua necessidade.\n\nDeseja continuar?\n", "Atenção", JOptionPane.YES_NO_OPTION);
+                        if (confirma == JOptionPane.YES_OPTION) {
+                            saidaPasta();
+                            setarTabelaPasta();
+                        }
+                    } else {
+                        saidaPasta();
+                        setarTabelaPasta();
+                    }
                 }
             } else {
-                int insumo = buscaCodigoInsumo();
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
                     entradaInsumo();
-                    movimentacao(insumo, this.txtEstQuantidade.getText());
                 } else {
                     saidaInsumo();
-                    movimentacao(insumo, "-" + this.txtEstQuantidade.getText());
                 }
             }
             limparCampos();

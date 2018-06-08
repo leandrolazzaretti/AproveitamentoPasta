@@ -79,7 +79,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             }
             pst.close();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);     
+            JOptionPane.showMessageDialog(null, e);
             //pst.close();
         }
         return codigo;
@@ -315,11 +315,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Adicionado com sucesso.");
             }
             pst.close();
-        } catch(SQLException e2) {
-             JOptionPane.showMessageDialog(null, "Tipo de pasta já existe.");
-        }catch (Exception e) {
+        } catch (SQLException e2) {
+            JOptionPane.showMessageDialog(null, "Tipo de pasta já existe.");
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
-             System.out.println(e);
+            System.out.println(e);
         }
     }
 
@@ -344,14 +344,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     //verifica se o tipo de pasta esta ligado a alguma receita
     private boolean verificaTipoPasta(int tipo) {
         String sql = "select count (codigoTipoPasta) as total from tbreceita where codigoTipoPasta=?";
-        int total = 0;     
+        int total = 0;
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
             pst.setInt(1, tipo);
             ResultSet rs = pst.executeQuery();
             total = Integer.parseInt(rs.getString(1));
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -411,7 +411,23 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
         return total <= 0;
+    }
 
+    //confirma se a descrição da receita já existe
+    private boolean confirmaDescricao(String descricao) {
+        String sql = "select count (descricao) as total from tbreceita where descricao ='" + descricao + "';";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <= 0;
     }
 
     private boolean verificaCampos() {
@@ -426,9 +442,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void mascaraConsu() {
         DecimalFormat dFormat = new DecimalFormat("###.00");
         NumberFormatter formatter = new NumberFormatter(dFormat);
-        
+
         formatter.setFormat(dFormat);
-        formatter.setAllowsInvalid(false);  
+        formatter.setAllowsInvalid(false);
 
         this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
@@ -701,7 +717,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             if (total == false) {
                 atualizarReceita();
             } else {
-                adicionarReceita();
+                total = confirmaDescricao(this.txtCadRecDes.getText());
+                if (total == false) {
+                    JOptionPane.showMessageDialog(null, "Descrição já existe.");
+                } else {
+                    adicionarReceita();
+                }
             }
 
         }

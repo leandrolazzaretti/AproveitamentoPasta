@@ -55,4 +55,20 @@ public class Buscar {
         }
         return idReceita;
     }
+    
+    public String buscarDescricaoReceita(String codigo){
+        String sql = "select descricao from tbreceita where codigorec =?";
+        PreparedStatement pst;
+        String descricao = null;
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, codigo);
+            ResultSet rs = pst.executeQuery();
+            descricao = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return descricao;
+    }
 }

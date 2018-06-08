@@ -21,8 +21,7 @@ import util.SoNumeros;
 public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    private String[] dataSeparada;
-    private String cbPesquisar = "ID";
+    private String cbPesquisar = "ep.ID";
 
     /**
      * Creates new form TelaEstoque
@@ -33,7 +32,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.conexao = ModuloConexao.conector();
         this.txtEstData.setDocument(new SoNumeros());
         this.txtEstQuantidade.setDocument(new SoNumeros());
-        ativarTblPasta();     
+        ativarTblPasta();
     }
 
     //da entrada no estoque de pasta
@@ -47,7 +46,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             pst.setInt(1, buscaCodigoReceita());
             pst.setString(2, this.txtEstUM.getText());
             pst.setString(3, this.txtEstQuantidade.getText());
-            pst.setString(4, this.dataSeparada[2] + "/" + this.dataSeparada[1] + "/" + this.dataSeparada[0]);
+            pst.setString(4, inverterData(this.txtEstData.getText()));
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
                 JOptionPane.showMessageDialog(null, "Entrada de pasta efetuada com sucesso.");
@@ -71,7 +70,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             pst.setString(2, buscar.buscarID(buscaCodigoReceita()));
             pst.setInt(3, buscaCodigoReceita());
             pst.setString(4, buscar.buscarDataMenor(buscaCodigoReceita()));
-            
+
             int confirmar = pst.executeUpdate();
             if (confirmar > 0) {
                 JOptionPane.showMessageDialog(null, "Saída de pasta realizada com sucesso.");
@@ -123,20 +122,24 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     //Seta a tabela de estoque de pastas
     public void setarTabelaPasta() {
-        String sql = "select * from tbEstoquePasta where " + this.cbPesquisar + " like ?";
+        String sql = "select ep.ID, r.descricao, ep.quantidade, r.datavencimento, ep.data from tbEstoquePasta as ep"
+                + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
+                + " where " + this.cbPesquisar + " like ?";
 
         PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblEstPasta.getModel();
         modelo.setNumRows(0);
+        Buscar buscarDes = new Buscar();
 
         this.tblEstPasta.getColumnModel().getColumn(0).setPreferredWidth(20);
         this.tblEstPasta.getColumnModel().getColumn(1).setPreferredWidth(40);
         this.tblEstPasta.getColumnModel().getColumn(2).setPreferredWidth(40);
-        this.tblEstPasta.getColumnModel().getColumn(3).setPreferredWidth(40);
+        this.tblEstPasta.getColumnModel().getColumn(3).setPreferredWidth(20);
+        this.tblEstPasta.getColumnModel().getColumn(4).setPreferredWidth(20);
 
         try {
             pst = this.conexao.prepareStatement(sql);
@@ -147,8 +150,10 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 modelo.addRow(new Object[]{
                     rs.getInt(1),
                     rs.getString(2),
+                    rs.getString(3),
                     rs.getString(4),
-                    rs.getString(5)});
+                    inverterData(rs.getString(5))
+                });
             }
             pst.close();
         } catch (Exception e) {
@@ -156,6 +161,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         }
 
     }
+
     //Da entrada na tabela de movimentação 
     private void movimentacao(int codigoID, String quantidade) {
         String sql = "insert into tbMovimentacao(tipo,codigoID,data,quantidade) values(?,?,?,?)";
@@ -165,7 +171,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, this.cbEstoque.getSelectedItem().toString());
             pst.setInt(2, codigoID);
-            pst.setString(3, this.dataSeparada[2] + "/" + this.dataSeparada[1] + "/" + this.dataSeparada[0]);
+            pst.setString(3, inverterData(this.txtEstData.getText()));
             pst.setString(4, quantidade);
             pst.executeUpdate();
             pst.close();
@@ -212,29 +218,28 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         return codigo;
     }
 
-    //ativa a tabela de insumos
-    private void ativarTblInsumo() {
-        this.lblRecIns.setText("Insumo:");
-        this.paiGuiEstoque.setEnabledAt(0, false);
-        this.paiGuiEstoque.setEnabledAt(1, true);
-        this.paiGuiEstoque.setSelectedIndex(1);
-        limparCampos();
-        this.txtDescricao.setText(null);
-        this.txtEstUM.setEnabled(true);
-        this.txtEstUM.setText(null);
-    }
-
     //ativa a tabela de pastas
     private void ativarTblPasta() {
         this.lblRecIns.setText("Receita:");
-        this.paiGuiEstoque.setEnabledAt(0, true);
-        this.paiGuiEstoque.setEnabledAt(1, false);
-        this.paiGuiEstoque.setSelectedIndex(0);
+        this.tblEstPasta.setVisible(true);
+        this.cbPesMovEst.setEnabled(true);
+        this.txtMovEst.setEnabled(true);
         limparCampos();
         this.txtDescricao.setText(null);
         this.txtEstUM.setEnabled(false);
         this.txtEstUM.setText("kg");
         setarTabelaPasta();
+    }
+
+    private void ativarInsumo() {
+        this.txtDescricao.setText(null);
+        this.txtEstUM.setText(null);
+        this.txtEstQuantidade.setText(null);
+        this.txtEstData.setText(null);
+        this.txtEstUM.setEnabled(true);
+        this.tblEstPasta.setVisible(false);
+        this.cbPesMovEst.setEnabled(false);
+        this.txtMovEst.setEnabled(false);
     }
 
     // limpa os campos após entrada ou saida
@@ -250,6 +255,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             confirma = 1;
         }
         return confirma > 0;
+    }
+
+    private String inverterData(String data) {
+        String[] dataInvertida = data.split("/");
+        return dataInvertida[2] + "/" + dataInvertida[1] + "/" + dataInvertida[0];
     }
 
     /**
@@ -278,19 +288,18 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         txtEstUM = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        paiGuiEstoque = new javax.swing.JTabbedPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblEstPasta = new javax.swing.JTable();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblEstInsumo = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         cbPesMovEst = new javax.swing.JComboBox<>();
         txtMovEst = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblEstPasta = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("Movimentação Estoque");
         setToolTipText("");
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setToolTipText("");
@@ -364,46 +373,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         jLabel4.setText("Movimentação de Estoque");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 824, 210));
+
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setToolTipText("");
 
-        paiGuiEstoque.setToolTipText("");
-
-        tblEstPasta.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "Pasta", "Quantidade ", "Data"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(tblEstPasta);
-
-        paiGuiEstoque.addTab("Pasta", jScrollPane2);
-
-        tblEstInsumo.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID Insumo", "Insumo", "UM", "Quantidade", "Data"
-            }
-        ));
-        jScrollPane1.setViewportView(tblEstInsumo);
-
-        paiGuiEstoque.addTab("Insumo", jScrollPane1);
-
         jLabel6.setText("Pesquisar por:");
 
-        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Pasta", "Quantidade", "Data" }));
+        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Pasta", "Quantidade", "Validade", "Data" }));
         cbPesMovEst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbPesMovEstActionPerformed(evt);
@@ -416,52 +393,65 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             }
         });
 
+        tblEstPasta.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Pasta", "Quantidade ", "Validade", "Data"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblEstPasta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblEstPastaMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tblEstPasta);
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setText("Tabela Estoque de Pastas");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(paiGuiEstoque, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(cbPesMovEst, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMovEst, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                            .addComponent(jLabel6)
+                            .addGap(18, 18, 18)
+                            .addComponent(cbPesMovEst, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtMovEst, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
+                .addGap(0, 14, Short.MAX_VALUE)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(cbPesMovEst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbPesMovEst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(txtMovEst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(paiGuiEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(8, 8, 8))
-        );
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 223, 824, 300));
 
         setBounds(0, 0, 860, 560);
     }// </editor-fold>//GEN-END:initComponents
@@ -469,7 +459,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private void cbEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstoqueActionPerformed
         // Altera o nome da lblRecIns conforme o item selecionado do combobox
         if (this.cbEstoque.getSelectedItem().equals("Insumo")) {
-            ativarTblInsumo();
+            ativarInsumo();
         } else {
             ativarTblPasta();
         }
@@ -478,8 +468,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         // confirma a ação de entrada ou saida    
         //Verifica se existe algum campo vazio 
-        
-        
+
         if (verificaCampos() == true) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         } else {
@@ -488,22 +477,20 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 //confirma se é entrada ou saida
                 int receita = buscaCodigoReceita();
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    this.dataSeparada = this.txtEstData.getText().split("/");
                     entradaPasta();
                     movimentacao(receita, this.txtEstQuantidade.getText());
+                    setarTabelaPasta();
                 } else {
-                    this.dataSeparada = this.txtEstData.getText().split("/");
                     saidaPasta();
                     movimentacao(receita, "-" + this.txtEstQuantidade.getText());
+                    setarTabelaPasta();
                 }
             } else {
                 int insumo = buscaCodigoInsumo();
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    this.dataSeparada = this.txtEstData.getText().split("/");
                     entradaInsumo();
                     movimentacao(insumo, this.txtEstQuantidade.getText());
                 } else {
-                    this.dataSeparada = this.txtEstData.getText().split("/");
                     saidaInsumo();
                     movimentacao(insumo, "-" + this.txtEstQuantidade.getText());
                 }
@@ -514,6 +501,15 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
         // Altera entre saida ou entrada
+        if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
+            if (this.cbTipo.getSelectedItem().equals("Saída")) {
+                this.btnMovEstPesquisar.setEnabled(false);
+            } else {
+                this.btnMovEstPesquisar.setEnabled(true);
+            }
+        } else {
+            this.btnMovEstPesquisar.setEnabled(true);
+        }
     }//GEN-LAST:event_cbTipoActionPerformed
 
     private void btnMovEstPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovEstPesquisarActionPerformed
@@ -523,6 +519,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             TelaPrincipal.Desktop.add(receita);
             receita.setVisible(true);
             receita.confirmarEscolha = false;
+
         } else {
             TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
             TelaPrincipal.Desktop.add(insumo);
@@ -534,15 +531,19 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private void cbPesMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPesMovEstActionPerformed
         //  // adiciona um valor a variável cbPesquizar
         if (this.cbPesMovEst.getSelectedItem().equals("ID")) {
-            this.cbPesquisar = "ID";
+            this.cbPesquisar = "ep.ID";
         } else {
             if (this.cbPesMovEst.getSelectedItem().equals("Pasta")) {
-                this.cbPesquisar = "codigoReceita";
+                this.cbPesquisar = "r.descricao";
             } else {
                 if (this.cbPesMovEst.getSelectedItem().equals("Quantidade")) {
-                    this.cbPesquisar = "quantidade";
-                } else {                 
-                        this.cbPesquisar = "data";      
+                    this.cbPesquisar = "ep.quantidade";
+                } else {
+                    if (this.cbPesMovEst.getSelectedItem().equals("Validade")) {
+                        this.cbPesquisar = "r.datavencimento";
+                    } else {
+                        this.cbPesquisar = "ep.data";
+                    }
                 }
             }
         }
@@ -553,6 +554,13 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         setarTabelaPasta();
     }//GEN-LAST:event_txtMovEstKeyReleased
 
+    private void tblEstPastaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEstPastaMouseClicked
+        // seta a descrição da pasta nno campo Receita, através de duplo click com o mouse
+        if (evt.getClickCount() > 1) {
+            int setar = this.tblEstPasta.getSelectedRow();
+            this.txtDescricao.setText((String) this.tblEstPasta.getModel().getValueAt(setar, 1));
+        }
+    }//GEN-LAST:event_tblEstPastaMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfirmar;
@@ -567,13 +575,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblRecIns;
-    private javax.swing.JTabbedPane paiGuiEstoque;
-    private javax.swing.JTable tblEstInsumo;
     private javax.swing.JTable tblEstPasta;
     public static javax.swing.JTextField txtDescricao;
     public static javax.swing.JFormattedTextField txtEstData;

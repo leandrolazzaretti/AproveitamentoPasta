@@ -431,7 +431,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
     private boolean verificaCampos() {
-        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
+        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())||(this.tblCadRecComponentes.getRowCount()== 0)) {
             return false;
         } else {
             return true;

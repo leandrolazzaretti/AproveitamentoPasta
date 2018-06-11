@@ -77,7 +77,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 total -= rs.getDouble(1);
                 if (total >= 0) {
                     updateSaidaPasta(rs.getInt(2), 0);
-                }else{
+                } else {
                     total += rs.getDouble(1);
                     updateSaidaPasta(rs.getInt(2), rs.getDouble(1) - total);
                     total = 0;
@@ -89,9 +89,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-    private void updateSaidaPasta(int ID, double quantidade){
-        String sql = "update tbEstoquePasta set quantidade ='"+quantidade+"' where ID ='"+ID+"'";
+
+    private void updateSaidaPasta(int ID, double quantidade) {
+        String sql = "update tbEstoquePasta set quantidade ='" + quantidade + "' where ID ='" + ID + "'";
         PreparedStatement pst;
         try {
             pst = conexao.prepareStatement(sql);
@@ -143,6 +143,23 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    // faz a saida de insumos passando dois parametros como referência
+    private void saidaInsumo2(int codigo, double quantidade) {
+        String sql = "update tbinsumos set quantidade = quantidade - '" + quantidade + "' where codigo = '" + codigo + "'";
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            int confirma = pst.executeUpdate();
+            if (confirma > 0) {
+                System.out.println("deu boa!");
+            }       
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
         }
     }
 
@@ -201,6 +218,44 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    //retorna as UM/Consumo dos insumos da receita a dar entrada, e da saida dos insumos através da entrada da receita
+    private void retirarInsumo(int codRec) {
+        double resultado;
+        String sql = "SELECT i.UM, cr.consumo, cr.codigoInsumo"
+                + " FROM tbReceitaInsumo as cr"
+                + " inner join tbinsumos as i on cr.codigoInsumo = i.codigo"
+                + " where cr.codigoReceita ='" + codRec + "'";
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                resultado = conversaoUMInsumos(rs.getString(1), rs.getDouble(2));
+                saidaInsumo2(rs.getInt(3), resultado);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+
+    }
+
+    //Converte a UM dos insumos para kg, e calcula a quantida de cada insumo para cada Kg da minha pasta
+    private double conversaoUMInsumos(String UM, double consumo) {
+        double nes = Double.parseDouble(this.txtEstQuantidade.getText());
+        double total = nes * (consumo / 100);
+
+        if (UM.equals("g")) {
+            total = total * 1000;
+        } else {
+            if (UM.equals("mg")) {
+                total = total * 1000000;
+            }
+        }
+        return total;
     }
 
     private int somaPastas() {
@@ -270,6 +325,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtEstUM.setEnabled(false);
         this.txtEstUM.setText("kg");
         setarTabelaPasta();
+        this.lblRecIns.setText("Receita:");
     }
 
     private void ativarInsumo() {
@@ -281,6 +337,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.tblEstPasta.setVisible(false);
         this.cbPesMovEst.setEnabled(false);
         this.txtMovEst.setEnabled(false);
+        this.lblRecIns.setText("Insumo:");
     }
 
     // limpa os campos após entrada ou saida
@@ -518,15 +575,13 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 //confirma se é entrada ou saida                
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
                     entradaPasta();
+                    retirarInsumo(buscaCodigoReceita());
                     setarTabelaPasta();
                 } else {
                     int quantidade = Integer.parseInt(this.txtEstQuantidade.getText());
                     if (somaPastas() < quantidade) {
-                        int confirma = JOptionPane.showConfirmDialog(null, "Quantidade em estoque não atende a sua necessidade.\n\nDeseja continuar?\n", "Atenção", JOptionPane.YES_NO_OPTION);
-                        if (confirma == JOptionPane.YES_OPTION) {
-                            saidaPasta();
-                            setarTabelaPasta();
-                        }
+                        JOptionPane.showMessageDialog(null, "Quantidade em estoque " + somaPastas() + "kg\nNão atende a sua necessidade.");
+
                     } else {
                         saidaPasta();
                         setarTabelaPasta();

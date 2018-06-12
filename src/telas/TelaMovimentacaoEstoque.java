@@ -154,7 +154,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             pst = conexao.prepareStatement(sql);
             int confirma = pst.executeUpdate();
             if (confirma > 0) {
-                System.out.println("deu boa!");
+                //System.out.println("deu boa!");
             }       
             pst.close();
         } catch (Exception e) {
@@ -204,15 +204,16 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     //Da entrada na tabela de movimentação 
     private void movimentacao(int codigoID, String quantidade) {
-        String sql = "insert into tbMovimentacao(tipo,codigoID,data,quantidade) values(?,?,?,?)";
+        String sql = "insert into tbMovimentacao(tipo,codigoID, descricao, data,quantidade) values(?,?,?,?,?)";
 
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, this.cbEstoque.getSelectedItem().toString());
             pst.setInt(2, codigoID);
-            pst.setString(3, inverterData(this.txtEstData.getText()));
-            pst.setString(4, quantidade);
+            pst.setString(3, this.txtDescricao.getText());
+            pst.setString(4, inverterData(this.txtEstData.getText()));
+            pst.setString(5, quantidade);
             pst.executeUpdate();
             pst.close();
         } catch (Exception e) {

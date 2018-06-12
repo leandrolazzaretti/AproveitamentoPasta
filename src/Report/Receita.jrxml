@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receita" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92c3435c-6327-4c4d-b1d2-f3136444b016">
+	<property name="ireport.zoom" value="1.6105100000000019"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[select r.descricao as descri_r, tp.descricao as descri_tp, r.pantone, r.datavencimento, i.descricao as descri_i, ri.consumo from tbReceitaInsumo as ri
+inner join tbreceita as r on r.codigorec = ri.codigoReceita
+inner join tbinsumos as i on i.codigo = ri.codigoInsumo
+inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
+	</queryString>
+	<field name="descri_r" class="java.lang.Object"/>
+	<field name="descri_tp" class="java.lang.Object"/>
+	<field name="pantone" class="java.lang.Object"/>
+	<field name="datavencimento" class="java.lang.Object"/>
+	<field name="descri_i" class="java.lang.Object"/>
+	<field name="consumo" class="java.lang.Object"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="114" splitType="Stretch">
+			<staticText>
+				<reportElement x="105" y="62" width="97" height="24" uuid="3963c50f-2c62-4035-a36b-1cfd507397a5"/>
+				<textElement>
+					<font fontName="Calibri Light" size="18"/>
+				</textElement>
+				<text><![CDATA[Relatório]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="202" height="63" forecolor="#875E0C" uuid="13913384-7ecc-44e4-a1a4-b63522d1914b"/>
+				<textElement>
+					<font fontName="Calibri Light" size="50"/>
+				</textElement>
+				<text><![CDATA[Receitas]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="108" width="555" height="1" forecolor="#999999" uuid="aaeb4576-c142-4f37-ac27-b1245e9adb74"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement x="6" y="0" width="110" height="20" forecolor="#875E0C" uuid="8545fe18-eb4e-4bc1-9c9c-4923b3b6184c"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="126" y="0" width="92" height="20" forecolor="#875E0C" uuid="d6cc8061-d44e-460b-9f0c-4e4be2c58512"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Pasta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="305" y="0" width="84" height="20" forecolor="#875E0C" uuid="c808d9bd-0d6b-4c8f-89a5-c44f317c2e5b"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="471" y="0" width="80" height="20" forecolor="#875E0C" uuid="24d80334-01c5-4dfd-a1ad-19e301afce7e"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Consumo (%)]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="19" width="555" height="1" forecolor="#999999" uuid="80f0d339-28f6-4a18-9167-13336367ec08"/>
+			</line>
+			<staticText>
+				<reportElement x="228" y="0" width="77" height="20" forecolor="#875E0C" uuid="9509b1ed-16a7-4f20-adc7-56d32e4c2fcf"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pantone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="389" y="0" width="81" height="20" forecolor="#875E0C" uuid="338929b0-cc7b-430d-853d-1bf0d199dbca"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Insumo]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="6" y="0" width="110" height="20" uuid="4daabfd9-c516-4811-ad8f-7e12b995fb6b"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{descri_r}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="126" y="0" width="92" height="20" uuid="efb88734-1b0e-4652-a1de-be08133fa052"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{descri_tp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="228" y="0" width="92" height="20" uuid="c9c77d08-cfac-4a09-bb4c-e087649a9cbe"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{pantone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="320" y="0" width="58" height="20" uuid="8c9ac9cb-a5f7-41f1-b01f-3c3f1cdd24dc"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{datavencimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="378" y="0" width="105" height="20" uuid="84982293-1e32-4398-8fbd-93aaf82544cc"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{descri_i}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="483" y="0" width="68" height="20" uuid="8354700a-eb63-4406-8ecb-1b5553e886a9"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="32" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="81" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" forecolor="#999999" uuid="297e2866-e9e7-47a0-afdb-c45dbb6b6d41"/>
+			</line>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="6" y="7" width="137" height="20" uuid="2da4bf14-4c8a-4b69-907b-1fda465d67f3"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="4" width="80" height="20" uuid="ef19f880-6cc9-4217-851d-385e1bba8aa5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="519" y="4" width="31" height="20" uuid="7bba2164-c68d-4f24-948c-ed022d7a86ca"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -67,10 +67,11 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                     rs.getString(5)});
             }
             pst.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+        }catch(java.sql.SQLException ex){     
+            
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);            
         }
-
     }
 
     //seta a tabela tblCadRecComponentes com os dados do banco

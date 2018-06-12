@@ -6,6 +6,8 @@
 package telas;
 
 import conexao.ModuloConexao;
+import dao.InsumoDao;
+import dto.InsumoDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,33 +50,53 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     }
 
-    public void adicionarInsumos() {
-        String sql = "insert into tbinsumos(codigo,descricao,UM,quantidade,preco) values(?,?,?,?,?)";
+    private void confirmar(boolean confirmar){
+        InsumoDto insumoDto = new InsumoDto();
+        InsumoDao insumoDao = new InsumoDao();
 
-        PreparedStatement pst;
+        insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
+        insumoDto.setDescricao(this.txtCadInsDes.getText());
+        insumoDto.setQuantidade(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
+        insumoDto.setPreco(Double.parseDouble(this.txtCadInsPreco.getText().replace(",", ".")));
 
-        try {
-            pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtCadInsCodigo.getText());
-            pst.setString(2, this.txtCadInsDes.getText());
-            pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
-            pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
-            pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
-            //Atualiza a tabela insumos
-            int adicionado = pst.executeUpdate();
-            //Linha abaixo serve de apoio
-            //System.out.println(adicionado);
-            //confirma se realmente foi atualizada
-            if (adicionado > 0) {
-                JOptionPane.showMessageDialog(null, "Insumo cadastrado com sucesso!");
-                limparCampos();
-            }
-            pst.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            System.out.println(e);
+        if (confirmar == true) {
+            insumoDao.adicionarInsumos(insumoDto);
+
+        } else {
+//            insumoDao.atualizar(insumoDto, Integer.parseInt(this.txtCadUsuId.getText()));
+//            this.txtCadUsuSenha.setText(null);
+//            this.txtCadUsuConfirmarSenha.setText(null);
         }
     }
+    
+    //.replace(",", ".")
+//    public void adicionarInsumos() {
+//        String sql = "insert into tbinsumos(codigo,descricao,UM,quantidade,preco) values(?,?,?,?,?)";
+//
+//        PreparedStatement pst;
+//
+//        try {
+//            pst = this.conexao.prepareStatement(sql);
+//            pst.setString(1, this.txtCadInsCodigo.getText());
+//            pst.setString(2, this.txtCadInsDes.getText());
+//            pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
+//            pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
+//            pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
+//            //Atualiza a tabela insumos
+//            int adicionado = pst.executeUpdate();
+//            //Linha abaixo serve de apoio
+//            //System.out.println(adicionado);
+//            //confirma se realmente foi atualizada
+//            if (adicionado > 0) {
+//                JOptionPane.showMessageDialog(null, "Insumo cadastrado com sucesso!");
+//                limparCampos();
+//            }
+//            pst.close();
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e);
+//            System.out.println(e);
+//        }
+//    }
 
     public void atualizarInsumos() {
         String sql = "update tbinsumos set descricao=?, UM=?, quantidade=?, preco=? where codigo=?";
@@ -284,7 +306,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             if (total == false) {
                 atualizarInsumos();
             } else {
-                adicionarInsumos();
+                confirmar(true);
             }
 
         }

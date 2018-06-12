@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Insumo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0008c89d-fe68-47f4-a036-816b03419725">
+	<property name="ireport.zoom" value="1.9487171000000034"/>
+	<property name="ireport.x" value="28"/>
+	<property name="ireport.y" value="156"/>
+	<queryString language="SQL">
+		<![CDATA[select*from tbinsumos;]]>
+	</queryString>
+	<field name="codigo" class="java.lang.Object"/>
+	<field name="descricao" class="java.lang.Object"/>
+	<field name="UM" class="java.lang.Object"/>
+	<field name="quantidade" class="java.lang.Object"/>
+	<field name="preco" class="java.lang.Object"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="104" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="54" width="102" height="24" uuid="4aad8b1e-632b-4682-9b53-536cdca415dd"/>
+				<textElement>
+					<font fontName="Calibri Light" size="18"/>
+				</textElement>
+				<text><![CDATA[Relatório]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="-8" width="202" height="63" forecolor="#875E0C" uuid="71efd812-e691-408d-88b3-5e2cd34bc8b7"/>
+				<textElement>
+					<font fontName="Calibri Light" size="50"/>
+				</textElement>
+				<text><![CDATA[Insumos]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="100" width="555" height="1" forecolor="#999999" uuid="3bd2380c-41e3-47b8-88f1-445c8250109f"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="6" y="0" width="105" height="20" forecolor="#946B1A" uuid="5bc1c124-7483-4a29-8bb5-47c193c175ad"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="111" y="0" width="111" height="20" forecolor="#946B1A" uuid="b4b804fc-88c7-431c-96d0-1b63b7119025"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Insumo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="0" width="111" height="20" forecolor="#946B1A" uuid="b72907b0-52eb-461d-bab7-a181f77cb2b4"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="333" y="0" width="111" height="20" forecolor="#946B1A" uuid="3a9029b6-33b7-4c68-9252-ce62d137a6ff"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="444" y="0" width="105" height="20" forecolor="#946B1A" uuid="99f8e803-e233-4b5c-853e-1d90620cb899"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preço]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="555" height="1" forecolor="#999999" uuid="d448c96a-29ab-4af3-a73b-681b3626c3b4"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="6" y="0" width="105" height="20" uuid="246392cd-0e94-4e0d-b665-d67e7e91fc03"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="0" width="111" height="20" uuid="d3034908-f773-4278-bcc7-bab3cb4c2377"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="222" y="0" width="111" height="20" uuid="87a9d7b4-6c26-4250-8be6-08ba35b07ba0"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{UM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="333" y="0" width="111" height="20" uuid="a5759b0e-a513-4319-b9fe-8ae97cc2db37"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{quantidade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="0" width="105" height="20" uuid="a263e3dd-3054-47fc-9908-b899acc5ff47"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{preco}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="434" y="7" width="80" height="20" uuid="b565d5c3-943a-4ed1-8445-0237cc660ce2"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="6" y="11" width="137" height="20" uuid="973b5311-2166-4a46-982d-47fc4db37686"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="7" width="31" height="20" uuid="1a870c81-bb6e-484b-a9dd-6170de4c3746"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" forecolor="#999999" uuid="63ef4d97-e375-476a-9174-99a4f12cb3f9"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

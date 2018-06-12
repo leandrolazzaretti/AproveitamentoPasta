@@ -9,7 +9,9 @@ import conexao.ModuloConexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import static telas.TelaPrincipal.Desktop;
 
 /**
  *
@@ -70,5 +72,22 @@ public class Util {
             JOptionPane.showMessageDialog(null, e);
         }
         return descricao;
+    }
+    
+       public void comandoInternal(JInternalFrame frame) {
+        try {
+
+            if (!frame.isVisible()) {
+                Desktop.add(frame);
+                frame.setVisible(true);
+            }
+            if (frame.isIcon()) {
+                frame.setIcon(false);
+            }
+            frame.toFront();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
     }
 }

@@ -10,9 +10,11 @@ import dto.UsuarioDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import util.HashUtil;
 
 /**
  *
@@ -21,11 +23,87 @@ import javax.swing.JOptionPane;
 public class UsuarioDao {
 
     Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
 
     public UsuarioDao() {
         this.conexao = ModuloConexao.conector();
+    }
+
+    public void adicionar(UsuarioDto usuario) {
+        String sql = "insert into tbusuarios(codigo,nome,login,senha,perfil) values(?,?,?,?,?)";
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setInt(1, usuario.getIduser());
+            pst.setString(2, usuario.getNome());
+            pst.setString(3, usuario.getLogin());
+            pst.setString(4, HashUtil.stringMD5(usuario.getSenha()));
+            pst.setString(5, usuario.getPerfil());
+
+            //Atualiza a tabela usuarios
+            int adicionado = pst.executeUpdate();
+            //Linha abaixo serve de apoio
+            //System.out.println(adicionado);
+            //confirma se realmente foi atualizada
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
+            }
+            pst.close();
+        } catch (SQLException sqle) {
+            JOptionPane.showMessageDialog(null, sqle);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public void atualizar(UsuarioDto usuario, int codigo) {
+        String sql = "update tbusuarios set nome=?, senha=?, perfil=? where codigo=?";
+
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, usuario.getNome());
+            pst.setString(2, HashUtil.stringMD5(usuario.getSenha()));
+            pst.setString(3, usuario.getPerfil());
+            pst.setInt(4, codigo);
+
+            //Atualiza a tabela usuarios
+            int adicionado = pst.executeUpdate();
+            //Linha abaixo serve de apoio
+            //System.out.println(adicionado);
+            //confirma se realmente foi atualizada
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Usuário Atualizado com sucesso!");
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    public void deletar(int codigo) {
+
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+
+            String sql = "delete from tbusuarios where codigo=?";
+
+            PreparedStatement pst;
+
+            try {
+                pst = this.conexao.prepareStatement(sql);
+                pst.setInt(1, codigo);
+                int deleta = pst.executeUpdate();
+                //confirma o deleta
+                if (deleta > 0) {
+                    JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso!");
+                }
+                pst.close();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+
+            }
+        }
     }
 
     public List<UsuarioDto> list() {
@@ -33,61 +111,27 @@ public class UsuarioDao {
         String sql = "select * from tbusuarios ";
 
         List<UsuarioDto> lista = new ArrayList<>();
-
+        PreparedStatement pst;
         try {
-            this.pst = this.conexao.prepareStatement(sql);
-            this.rs = this.pst.executeQuery();
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
 
-            while (this.rs.next()) {
+            while (rs.next()) {
 
                 UsuarioDto usuario = new UsuarioDto();
 
-                usuario.setIduser(this.rs.getInt("codigo"));
-                usuario.setNome(this.rs.getString("nome"));
-                usuario.setLogin(this.rs.getString("login"));
-                usuario.setSenha(this.rs.getString("senha"));
-                usuario.setPerfil(this.rs.getString("perfil"));
+                usuario.setIduser(rs.getInt("codigo"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setLogin(rs.getString("login"));
+                usuario.setSenha(rs.getString("senha"));
+                usuario.setPerfil(rs.getString("perfil"));
 
                 lista.add(usuario);
             }
+            pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
         return lista;
     }
 }
-
-//    public void adicionar(UsuarioDto usuario) {
-//        String sql = "insert into tbusuarios(codigo,nome,login,senha,perfil) values(?,?,?,?,?)";
-//
-//        try {
-//            this.pst = this.conexao.prepareStatement(sql);
-//            this.pst.setInt(1, usuario.getIduser());
-//            this.pst.setString(2, usuario.getNome());
-//            this.pst.setString(3, usuario.getLogin());
-//            this.pst.setString(4, usuario.getSenha());
-//            this.pst.setString(5, usuario.getPerfil());
-//            this.pst.executeUpdate();
-//
-//            //Validação dos campos obirgatórios
-//            if ((this.txtCadUsuId.getText().isEmpty()) || (this.txtCadUsuNome.getText().isEmpty()) || (this.txtCadUsuLogin.getText().isEmpty()) || (this.txtCadUsuSenha.getText().isEmpty())) {
-//                JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-//            } else {
-//                //Atualiza a tabela usuarios
-//                int adicionado = this.pst.executeUpdate();
-//                //Linha abaixo serve de apoio
-//                //System.out.println(adicionado);
-//                //confirma se realmente foi atualizada
-//                if (adicionado > 0) {
-//                    JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
-//                    limparCampos();
-//                }
-//            }
-//        } catch (SQLException sqle) {
-//            JOptionPane.showMessageDialog(null, sqle);
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e);
-//            System.out.println(e);
-//        }
-//    }
-//}

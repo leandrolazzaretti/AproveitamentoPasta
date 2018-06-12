@@ -6,14 +6,12 @@
 package telas;
 
 import conexao.ModuloConexao;
-import dao.UsuarioDao;
-import dto.UsuarioDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import util.HashUtil;
+import dto.UsuarioDto;
+import dao.UsuarioDao;
 
 /**
  *
@@ -39,94 +37,23 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         setarCodigo();
     }
 
-    // adiciona um novo usuario
-    public void adicionar() {
-        String sql = "insert into tbusuarios(codigo,nome,login,senha,perfil) values(?,?,?,?,?)";
+    private void confirmar(boolean confirmar) {
+        UsuarioDto usuarioDto = new UsuarioDto();
+        UsuarioDao usuarioDao = new UsuarioDao();
 
-        PreparedStatement pst;
-        try {
+        usuarioDto.setIduser(Integer.parseInt(this.txtCadUsuId.getText()));
+        usuarioDto.setNome(this.txtCadUsuNome.getText());
+        usuarioDto.setLogin(this.txtCadUsuLogin.getText());
+        usuarioDto.setSenha(this.txtCadUsuSenha.getText());
+        usuarioDto.setPerfil(this.cbCadUsuPerfil.getSelectedItem().toString());
 
-            pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtCadUsuId.getText());
-            pst.setString(2, this.txtCadUsuNome.getText());
-            pst.setString(3, this.txtCadUsuLogin.getText());
-            pst.setString(4, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
-            pst.setString(5, this.cbCadUsuPerfil.getSelectedItem().toString());
+        if (confirmar == true) {
+            usuarioDao.adicionar(usuarioDto);
 
-            //Atualiza a tabela usuarios                       
-            int adicionado = pst.executeUpdate();
-            //Linha abaixo serve de apoio
-            //System.out.println(adicionado);
-            //confirma se realmente foi atualizada
-            if (adicionado > 0) {
-                JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso!");
-                limparCampos();
-            }
-            pst.close();
-        } catch (SQLException sqle) {
-            JOptionPane.showMessageDialog(null, sqle);
-            System.out.println(sqle);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            System.out.println(e);
-        }
-    }
-    // atualiza o cadastro de um usuário
-
-    private void atualizar() {
-        String sql = "update tbusuarios set nome=?, login=?, senha=?, perfil=? where codigo=?";
-
-        PreparedStatement pst;
-        try {
-            pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtCadUsuNome.getText());
-            pst.setString(2, this.txtCadUsuLogin.getText());
-            pst.setString(3, HashUtil.stringMD5(this.txtCadUsuSenha.getText()));
-            pst.setString(4, this.cbCadUsuPerfil.getSelectedItem().toString());
-            pst.setString(5, this.txtCadUsuId.getText());
-
-            //Atualiza a tabela usuarios
-            int adicionado = pst.executeUpdate();
-            //Linha abaixo serve de apoio
-            //System.out.println(adicionado);
-            //confirma se realmente foi atualizada
-            if (adicionado > 0) {
-                JOptionPane.showMessageDialog(null, "Usuário Atualizado com sucesso!");
-            }
-            pst.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-
-    //Deleta um usuário
-    private void deletar() {
-        if ((this.txtCadUsuId.getText().isEmpty())) {
-            JOptionPane.showMessageDialog(null, "Código inválido.");
         } else {
-
-            int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
-            if (confirma == JOptionPane.YES_OPTION) {
-
-                String sql = "delete from tbusuarios where codigo=?";
-
-                PreparedStatement pst;
-
-                try {
-                    pst = this.conexao.prepareStatement(sql);
-                    pst.setString(1, this.txtCadUsuId.getText());
-                    int deleta = pst.executeUpdate();
-                    //confirma o deleta
-                    if (deleta > 0) {
-                        JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso!");
-                        limparCampos();
-                    }
-                    pst.close();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, e);
-
-                }
-            }
+            usuarioDao.atualizar(usuarioDto, Integer.parseInt(this.txtCadUsuId.getText()));
+            this.txtCadUsuSenha.setText(null);
+            this.txtCadUsuConfirmarSenha.setText(null);
         }
     }
 
@@ -162,8 +89,8 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         }
 
     }
-    
-      //confirma se o login já existe
+
+    //confirma se o login já existe
     private boolean confirmaCodigo(String codigo) {
         String sql = "select count (codigo) as total from tbusuarios where codigo ='" + codigo + "';";
 
@@ -179,7 +106,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        return total <=0;
+        return total <= 0;
     }
 
     //seta os campos através da lista
@@ -440,7 +367,13 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void btnExcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcActionPerformed
         // chamad o metodo deletar
-        deletar();
+        if ((this.txtCadUsuId.getText().isEmpty())) {
+            JOptionPane.showMessageDialog(null, "Código inválido.");
+        } else {            
+            UsuarioDao usuarioDao = new UsuarioDao();
+            usuarioDao.deletar(Integer.parseInt(this.txtCadUsuId.getText()));
+            limparCampos();
+        }
     }//GEN-LAST:event_btnExcActionPerformed
 
     private void btnAdiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdiActionPerformed
@@ -455,7 +388,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             total = confirmaCodigo(this.txtCadUsuId.getText());
             if (total == false) {
                 if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
-                    atualizar();
+                    confirmar(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
                 }
@@ -468,7 +401,10 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 } else {
                     //verifica a compatibilidade das senhas
                     if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
-                        adicionar();
+                        //adicionar();
+                        confirmar(true);
+                        limparCampos();
+
                     } else {
                         JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
                     }

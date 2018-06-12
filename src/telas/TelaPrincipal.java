@@ -5,8 +5,14 @@
  */
 package telas;
 
+import conexao.ModuloConexao;
+import java.sql.Connection;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
+import util.Util;
 
 /**
  *
@@ -19,13 +25,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
     JInternalFrame frameReceita;
     JInternalFrame frameMovimentacao;
     JInternalFrame frameEstoquePasta;
+    Util frame = new Util();
+
+    Connection conexao = null;
 
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
-
+        this.conexao = ModuloConexao.conector();
     }
 
 //    public void comandoInternal(JInternalFrame frame) {
@@ -42,21 +51,20 @@ public class TelaPrincipal extends javax.swing.JFrame {
 //        }
 //        frame.toFront();
 //    }
-    private void comandoInternal(JInternalFrame frame) {
-        try {
-
-            if (!frame.isVisible()) {
-                Desktop.add(frame);
-                frame.setVisible(true);
+    private void gerarRelatorio(String relatorio) {
+        // Gerando um relatório de clientes
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            //imprimindo relatório
+            try {
+                //Usando a classe JasperPrint para preparar a impressão de um relatório
+                JasperPrint print = JasperFillManager.fillReport("C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"+relatorio+".jasper", null, conexao);
+                // a linha abaix exibe o relatório através da classe JasperViewer
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
             }
-            if (frame.isIcon()) {
-                frame.setIcon(false);
-            }
-            frame.toFront();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
         }
-
     }
 
     /**
@@ -376,18 +384,38 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menRelIns.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK));
         menRelIns.setText("Insumo");
+        menRelIns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelInsActionPerformed(evt);
+            }
+        });
         menRelatorio.add(menRelIns);
 
         menRelRec.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.SHIFT_MASK));
         menRelRec.setText("Receita");
+        menRelRec.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelRecActionPerformed(evt);
+            }
+        });
         menRelatorio.add(menRelRec);
 
         menRelUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK));
         menRelUsu.setText("Usuário");
+        menRelUsu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelUsuActionPerformed(evt);
+            }
+        });
         menRelatorio.add(menRelUsu);
 
         menRelMovEst.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.SHIFT_MASK));
         menRelMovEst.setText("Movimentação Estoque");
+        menRelMovEst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelMovEstActionPerformed(evt);
+            }
+        });
         menRelatorio.add(menRelMovEst);
 
         menu.add(menRelatorio);
@@ -425,7 +453,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
         }
-        comandoInternal(this.frameUsuario);
+        this.frame.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
     private void menCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadastroActionPerformed
@@ -437,7 +465,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
         }
-        comandoInternal(this.frameUsuario);
+        this.frame.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_menCadUsuActionPerformed
 
     private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
@@ -445,7 +473,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameInsumo == null) {
             this.frameInsumo = new TelaCadInsumo();
         }
-        comandoInternal(this.frameInsumo);
+        this.frame.comandoInternal(this.frameInsumo);
 
     }//GEN-LAST:event_btnInsumoActionPerformed
 
@@ -454,7 +482,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameInsumo == null) {
             this.frameInsumo = new TelaCadInsumo();
         }
-        comandoInternal(this.frameInsumo);
+        this.frame.comandoInternal(this.frameInsumo);
     }//GEN-LAST:event_menCadInsActionPerformed
 
     private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed
@@ -462,7 +490,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
         }
-        comandoInternal(this.frameReceita);
+        this.frame.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_btnReceitaActionPerformed
 
     private void menCadRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadRecActionPerformed
@@ -470,7 +498,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
         }
-        comandoInternal(this.frameReceita);
+        this.frame.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_menCadRecActionPerformed
 
     private void menConMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConMovEstActionPerformed
@@ -478,7 +506,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
         }
-        comandoInternal(this.frameMovimentacao);
+        this.frame.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_menConMovEstActionPerformed
 
     private void tbnEstPastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnEstPastaActionPerformed
@@ -486,7 +514,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
         }
-        comandoInternal(this.frameEstoquePasta);
+        this.frame.comandoInternal(this.frameEstoquePasta);
     }//GEN-LAST:event_tbnEstPastaActionPerformed
 
     private void menConEstPasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConEstPasActionPerformed
@@ -494,7 +522,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
         }
-        comandoInternal(this.frameEstoquePasta);
+        this.frame.comandoInternal(this.frameEstoquePasta);
     }//GEN-LAST:event_menConEstPasActionPerformed
 
     private void btnMovEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovEstoqueActionPerformed
@@ -502,8 +530,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
         }
-        comandoInternal(this.frameMovimentacao);
+        this.frame.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_btnMovEstoqueActionPerformed
+
+    private void menRelMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelMovEstActionPerformed
+        // Gerando um relatório de clientes
+        gerarRelatorio("Movimentacao");       
+    }//GEN-LAST:event_menRelMovEstActionPerformed
+
+    private void menRelUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelUsuActionPerformed
+        // Gerando um relatório de clientes
+        gerarRelatorio("Usuario");
+    }//GEN-LAST:event_menRelUsuActionPerformed
+
+    private void menRelRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelRecActionPerformed
+        // Gerando um relatório de clientes
+        gerarRelatorio("Receita");
+    }//GEN-LAST:event_menRelRecActionPerformed
+
+    private void menRelInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelInsActionPerformed
+        // Gerando um relatório de clientes
+        gerarRelatorio("Insumo");
+    }//GEN-LAST:event_menRelInsActionPerformed
 
     /**
      * @param args the command line arguments

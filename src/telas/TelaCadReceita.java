@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -22,7 +23,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-
+import util.Util;
 /**
  *
  * @author Leandro
@@ -32,6 +33,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     Connection conexao = null;
     public int codigoTipo;
     private String descIns;
+    
+    JInternalFrame framePesInsumo;
+    JInternalFrame framePesReceita;
 
     /**
      * Creates new form TelaCadReceita
@@ -431,7 +435,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
     private boolean verificaCampos() {
-        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())||(this.tblCadRecComponentes.getRowCount()== 0)) {
+        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty()) || (this.tblCadRecComponentes.getRowCount() == 0)) {
             return false;
         } else {
             return true;
@@ -741,10 +745,18 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void btnReceitaPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaPesquisarActionPerformed
         // chama a TelaPesquisarReceita
-        TelaPesquisarReceita receita = new TelaPesquisarReceita();
-        TelaPrincipal.Desktop.add(receita);
-        receita.setVisible(true);
-        receita.confirmarEscolha = true;
+//        if (0 == 0) {
+//            TelaPesquisarReceita receita = new TelaPesquisarReceita();
+//            TelaPrincipal.Desktop.add(receita);
+//            receita.setVisible(true);
+//            receita.confirmarEscolha = true;
+//
+//        }
+            Util frame = new Util();
+           if (this.framePesReceita == null) {
+            this.framePesReceita = new TelaPesquisarReceita();
+        }
+        frame.comandoInternal(this.framePesReceita);
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
     private void tblCadRecComponentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseClicked

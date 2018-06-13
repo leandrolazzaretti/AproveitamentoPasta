@@ -88,10 +88,90 @@ public class MovimentacaoEstoqueDao {
             JOptionPane.showMessageDialog(null, e);
         }
     }
+     
+     //faz um update na tabela de insumos aumentando a quantidade
+    public void entradaInsumo(double quantidade, int codigo) {
+        String sql = "update tbinsumos set quantidade = quantidade + ? where codigo = ?";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setDouble(1, quantidade);
+            pst.setInt(2, codigo);
+            int confirmar = pst.executeUpdate();
+
+            if (confirmar > 0) {
+               
+                JOptionPane.showMessageDialog(null, "Entrada de insumo realizada com sucesso.");
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //faz um update na tabela de insumos diminuindo a quantidade
+    public void saidaInsumo(double quantidade, int codigo) {
+        String sql = "update tbinsumos set quantidade = quantidade - ? where codigo = ?";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setDouble(1, quantidade);
+            pst.setInt(2, codigo);
+            int confirmar = pst.executeUpdate();
+
+            if (confirmar > 0) {
+                
+                JOptionPane.showMessageDialog(null, "Saida de insumo realizada com sucesso.");
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    // faz a saida de insumos passando dois parametros como referência
+    public void saidaInsumo2(int codigo, double quantidade) {
+        String sql = "update tbinsumos set quantidade = quantidade - '" + quantidade + "' where codigo = '" + codigo + "'";
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            int confirma = pst.executeUpdate();
+            if (confirma > 0) {
+                //System.out.println("deu boa!");
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
 
     // busca o codigo da tabela de receita através da descrição
     public int buscaCodigoReceita(String descricao) {
         String sql = "select codigorec from tbreceita where descricao =?";
+        int codigo = 0;
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, descricao);
+            ResultSet rs = pst.executeQuery();
+
+            codigo = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return codigo;
+    }
+    
+            // busca o codigo da tabela de insumos através da descrição
+    public int buscaCodigoInsumo(String descricao) {
+        String sql = "select codigo from tbinsumos where descricao =?";
         int codigo = 0;
         PreparedStatement pst;
 

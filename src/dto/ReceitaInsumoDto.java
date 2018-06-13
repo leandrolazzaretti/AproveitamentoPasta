@@ -19,6 +19,10 @@ public class ReceitaInsumoDto {
         this.codigoInsumo = codigoInsumo;
         this.consumo = consumo;
     }
+    
+    public ReceitaInsumoDto(){
+        
+    }
 
     public int getCodigoReceita() {
         return codigoReceita;

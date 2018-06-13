@@ -14,10 +14,10 @@ public class ReceitaDto {
     private int codigo;
     private String descricao;
     private String pantone;
-    private String tipo;
+    private int tipo;
     private int vencimento;
 
-    public ReceitaDto(int codigo, String descricao, String pantone, String tipo, int vencimento) {
+    public ReceitaDto(int codigo, String descricao, String pantone, int tipo, int vencimento) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.pantone = pantone;
@@ -53,11 +53,11 @@ public class ReceitaDto {
         this.pantone = pantone;
     }
 
-    public String getTipo() {
+    public int getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(int tipo) {
         this.tipo = tipo;
     }
 

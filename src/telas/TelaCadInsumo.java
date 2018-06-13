@@ -25,8 +25,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
 
-    private String cbPesquisar = "codigo";
-
     /**
      * Creates new form TelaCadInsumos
      */
@@ -40,6 +38,24 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         limparCampos();
     }
 
+        private void confirmar(boolean confirmar) {
+        InsumoDto insumoDto = new InsumoDto();
+        InsumoDao insumoDao = new InsumoDao();
+
+        insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
+        insumoDto.setDescricao(this.txtCadInsDes.getText());
+        insumoDto.setUm(this.cbCadInsUm.getSelectedItem().toString());
+        insumoDto.setQuantidade(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
+        insumoDto.setPreco(Double.parseDouble(this.txtCadInsPreco.getText().replace(",", ".")));
+
+        if (confirmar == true) {
+            insumoDao.adicionarInsumos(insumoDto);
+
+        } else {
+            insumoDao.atualizarInsumos(insumoDto, Integer.parseInt(this.txtCadInsCodigo.getText()));
+        }
+    }
+    
     private void limparCampos() {
         this.txtCadInsCodigo.setEnabled(true);
         this.txtCadInsCodigo.setText(null);
@@ -48,108 +64,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsQuant.setText("0");
         this.txtCadInsPreco.setValue(null);
 
-    }
-
-    private void confirmar(boolean confirmar){
-        InsumoDto insumoDto = new InsumoDto();
-        InsumoDao insumoDao = new InsumoDao();
-
-        insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
-        insumoDto.setDescricao(this.txtCadInsDes.getText());
-        insumoDto.setQuantidade(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
-        insumoDto.setPreco(Double.parseDouble(this.txtCadInsPreco.getText().replace(",", ".")));
-
-        if (confirmar == true) {
-            insumoDao.adicionarInsumos(insumoDto);
-
-        } else {
-//            insumoDao.atualizar(insumoDto, Integer.parseInt(this.txtCadUsuId.getText()));
-//            this.txtCadUsuSenha.setText(null);
-//            this.txtCadUsuConfirmarSenha.setText(null);
-        }
-    }
-    
-    //.replace(",", ".")
-//    public void adicionarInsumos() {
-//        String sql = "insert into tbinsumos(codigo,descricao,UM,quantidade,preco) values(?,?,?,?,?)";
-//
-//        PreparedStatement pst;
-//
-//        try {
-//            pst = this.conexao.prepareStatement(sql);
-//            pst.setString(1, this.txtCadInsCodigo.getText());
-//            pst.setString(2, this.txtCadInsDes.getText());
-//            pst.setString(3, this.cbCadInsUm.getSelectedItem().toString());
-//            pst.setString(4, this.txtCadInsQuant.getText().replace(",", "."));
-//            pst.setString(5, this.txtCadInsPreco.getText().replace(",", "."));
-//            //Atualiza a tabela insumos
-//            int adicionado = pst.executeUpdate();
-//            //Linha abaixo serve de apoio
-//            //System.out.println(adicionado);
-//            //confirma se realmente foi atualizada
-//            if (adicionado > 0) {
-//                JOptionPane.showMessageDialog(null, "Insumo cadastrado com sucesso!");
-//                limparCampos();
-//            }
-//            pst.close();
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e);
-//            System.out.println(e);
-//        }
-//    }
-
-    public void atualizarInsumos() {
-        String sql = "update tbinsumos set descricao=?, UM=?, quantidade=?, preco=? where codigo=?";
-
-        PreparedStatement pst;
-
-        try {
-            pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtCadInsDes.getText());
-            pst.setString(2, this.cbCadInsUm.getSelectedItem().toString());
-            pst.setString(3, this.txtCadInsQuant.getText().replace(",", "."));
-            pst.setString(4, this.txtCadInsPreco.getText().replace(",", "."));
-            pst.setString(5, this.txtCadInsCodigo.getText());
-            //Atualiza a tabela insumos
-            int adicionado = pst.executeUpdate();
-            //Linha abaixo serve de apoio
-            //System.out.println(adicionado);
-            //confirma se realmente foi atualizada
-            if (adicionado > 0) {
-                JOptionPane.showMessageDialog(null, "Insumo Atualizado com sucesso!");                
-            }
-            pst.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-
-    public void deletarInsumos() {
-        if (this.txtCadInsCodigo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Selecione um insumo válido.");
-        } else {
-            int confirmar = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja Deletar este insumo?", "Atenção", JOptionPane.YES_NO_OPTION);
-            if (confirmar == JOptionPane.YES_OPTION) {
-
-                String sql = "delete from tbinsumos where codigo=?";
-
-                PreparedStatement pst;
-
-                try {
-                    pst = this.conexao.prepareStatement(sql);
-                    pst.setString(1, this.txtCadInsCodigo.getText());
-                    int deletado = pst.executeUpdate();
-
-                    if (deletado > 0) {
-                        JOptionPane.showMessageDialog(null, "Insumo deletado com sucesso!");
-                        limparCampos();
-                    }
-                    pst.close();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, e);
-                }
-            }
-        }
     }
 
     //confirma se o codigo já existe
@@ -163,7 +77,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             total = Integer.parseInt(rs.getString(1));
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -184,15 +98,15 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             return true;
         }
     }
-    
-        //mascara para o campo preço/ quantidade(foramato de moeda)
-    private void mascaraInsumo() {       
+
+    //mascara para o campo preço/ quantidade(foramato de moeda)
+    private void mascaraInsumo() {
         DecimalFormat dFormat2 = new DecimalFormat("#,###.00");
-        NumberFormatter formatter2 = new NumberFormatter(dFormat2);      
-      
+        NumberFormatter formatter2 = new NumberFormatter(dFormat2);
+
         formatter2.setFormat(dFormat2);
-        formatter2.setAllowsInvalid(false);  
-   
+        formatter2.setAllowsInvalid(false);
+
         this.txtCadInsPreco.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
@@ -304,9 +218,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             //chama o metodo para confirmar se o codigo já existe
             total = confirmaCodigo(this.txtCadInsCodigo.getText());
             if (total == false) {
-                atualizarInsumos();
+                confirmar(false);
             } else {
                 confirmar(true);
+                limparCampos();
             }
 
         }
@@ -314,7 +229,14 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnCadInsDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsDeletarActionPerformed
         // chama o metodo deletar
-        deletarInsumos();
+        if (this.txtCadInsCodigo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Selecione um insumo válido.");
+        } else {
+            InsumoDao deletar = new InsumoDao();
+            deletar.deletarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
+            limparCampos();
+        }
+        
     }//GEN-LAST:event_btnCadInsDeletarActionPerformed
 
     private void btnCadInsLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsLimparActionPerformed

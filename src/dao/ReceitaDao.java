@@ -5,10 +5,128 @@
  */
 package dao;
 
+import conexao.ModuloConexao;
+import dto.ReceitaDto;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Leandro
  */
 public class ReceitaDao {
+
+    Connection conexao = null;
+
+    public ReceitaDao() {
+        this.conexao = ModuloConexao.conector();
+    }
+
+    public void adicionarReceita(ReceitaDto receita) {
+        String sql = "insert into tbreceita(codigorec,descricao,pantone,codigoTipoPasta,datavencimento) values(?,?,?,?,?)";
+
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setInt(1, receita.getCodigo());
+            pst.setString(2, receita.getDescricao());
+            pst.setString(3, receita.getPantone());
+            pst.setInt(4, receita.getTipo());
+            pst.setInt(5, receita.getVencimento());
+            //Atualiza a tabela receita
+            int adicionado = pst.executeUpdate();
+            //Linha abaixo serve de apoio
+            //System.out.println(adicionado);
+            //confirma se realmente foi atualizada
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Receita cadastrada com sucesso!");
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public void atualizarReceita(ReceitaDto receita, int codigo) {
+        String sql = "update tbreceita set descricao=?, pantone=?, codigoTipoPasta=?, datavencimento=? where codigorec=?";
+
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setString(1, receita.getDescricao());
+            pst.setString(2, receita.getPantone());
+            pst.setInt(3, receita.getTipo());
+            pst.setInt(4, receita.getVencimento());
+            pst.setInt(5, codigo);
+            //Atualiza a tabela Receita
+            int adicionado = pst.executeUpdate();
+            //Linha abaixo serve de apoio
+            //System.out.println(adicionado);
+            //confirma se realmente foi atualizada
+            if (adicionado > 0) {
+                JOptionPane.showMessageDialog(null, "Receita Atualizada com sucesso!");
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public void deletarReceita(int codigo) {
+
+        String sql = "delete from tbreceita where codigorec=?";
+
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setInt(1, codigo);
+            int deletado = pst.executeUpdate();
+            if (deletado > 0) {
+                JOptionPane.showMessageDialog(null, "Receita deletada com sucesso!");
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
     
+        //confirma se o codigo da receita já existe
+    public boolean confirmaCodigo(String codigo) {
+        String sql = "select count (codigorec) as total from tbreceita where codigorec ='" + codigo + "';";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <= 0;
+    }
+
+    //confirma se a descrição da receita já existe
+    public boolean confirmaDescricao(String descricao) {
+        String sql = "select count (descricao) as total from tbreceita where descricao ='" + descricao + "';";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <= 0;
+    }
+
 }

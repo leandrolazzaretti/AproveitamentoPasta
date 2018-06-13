@@ -6,7 +6,6 @@
 package dao;
 
 import conexao.ModuloConexao;
-import dto.ReceitaInsumoDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

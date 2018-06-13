@@ -6,6 +6,10 @@
 package telas;
 
 import conexao.ModuloConexao;
+import dao.MovimentacaoDao;
+import dao.MovimentacaoEstoqueDao;
+import dto.MovimentacaoDto;
+import dto.MovimentacaoEstoqueDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,72 +39,113 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         ativarTblPasta();
     }
 
-    //da entrada no estoque de pasta
-    private void entradaPasta() {
-        String sql = "insert into tbEstoquePasta(codigoReceita,UM,quantidade,data)"
-                + " values(?,?,?,?)";
-        PreparedStatement pst;
+    private void movimentacao(boolean confirmaTipo, String confirmaEstoque) {
+        MovimentacaoDto movDto = new MovimentacaoDto();
+        MovimentacaoDao movDao = new MovimentacaoDao();
+        int codigo = 0;
+        if (confirmaEstoque.equals("Pasta")) {
+            codigo = movDao.buscaCodigoReceita(this.txtDescricao.getText());
+        } else {
+            codigo = movDao.buscaCodigoInsumo(this.txtDescricao.getText());
+        }     
+        if (confirmaTipo == true) {
+            movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
+            movDto.setCodigo(codigo);
+            movDto.setDescricao(this.txtDescricao.getText());
+            movDto.setData(inverterData(this.txtEstData.getText()));
+            movDto.setQuantidade(this.txtEstQuantidade.getText());
 
-        try {
-            pst = this.conexao.prepareStatement(sql);
-            pst.setInt(1, buscaCodigoReceita());
-            pst.setString(2, this.txtEstUM.getText());
-            pst.setString(3, this.txtEstQuantidade.getText());
-            pst.setString(4, inverterData(this.txtEstData.getText()));
-            int adicionado = pst.executeUpdate();
-            if (adicionado > 0) {
-                movimentacao(buscaCodigoReceita(), this.txtEstQuantidade.getText());
-                JOptionPane.showMessageDialog(null, "Entrada de pasta efetuada com sucesso.");
-            }
+        } else {
+            movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
+            movDto.setCodigo(codigo);
+            movDto.setDescricao(this.txtDescricao.getText());
+            movDto.setData(inverterData(this.txtEstData.getText()));
+            movDto.setQuantidade("-" + this.txtEstQuantidade.getText());
+        }
+        movDao.movimentacao(movDto);
+    }
 
-            pst.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+    private void confirmaEstoquePasta(boolean confirma) {
+        MovimentacaoEstoqueDto movEstDto = new MovimentacaoEstoqueDto();
+        MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
+
+        movEstDto.setCodigoReceita(movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
+        movEstDto.setUM(this.txtEstUM.getText());
+        movEstDto.setQuantidade(Double.parseDouble(this.txtEstQuantidade.getText()));
+        movEstDto.setData(inverterData(this.txtEstData.getText()));
+
+        if (confirma == true) {
+            movEstDao.entradaPasta(movEstDto);
+        } else {
+            movEstDao.saidaPasta(movEstDto.getQuantidade(), movEstDto.getCodigoReceita());
         }
 
     }
 
-    // da saída na pasta desejada 
-    private void saidaPasta() {
-        double total = Integer.parseInt(this.txtEstQuantidade.getText());
-
-        String sql = "select  ep.quantidade, ep.ID from tbEstoquePasta as ep"
-                + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
-                + " where ep.codigoReceita = '" + buscaCodigoReceita() + "'"
-                + " order by ep.data asc";
-        PreparedStatement pst;
-        try {
-            pst = this.conexao.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-            while (total > 0) {
-                rs.next();
-                total -= rs.getDouble(1);
-                if (total >= 0) {
-                    updateSaidaPasta(rs.getInt(2), 0);
-                } else {
-                    total += rs.getDouble(1);
-                    updateSaidaPasta(rs.getInt(2), rs.getDouble(1) - total);
-                    total = 0;
-                }
-            }
-            pst.close();
-            movimentacao(buscaCodigoReceita(), "-" + this.txtEstQuantidade.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-
-    private void updateSaidaPasta(int ID, double quantidade) {
-        String sql = "update tbEstoquePasta set quantidade ='" + quantidade + "' where ID ='" + ID + "'";
-        PreparedStatement pst;
-        try {
-            pst = conexao.prepareStatement(sql);
-            pst.executeUpdate();
-            pst.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
+//    //da entrada no estoque de pasta
+//    private void entradaPasta() {
+//        String sql = "insert into tbEstoquePasta(codigoReceita,UM,quantidade,data)"
+//                + " values(?,?,?,?)";
+//        PreparedStatement pst;
+//
+//        try {
+//            pst = this.conexao.prepareStatement(sql);
+//            pst.setInt(1, buscaCodigoReceita());
+//            pst.setString(2, this.txtEstUM.getText());
+//            pst.setString(3, this.txtEstQuantidade.getText());
+//            pst.setString(4, inverterData(this.txtEstData.getText()));
+//            int adicionado = pst.executeUpdate();
+//            if (adicionado > 0) {
+//                movimentacao(buscaCodigoReceita(), this.txtEstQuantidade.getText());
+//                JOptionPane.showMessageDialog(null, "Entrada de pasta efetuada com sucesso.");
+//            }
+//
+//            pst.close();
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e);
+//        }
+//
+//    }
+//    // da saída na pasta desejada 
+//    private void saidaPasta() {
+//        double total = Integer.parseInt(this.txtEstQuantidade.getText());
+//
+//        String sql = "select  ep.quantidade, ep.ID from tbEstoquePasta as ep"
+//                + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
+//                + " where ep.codigoReceita = '" + buscaCodigoReceita() + "'"
+//                + " order by ep.data asc";
+//        PreparedStatement pst;
+//        try {
+//            pst = this.conexao.prepareStatement(sql);
+//            ResultSet rs = pst.executeQuery();
+//            while (total > 0) {
+//                rs.next();
+//                total -= rs.getDouble(1);
+//                if (total >= 0) {
+//                    updateSaidaPasta(rs.getInt(2), 0);
+//                } else {
+//                    total += rs.getDouble(1);
+//                    updateSaidaPasta(rs.getInt(2), rs.getDouble(1) - total);
+//                    total = 0;
+//                }
+//            }
+//            pst.close();
+//            movimentacao(buscaCodigoReceita(), "-" + this.txtEstQuantidade.getText());
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e);
+//        }
+//    }
+//    private void updateSaidaPasta(int ID, double quantidade) {
+//        String sql = "update tbEstoquePasta set quantidade ='" + quantidade + "' where ID ='" + ID + "'";
+//        PreparedStatement pst;
+//        try {
+//            pst = conexao.prepareStatement(sql);
+//            pst.executeUpdate();
+//            pst.close();
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e);
+//        }
+//    }
 
     //faz um update na tabela de insumos aumentando a quantidade
     private void entradaInsumo() {
@@ -155,7 +200,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             int confirma = pst.executeUpdate();
             if (confirma > 0) {
                 //System.out.println("deu boa!");
-            }       
+            }
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -575,7 +620,8 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
                 //confirma se é entrada ou saida                
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    entradaPasta();
+                    confirmaEstoquePasta(true);
+                    movimentacao(true, "Pasta");
                     retirarInsumo(buscaCodigoReceita());
                     setarTabelaPasta();
                 } else {
@@ -584,7 +630,8 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                         JOptionPane.showMessageDialog(null, "Quantidade em estoque " + somaPastas() + "kg\nNão atende a sua necessidade.");
 
                     } else {
-                        saidaPasta();
+                        confirmaEstoquePasta(false);
+                        movimentacao(false, "Pasta");
                         setarTabelaPasta();
                     }
                 }

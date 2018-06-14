@@ -8,14 +8,18 @@ package telas;
 import conexao.ModuloConexao;
 import dao.InsumoDao;
 import dto.InsumoDto;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
+import util.Util;
 
 /**
  *
@@ -24,6 +28,9 @@ import util.SoNumeros;
 public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
+    JInternalFrame framePesqInsumo;
+    Util frame = new Util();
+    TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
 
     /**
      * Creates new form TelaCadInsumos
@@ -38,14 +45,17 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         limparCampos();
     }
 
-        private void confirmar(boolean confirmar) {
+    private void confirmar(boolean confirmar) {
         InsumoDto insumoDto = new InsumoDto();
         InsumoDao insumoDao = new InsumoDao();
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        formatter.setMaximumFractionDigits(2);
 
         insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
         insumoDto.setDescricao(this.txtCadInsDes.getText());
         insumoDto.setUm(this.cbCadInsUm.getSelectedItem().toString());
-        insumoDto.setQuantidade(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
+        BigDecimal valorBigDecimal = new BigDecimal(this.txtCadInsQuant.getText().replace(",", ".")).setScale(2);
+        insumoDto.setQuantidade(valorBigDecimal);
         insumoDto.setPreco(Double.parseDouble(this.txtCadInsPreco.getText().replace(",", ".")));
 
         if (confirmar == true) {
@@ -55,7 +65,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             insumoDao.atualizarInsumos(insumoDto, Integer.parseInt(this.txtCadInsCodigo.getText()));
         }
     }
-    
+
     private void limparCampos() {
         this.txtCadInsCodigo.setEnabled(true);
         this.txtCadInsCodigo.setText(null);
@@ -236,21 +246,27 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             deletar.deletarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
             limparCampos();
         }
-        
+
     }//GEN-LAST:event_btnCadInsDeletarActionPerformed
 
     private void btnCadInsLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsLimparActionPerformed
         // chama o metodo limpar    
         limparCampos();
     }//GEN-LAST:event_btnCadInsLimparActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Chama a TelePesquisarInsumos
-        TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
-        TelaPrincipal.Desktop.add(insumos);
-        insumos.setVisible(true);
-        insumos.confimaTela = true;
-        insumos.confirmarEscolha = true;
+
+        if (this.framePesqInsumo == null) {
+            this.framePesqInsumo = new TelaPesquisarInsumos();
+        }
+        this.insumo.pesquisarInsumos();
+        this.frame.comandoInternal(this.framePesqInsumo);
+        TelaPesquisarInsumos.confimaTela = true;
+        TelaPesquisarInsumos.confirmarEscolha = true;
+
+//        TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
+//        TelaPrincipal.Desktop.add(insumos);
+//        insumos.setVisible(true);
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

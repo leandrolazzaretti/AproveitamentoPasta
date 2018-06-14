@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import dto.UsuarioDto;
 import dao.UsuarioDao;
+import javax.swing.JInternalFrame;
+import util.Util;
 
 /**
  *
@@ -21,9 +23,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
 
+    TelaPesquisarUsuario user = new TelaPesquisarUsuario();
     UsuarioDao lista = new UsuarioDao();
     private int index = -1;
     private int codigo;
+    Util frame = new Util();
+    JInternalFrame framePesUsuario;
 
     /**
      * Creates new form TelaCadUsuario
@@ -33,7 +38,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
         this.conexao = ModuloConexao.conector();
         //this.txtCadUsuId.setDocument(new SoNumeros());
-
         setarCodigo();
     }
 
@@ -304,10 +308,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadUsePesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadUsePesquisarActionPerformed
-        // chama a TelaPesquisarUsuario
-        TelaPesquisarUsuario pesq = new TelaPesquisarUsuario();
-        TelaPrincipal.Desktop.add(pesq);
-        pesq.setVisible(true);
+        // chama a TelaPesquisarUsuario framePesUsuario
+        if (this.framePesUsuario == null) {
+            this.framePesUsuario = new TelaPesquisarUsuario();
+        }
+        this.user.pesquisarUsuario();
+        this.frame.comandoInternal(this.framePesUsuario);     
     }//GEN-LAST:event_btnCadUsePesquisarActionPerformed
 
     private void btnUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUltimoActionPerformed
@@ -369,7 +375,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         // chamad o metodo deletar
         if ((this.txtCadUsuId.getText().isEmpty())) {
             JOptionPane.showMessageDialog(null, "Código inválido.");
-        } else {            
+        } else {
             UsuarioDao usuarioDao = new UsuarioDao();
             usuarioDao.deletar(Integer.parseInt(this.txtCadUsuId.getText()));
             limparCampos();

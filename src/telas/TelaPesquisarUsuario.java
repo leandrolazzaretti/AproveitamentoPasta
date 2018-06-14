@@ -17,13 +17,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Leandro
  */
-public class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
+public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
 
     private String cbPesquisar = "codigo";
     
     public UsuarioDto guardar = new UsuarioDto();
+    
 
     /**
      * Creates new form TelaPesquisarUsuario

@@ -78,6 +78,7 @@ public class Util {
         try {
 
             if (!frame.isVisible()) {
+                Desktop.remove(frame);
                 Desktop.add(frame);
                 frame.setVisible(true);
             }
@@ -87,6 +88,7 @@ public class Util {
             frame.toFront();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
         }
 
     }

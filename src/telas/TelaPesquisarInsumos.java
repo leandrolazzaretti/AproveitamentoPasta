@@ -21,8 +21,8 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     Connection conexao = null;
 
     private String cbPesquisar = "codigo";
-    public boolean confimaTela;
-    public boolean confirmarEscolha;
+    public static boolean confimaTela;
+    public static boolean confirmarEscolha;
 
     /**
      * Creates new form TelaPesquisarInsumos

@@ -24,6 +24,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import util.Util;
 
 /**
  *
@@ -36,7 +37,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private String descIns;
     TipoPastaDao pasta = new TipoPastaDao();
     ReceitaInsumoDao recInsDao = new ReceitaInsumoDao();
-    
+    Util frame = new Util();
+    TelaPesquisarReceita rec = new TelaPesquisarReceita();
 
     JInternalFrame framePesInsumo;
     JInternalFrame framePesReceita;
@@ -402,13 +404,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void btnReceitaPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaPesquisarActionPerformed
         // chama a TelaPesquisarReceita
-        if (0 == 0) {
-            TelaPesquisarReceita receita = new TelaPesquisarReceita();
-            TelaPrincipal.Desktop.add(receita);
-            receita.setVisible(true);
-            receita.confirmarEscolha = true;
-
+        if (this.framePesReceita == null) {
+            this.framePesReceita = new TelaPesquisarReceita();
         }
+        this.rec.pesquisarReceita();
+        this.frame.comandoInternal(this.framePesReceita);
+        TelaPesquisarReceita.confirmarEscolha = true;
+
+        
 
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
@@ -418,11 +421,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void btnInsumoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoPesquisarActionPerformed
         // chama a TelaPesquisarInsumos
-        TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
-        TelaPrincipal.Desktop.add(insumos);
-        insumos.setVisible(true);
-        insumos.confimaTela = false;
-        insumos.confirmarEscolha = true;
+        
+        if (this.framePesInsumo == null) {
+            this.framePesInsumo = new TelaPesquisarInsumos();
+        }      
+        this.frame.comandoInternal(this.framePesInsumo);
+        TelaPesquisarInsumos.confirmarEscolha = true;
+        TelaPesquisarInsumos.confimaTela = false;
+       
     }//GEN-LAST:event_btnInsumoPesquisarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

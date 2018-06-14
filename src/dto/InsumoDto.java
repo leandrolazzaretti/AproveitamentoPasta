@@ -5,6 +5,8 @@
  */
 package dto;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author Leandro
@@ -14,10 +16,10 @@ public class InsumoDto {
     private int codigo;
     private String descricao;
     private String um;
-    private double quantidade;
+    private BigDecimal quantidade;
     private double preco;
 
-    public InsumoDto(int codigo, String descricao, String um, double quantidade, double preco) {
+    public InsumoDto(int codigo, String descricao, String um, BigDecimal quantidade, double preco) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.um = um;
@@ -53,11 +55,11 @@ public class InsumoDto {
         this.um = um;
     }
 
-    public double getQuantidade() {
+    public BigDecimal getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(double quantidade) {
+    public void setQuantidade(BigDecimal quantidade) {
         this.quantidade = quantidade;
     }
 

@@ -23,7 +23,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     private String cbPesquisar = "codigorec";
     private int codRecIns = 0;
     public int codIns = 0;
-    public boolean confirmarEscolha;
+    public static boolean confirmarEscolha;
 
     /**
      * Creates new form TelaPesquisarReceita

@@ -37,20 +37,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         this.conexao = ModuloConexao.conector();
     }
 
-//    public void comandoInternal(JInternalFrame frame) {
-//
-//        for (JInternalFrame internal : this.Desktop.getAllFrames()) {
-//            if (internal.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
-//                frame.toFront();
-//                return;
-//            }
-//        }
-//        if (!frame.isVisible()) {
-//            this.Desktop.add(frame);
-//            frame.setVisible(true);
-//        }
-//        frame.toFront();
-//    }
+
     private void gerarRelatorio(String relatorio) {
         // Gerando um relatório de clientes
         int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
@@ -402,6 +389,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menRelUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK));
         menRelUsu.setText("Usuário");
+        menRelUsu.setEnabled(false);
         menRelUsu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menRelUsuActionPerformed(evt);

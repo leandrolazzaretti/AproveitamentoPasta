@@ -389,7 +389,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menRelUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK));
         menRelUsu.setText("Usuário");
-        menRelUsu.setEnabled(false);
         menRelUsu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menRelUsuActionPerformed(evt);
@@ -398,7 +397,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menRelatorio.add(menRelUsu);
 
         menRelMovEst.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.SHIFT_MASK));
-        menRelMovEst.setText("Movimentação Estoque");
+        menRelMovEst.setText("Movimentação");
         menRelMovEst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menRelMovEstActionPerformed(evt);
@@ -610,7 +609,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem menRelIns;
     private javax.swing.JMenuItem menRelMovEst;
     private javax.swing.JMenuItem menRelRec;
-    private javax.swing.JMenuItem menRelUsu;
+    public static javax.swing.JMenuItem menRelUsu;
     private javax.swing.JMenu menRelatorio;
     private javax.swing.JMenuBar menu;
     private javax.swing.JButton tbnEstPasta;

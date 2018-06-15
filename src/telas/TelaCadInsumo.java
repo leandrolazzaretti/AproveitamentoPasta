@@ -29,7 +29,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
     JInternalFrame framePesqInsumo;
-    Util frame = new Util();
+    Util util = new Util();
     TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
 
     /**
@@ -54,9 +54,15 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
         insumoDto.setDescricao(this.txtCadInsDes.getText());
         insumoDto.setUm(this.cbCadInsUm.getSelectedItem().toString());
-        BigDecimal valorBigDecimal = new BigDecimal(this.txtCadInsQuant.getText().replace(",", ".")).setScale(2);
-        insumoDto.setQuantidade(valorBigDecimal);
-        insumoDto.setPreco(Double.parseDouble(this.txtCadInsPreco.getText().replace(",", ".")));
+        
+        String valorQuant =this.util.formatador(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
+        BigDecimal valor = new BigDecimal(this.txtCadInsPreco.getText().replace(",", "."));
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        String formatado = nf.format(valor);
+        //System.out.println(formatado);
+        
+        insumoDto.setQuantidade(valorQuant);
+        insumoDto.setPreco(formatado);
 
         if (confirmar == true) {
             insumoDao.adicionarInsumos(insumoDto);
@@ -260,7 +266,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             this.framePesqInsumo = new TelaPesquisarInsumos();
         }
         this.insumo.pesquisarInsumos();
-        this.frame.comandoInternal(this.framePesqInsumo);
+        this.util.comandoInternal(this.framePesqInsumo);
         TelaPesquisarInsumos.confimaTela = true;
         TelaPesquisarInsumos.confirmarEscolha = true;
 

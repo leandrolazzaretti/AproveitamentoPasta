@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import util.Util;
 
 /**
  *
@@ -20,8 +21,6 @@ public class InsumoDao {
 
     Connection conexao = null;
 
-    
-    
     public InsumoDao() {
         this.conexao = ModuloConexao.conector();
     }
@@ -30,16 +29,14 @@ public class InsumoDao {
         String sql = "insert into tbinsumos(codigo,descricao,UM,quantidade,preco) values(?,?,?,?,?)";
 
         PreparedStatement pst;
-        
-        
-        
+
         try {
             pst = this.conexao.prepareStatement(sql);
             pst.setInt(1, insumo.getCodigo());
             pst.setString(2, insumo.getDescricao());
             pst.setString(3, insumo.getUm());
-            pst.setString(4, insumo.getQuantidade().toString());
-            pst.setDouble(5, insumo.getPreco());
+            pst.setString(4, insumo.getQuantidade().replace(",", "."));
+            pst.setString(5, insumo.getPreco());
             //Atualiza a tabela insumos
             int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
@@ -64,8 +61,8 @@ public class InsumoDao {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, insumo.getDescricao());
             pst.setString(2, insumo.getUm());
-            pst.setString(3, insumo.getQuantidade().toString());
-            pst.setDouble(4, insumo.getPreco());
+            pst.setString(3, insumo.getQuantidade().replace(",", "."));
+            pst.setString(4, insumo.getPreco());
             pst.setInt(5, codigo);
             //Atualiza a tabela insumos
             int adicionado = pst.executeUpdate();
@@ -129,13 +126,15 @@ public class InsumoDao {
 
     //faz um update na tabela de insumos diminuindo a quantidade
     public void saidaInsumo(double quantidade, int codigo) {
+        Util util = new Util();
+        String resultadoFormt = util.formatador(quantidade);
         String sql = "update tbinsumos set quantidade = quantidade - ? where codigo = ?";
 
         PreparedStatement pst;
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setDouble(1, quantidade);
+            pst.setString(1, resultadoFormt);
             pst.setInt(2, codigo);
             int confirmar = pst.executeUpdate();
 
@@ -151,7 +150,9 @@ public class InsumoDao {
 
     // faz a saida de insumos passando dois parametros como referência
     public void saidaInsumo2(int codigo, double quantidade) {
-        String sql = "update tbinsumos set quantidade = quantidade - '" + quantidade + "' where codigo = '" + codigo + "'";
+        Util util = new Util();
+        String resultadoFormt = util.formatador(quantidade);
+        String sql = "update tbinsumos set quantidade = quantidade - '" + resultadoFormt + "' where codigo = '" + codigo + "'";
         PreparedStatement pst;
         try {
             pst = conexao.prepareStatement(sql);
@@ -184,10 +185,11 @@ public class InsumoDao {
         }
         return codigo;
     }
-    
-        //retorna as UM/Consumo dos insumos da receita a dar entrada, e da saida dos insumos através da entrada da receita
+
+    //retorna as UM/Consumo dos insumos da receita a dar entrada, e da saida dos insumos através da entrada da receita
     public void retirarInsumo(int codRec) {
-        double resultado;
+        Double resultado;
+
         String sql = "SELECT i.UM, cr.consumo, cr.codigoInsumo"
                 + " FROM tbReceitaInsumo as cr"
                 + " inner join tbinsumos as i on cr.codigoInsumo = i.codigo"
@@ -198,6 +200,7 @@ public class InsumoDao {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 resultado = conversaoUMInsumos(rs.getString(1), rs.getDouble(2));
+
                 saidaInsumo2(rs.getInt(3), resultado);
             }
             pst.close();
@@ -210,7 +213,7 @@ public class InsumoDao {
 
     //Converte a UM dos insumos para kg, e calcula a quantida de cada insumo para cada Kg da minha pasta
     private double conversaoUMInsumos(String UM, double consumo) {
-        double nes = Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",","."));
+        double nes = Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",", "."));
         double total = nes * (consumo / 100);
 
         if (UM.equals("g")) {

@@ -145,6 +145,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     }
 
     private void ativarInsumo() {
+        this.btnMovEstPesquisar.setEnabled(true);
         this.txtDescricao.setText(null);
         this.txtEstUM.setText(null);
         this.txtEstQuantidade.setText(null);
@@ -395,7 +396,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     this.insumoDao.retirarInsumo(this.movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
                     setarTabelaPasta();
                 } else {
-                    int quantidade = Integer.parseInt(this.txtEstQuantidade.getText().replace(",","."));
+                    double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",","."));
                     int soma = this.movEstDao.somaPastas(this.txtDescricao.getText());
                     if (soma < quantidade) {
                         JOptionPane.showMessageDialog(null, "Quantidade em estoque " + soma + "kg\nNão atende a sua necessidade.");

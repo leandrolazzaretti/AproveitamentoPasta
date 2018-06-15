@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Insumo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0008c89d-fe68-47f4-a036-816b03419725">
 	<property name="ireport.zoom" value="1.9487171000000034"/>
-	<property name="ireport.x" value="28"/>
+	<property name="ireport.x" value="258"/>
 	<property name="ireport.y" value="156"/>
 	<queryString language="SQL">
 		<![CDATA[select*from tbinsumos;]]>
@@ -125,7 +125,7 @@
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<textField>
-				<reportElement x="434" y="7" width="80" height="20" uuid="b565d5c3-943a-4ed1-8445-0237cc660ce2"/>
+				<reportElement x="430" y="7" width="80" height="20" uuid="b565d5c3-943a-4ed1-8445-0237cc660ce2"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial"/>
 				</textElement>
@@ -138,16 +138,16 @@
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="520" y="7" width="31" height="20" uuid="1a870c81-bb6e-484b-a9dd-6170de4c3746"/>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" forecolor="#999999" uuid="63ef4d97-e375-476a-9174-99a4f12cb3f9"/>
+			</line>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="7" width="34" height="20" uuid="0d6892e7-c970-4344-8995-0da78c1ca337"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="0" y="0" width="555" height="1" forecolor="#999999" uuid="63ef4d97-e375-476a-9174-99a4f12cb3f9"/>
-			</line>
 		</band>
 	</pageFooter>
 	<summary>

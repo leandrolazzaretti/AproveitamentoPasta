@@ -76,7 +76,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.txtCadInsDes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
         TelaCadInsumo.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
         TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString().replace(".", ","));
-        TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace(".", ","));
+        TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
     }
 
     //seta o campo da descrição na tela de movimentação de estoque

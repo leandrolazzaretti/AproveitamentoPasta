@@ -9,6 +9,7 @@ import conexao.ModuloConexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import static telas.TelaPrincipal.Desktop;
@@ -18,13 +19,14 @@ import static telas.TelaPrincipal.Desktop;
  * @author Leandro
  */
 public class Util {
+
     Connection conexao = null;
-    
-    public Util(){
+
+    public Util() {
         this.conexao = ModuloConexao.conector();
     }
-    
-       //busca a menor data correspondente ao codigo da receita no banco
+
+    //busca a menor data correspondente ao codigo da receita no banco
     public String buscarDataMenor(int codigoReceita) {
         String sql = "select min(ep.data) from tbEstoquePasta as ep where codigoReceita =?";
         String dataMenor = null;
@@ -40,8 +42,8 @@ public class Util {
         }
         return dataMenor;
     }
-    
-           //busca a menor data correspondente ao codigo da receita no banco
+
+    //busca a menor data correspondente ao codigo da receita no banco
     public String buscarID(int codigoReceita) {
         String sql = "select min(ep.ID) from tbEstoquePasta as ep where codigoReceita =?";
         String idReceita = null;
@@ -57,8 +59,8 @@ public class Util {
         }
         return idReceita;
     }
-    
-    public String buscarDescricaoReceita(String codigo){
+
+    public String buscarDescricaoReceita(String codigo) {
         String sql = "select descricao from tbreceita where codigorec =?";
         PreparedStatement pst;
         String descricao = null;
@@ -73,8 +75,8 @@ public class Util {
         }
         return descricao;
     }
-    
-       public void comandoInternal(JInternalFrame frame) {
+
+    public void comandoInternal(JInternalFrame frame) {
         try {
 
             if (!frame.isVisible()) {
@@ -92,4 +94,11 @@ public class Util {
         }
 
     }
+
+    public String formatador(double valor){
+        
+        DecimalFormat formatador = new DecimalFormat("0.00");
+        return formatador.format(valor).replace(",", ".");         
+    }
+    
 }

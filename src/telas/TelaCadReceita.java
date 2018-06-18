@@ -37,11 +37,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private String descIns;
     TipoPastaDao pasta = new TipoPastaDao();
     ReceitaInsumoDao recInsDao = new ReceitaInsumoDao();
-    Util frame = new Util();
     TelaPesquisarReceita rec = new TelaPesquisarReceita();
+    Util frame = new Util();
 
-    JInternalFrame framePesInsumo;
-    JInternalFrame framePesReceita;
+    public static JInternalFrame framePesInsumo;
+    public static JInternalFrame framePesReceita;
 
     /**
      * Creates new form TelaCadReceita
@@ -135,7 +135,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
 
     private boolean verificaCampos() {
-        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty()) || (this.tblCadRecComponentes.getRowCount() == 0)) {
+        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
             return false;
         } else {
             return true;
@@ -194,6 +194,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Cadastro de Receitas");
+        setMaximumSize(new java.awt.Dimension(860, 560));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Código:");
@@ -236,6 +242,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(btnCadRecLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 79, -1));
+
+        txtCadRecCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCadRecCodigoFocusLost(evt);
+            }
+        });
         getContentPane().add(txtCadRecCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 130, -1));
         getContentPane().add(txtCadRecPan, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 80, 130, -1));
 
@@ -406,6 +418,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         // chama a TelaPesquisarReceita
         if (this.framePesReceita == null) {
             this.framePesReceita = new TelaPesquisarReceita();
+        }else{
+            this.framePesReceita.dispose();
+            this.framePesReceita = new TelaPesquisarReceita();
         }
         this.rec.pesquisarReceita();
         this.frame.comandoInternal(this.framePesReceita);
@@ -423,6 +438,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         // chama a TelaPesquisarInsumos
         
         if (this.framePesInsumo == null) {
+            this.framePesInsumo = new TelaPesquisarInsumos();
+        }else {
+            this.framePesInsumo.dispose();
             this.framePesInsumo = new TelaPesquisarInsumos();
         }      
         this.frame.comandoInternal(this.framePesInsumo);
@@ -482,8 +500,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Chama o metodo remover tipo de pasta
-        boolean conf = this.pasta.buscaCodTipoPasta(this.cbCadReceitaTipo.getSelectedItem().toString()) <= 0;
-        if (conf == true) {
+        int conf = this.pasta.buscaCodTipoPasta(this.cbCadReceitaTipo.getSelectedItem().toString());
+        boolean confirmar = this.pasta.contTipoPasta(conf);
+        if (confirmar == true) {
             JOptionPane.showMessageDialog(null, "Esse Tipo de pasta não pode ser removido.");
         } else {
             this.pasta.removeComboBox(this.cbCadReceitaTipo.getSelectedItem().toString());
@@ -503,6 +522,20 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         // Chama o metodo atualizar enquanto digita
        this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
     }//GEN-LAST:event_tblCadRecComponentesKeyReleased
+
+    private void txtCadRecCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadRecCodigoFocusLost
+        // Evento ao sair do campo de codigo, ele irar trazer todas as irformações referentes ao codigo
+        if (!this.txtCadRecCodigo.getText().equals("")) {
+            ReceitaDao pesq = new ReceitaDao();
+            TelaPesquisarReceita pesqRec = new TelaPesquisarReceita();
+            pesq.pesquisarReceita(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+        }
+    }//GEN-LAST:event_txtCadRecCodigoFocusLost
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+       this.frame.bloquearMovimentacao(TelaPrincipal.frameReceita, 0, 0);
+    }//GEN-LAST:event_formComponentMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

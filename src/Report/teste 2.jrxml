@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste 2" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="20d3ce27-a22f-4f56-9087-53fb9a318a7d">
+	<property name="ireport.zoom" value="2.1435888100000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[select * from tbReceitaInsumo;]]>
+	</queryString>
+	<field name="codigoReceita" class="java.lang.Object"/>
+	<field name="codigoInsumo" class="java.lang.Object"/>
+	<field name="consumo" class="java.lang.Object"/>
+	<group name="receita">
+		<groupExpression><![CDATA[$F{codigoReceita}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="40"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="11" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement x="185" y="0" width="185" height="20" uuid="9bf09d22-30b5-486e-81c7-fcff493605ff"/>
+				<text><![CDATA[codigoInsumo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="185" height="20" uuid="781a5820-44f4-4846-a368-dc285b7ce6bc"/>
+				<text><![CDATA[consumo]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="0" width="167" height="20" uuid="cb451dfe-01a0-4afe-bce6-ce9e1c45c583"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "teste 4.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="185" y="0" width="185" height="20" uuid="2c3a7f95-43fe-42f5-9e3a-30a5c4308e3d"/>
+				<textFieldExpression><![CDATA[""+$F{codigoInsumo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="185" height="20" uuid="b4166317-d810-472a-9815-5281ff322745"/>
+				<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

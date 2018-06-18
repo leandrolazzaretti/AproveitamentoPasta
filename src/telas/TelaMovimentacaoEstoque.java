@@ -9,6 +9,7 @@ import conexao.ModuloConexao;
 import dao.InsumoDao;
 import dao.MovimentacaoDao;
 import dao.MovimentacaoEstoqueDao;
+import dao.ReceitaDao;
 import dto.MovimentacaoDto;
 import dto.MovimentacaoEstoqueDto;
 import java.sql.Connection;
@@ -31,11 +32,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
     InsumoDao insumoDao = new InsumoDao();
     Util frame = new Util();
-    JInternalFrame framePesReceita;
-    JInternalFrame framePesInsumo;
+    public static JInternalFrame framePesReceita;
+    public static JInternalFrame framePesInsumo;
     TelaPesquisarReceita rec = new TelaPesquisarReceita();
     TelaPesquisarInsumos ins = new TelaPesquisarInsumos();
-   
+
     /**
      * Creates new form TelaEstoque
      */
@@ -43,6 +44,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     public TelaMovimentacaoEstoque() {
         initComponents();
         this.conexao = ModuloConexao.conector();
+        this.txtCodigo.setDocument(new SoNumeros());
         this.txtEstData.setDocument(new SoNumeros());
         this.txtEstQuantidade.setDocument(new SoNumeros());
         ativarTblPasta();
@@ -62,14 +64,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             movDto.setCodigo(codigo);
             movDto.setDescricao(this.txtDescricao.getText());
             movDto.setData(inverterData(this.txtEstData.getText()));
-            movDto.setQuantidade(this.txtEstQuantidade.getText().replace(",","."));
+            movDto.setQuantidade(this.txtEstQuantidade.getText().replace(",", "."));
 
         } else {
             movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
             movDto.setCodigo(codigo);
             movDto.setDescricao(this.txtDescricao.getText());
             movDto.setData(inverterData(this.txtEstData.getText()));
-            movDto.setQuantidade("-" + this.txtEstQuantidade.getText().replace(",","."));
+            movDto.setQuantidade("-" + this.txtEstQuantidade.getText().replace(",", "."));
         }
         movDao.movimentacao(movDto);
     }
@@ -80,7 +82,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         movEstDto.setCodigoReceita(movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
         movEstDto.setUM(this.txtEstUM.getText());
-        movEstDto.setQuantidade(Double.parseDouble(this.txtEstQuantidade.getText().replace(",",".")));
+        movEstDto.setQuantidade(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")));
         movEstDto.setData(inverterData(this.txtEstData.getText()));
 
         if (confirma == true) {
@@ -138,7 +140,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtMovEst.setEnabled(true);
         limparCampos();
         this.txtDescricao.setText(null);
-        this.txtEstUM.setEnabled(false);
         this.txtEstUM.setText("kg");
         setarTabelaPasta();
         this.lblRecIns.setText("Receita:");
@@ -150,7 +151,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtEstUM.setText(null);
         this.txtEstQuantidade.setText(null);
         this.txtEstData.setText(null);
-        this.txtEstUM.setEnabled(true);
+        this.txtEstUM.setEnabled(false);
         this.tblEstPasta.setVisible(false);
         this.cbPesMovEst.setEnabled(false);
         this.txtMovEst.setEnabled(false);
@@ -159,6 +160,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     // limpa os campos após entrada ou saida
     private void limparCampos() {
+        this.txtCodigo.setEnabled(true);
+        this.txtDescricao.setEnabled(false);
+        this.txtEstQuantidade.setEnabled(false);
+        this.txtEstData.setEnabled(false);
+        this.txtCodigo.setText(null);
         this.txtEstQuantidade.setText(null);
         this.txtEstData.setText(null);
     }
@@ -189,19 +195,22 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        cbTipo = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txtEstQuantidade = new javax.swing.JFormattedTextField();
-        txtDescricao = new javax.swing.JTextField();
         lblRecIns = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        cbEstoque = new javax.swing.JComboBox<>();
-        btnConfirmar = new javax.swing.JButton();
-        btnMovEstPesquisar = new javax.swing.JButton();
-        txtEstData = new javax.swing.JFormattedTextField();
-        txtEstUM = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        cbTipo = new javax.swing.JComboBox<>();
+        cbEstoque = new javax.swing.JComboBox<>();
+        txtCodigo = new javax.swing.JTextField();
+        btnMovEstPesquisar = new javax.swing.JButton();
+        txtDescricao = new javax.swing.JTextField();
+        txtEstUM = new javax.swing.JTextField();
+        txtEstQuantidade = new javax.swing.JFormattedTextField();
+        txtEstData = new javax.swing.JFormattedTextField();
+        btnConfirmar = new javax.swing.JButton();
+        btnLimpar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         cbPesMovEst = new javax.swing.JComboBox<>();
@@ -214,6 +223,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Movimentação Estoque");
         setToolTipText("");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -224,7 +238,26 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
         jLabel3.setText("Unidade de Medida:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 100, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 100, -1, -1));
+
+        jLabel9.setText("Código:");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
+
+        jLabel7.setText("Quantidade:");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 100, -1, -1));
+
+        lblRecIns.setText("Receita:");
+        jPanel1.add(lblRecIns, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, -1, -1));
+
+        jLabel5.setText("Data:");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 150, -1, -1));
+
+        jLabel1.setText("Estoque");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel4.setText("Movimentação de Estoque");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Entrada", "Saída" }));
         cbTipo.addActionListener(new java.awt.event.ActionListener() {
@@ -234,20 +267,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         });
         jPanel1.add(cbTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 100, -1));
 
-        jLabel7.setText("Quantidade:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 100, -1, -1));
-        jPanel1.add(txtEstQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 120, 170, -1));
-        jPanel1.add(txtDescricao, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 240, -1));
-
-        lblRecIns.setText("Receita:");
-        jPanel1.add(lblRecIns, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
-
-        jLabel5.setText("Data:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 100, -1, -1));
-
-        jLabel1.setText("Estoque");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, -1, -1));
-
         cbEstoque.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pasta", "Insumo" }));
         cbEstoque.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -256,13 +275,12 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         });
         jPanel1.add(cbEstoque, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 84, -1));
 
-        btnConfirmar.setText("Confirmar");
-        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfirmarActionPerformed(evt);
+        txtCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCodigoFocusLost(evt);
             }
         });
-        jPanel1.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 100, -1));
+        jPanel1.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 180, -1));
 
         btnMovEstPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         btnMovEstPesquisar.setToolTipText("Pesquisar");
@@ -273,7 +291,21 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 btnMovEstPesquisarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnMovEstPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 110, 30, 30));
+        jPanel1.add(btnMovEstPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 30, 30));
+
+        txtDescricao.setEnabled(false);
+        txtDescricao.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtDescricaoFocusLost(evt);
+            }
+        });
+        jPanel1.add(txtDescricao, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 120, 240, -1));
+
+        txtEstUM.setEnabled(false);
+        jPanel1.add(txtEstUM, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 120, 130, -1));
+
+        txtEstQuantidade.setEnabled(false);
+        jPanel1.add(txtEstQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 120, 170, -1));
 
         try {
             txtEstData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
@@ -281,12 +313,24 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
         txtEstData.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jPanel1.add(txtEstData, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 120, 130, -1));
-        jPanel1.add(txtEstUM, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 120, 130, -1));
+        txtEstData.setEnabled(false);
+        jPanel1.add(txtEstData, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 170, 170, -1));
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel4.setText("Movimentação de Estoque");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        btnConfirmar.setText("Confirmar");
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 100, -1));
+
+        btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 100, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 824, 210));
 
@@ -313,7 +357,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Pasta", "Quantidade ", "Validade", "Data"
+                "ID Estoque", "Pasta", "Quantidade ", "Validade", "Data"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -377,6 +421,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             ativarInsumo();
         } else {
             ativarTblPasta();
+            if (this.cbTipo.getSelectedItem().equals("Saída")) {
+                this.btnMovEstPesquisar.setEnabled(false);
+            }
         }
     }//GEN-LAST:event_cbEstoqueActionPerformed
 
@@ -396,7 +443,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     this.insumoDao.retirarInsumo(this.movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
                     setarTabelaPasta();
                 } else {
-                    double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",","."));
+                    double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",", "."));
                     int soma = this.movEstDao.somaPastas(this.txtDescricao.getText());
                     if (soma < quantidade) {
                         JOptionPane.showMessageDialog(null, "Quantidade em estoque " + soma + "kg\nNão atende a sua necessidade.");
@@ -410,10 +457,10 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             } else {
                 // confirma se é entrada ou saida
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",",".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
+                    this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(true, "Insumo");
                 } else {
-                    this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",",".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
+                    this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(false, "Insumo");
                 }
             }
@@ -440,6 +487,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
             if (this.framePesReceita == null) {
                 this.framePesReceita = new TelaPesquisarReceita();
+            } else {
+                this.framePesReceita.dispose();
+                this.framePesReceita = new TelaPesquisarReceita();
             }
             this.rec.pesquisarReceita();
             this.frame.comandoInternal(this.framePesReceita);
@@ -447,6 +497,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         } else {
             if (this.framePesInsumo == null) {
+                this.framePesInsumo = new TelaPesquisarInsumos();
+            } else {
+                this.framePesInsumo.dispose();
                 this.framePesInsumo = new TelaPesquisarInsumos();
             }
             this.ins.pesquisarInsumos();
@@ -484,13 +537,51 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private void tblEstPastaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEstPastaMouseClicked
         // seta a descrição da pasta nno campo Receita, através de duplo click com o mouse
         if (evt.getClickCount() > 1) {
+            ReceitaDao receitaDao = new ReceitaDao();
             int setar = this.tblEstPasta.getSelectedRow();
             this.txtDescricao.setText((String) this.tblEstPasta.getModel().getValueAt(setar, 1));
+            this.txtCodigo.setText(receitaDao.buscaCodigo((String) this.tblEstPasta.getModel().getValueAt(setar, 1)));
+            this.txtCodigo.setEnabled(false);
+            this.txtEstQuantidade.setEnabled(true);
+            this.txtEstData.setEnabled(true);
         }
     }//GEN-LAST:event_tblEstPastaMouseClicked
 
+    private void txtDescricaoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDescricaoFocusLost
+        //Metodo ao sair do campo ele verifica se existe determinado codigo já cadastrado, se não haver ele gera uma msg dede erro
+    }//GEN-LAST:event_txtDescricaoFocusLost
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+        // Chama o metodo para bloquear a movimentação do frame
+        this.frame.bloquearMovimentacao(TelaPrincipal.frameMovimentacao, 0, 0);
+    }//GEN-LAST:event_formComponentMoved
+
+    private void txtCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoFocusLost
+        //evento ao sair do campo ele busca os dados de determinado codigo
+        if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
+            if (!this.txtCodigo.getText().equals("")) {
+                ReceitaDao pesq = new ReceitaDao();
+                pesq.pesquisarReceitaMovi(Integer.parseInt(this.txtCodigo.getText()));
+            }         
+        } else {
+            if (!this.txtCodigo.getText().equals("")) {               
+                insumoDao.pesquisarInsumos2(Integer.parseInt(this.txtCodigo.getText()));
+            }  
+        }
+    }//GEN-LAST:event_txtCodigoFocusLost
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        // chama o metodo limpar
+        limparCampos();
+        this.txtDescricao.setText(null);
+        if (this.cbEstoque.getSelectedItem().equals("Insumo")) {
+            this.txtEstUM.setText(null);
+        }
+    }//GEN-LAST:event_btnLimparActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfirmar;
+    private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnMovEstPesquisar;
     private javax.swing.JComboBox<String> cbEstoque;
     private javax.swing.JComboBox<String> cbPesMovEst;
@@ -503,11 +594,13 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblRecIns;
     private javax.swing.JTable tblEstPasta;
+    public static javax.swing.JTextField txtCodigo;
     public static javax.swing.JTextField txtDescricao;
     public static javax.swing.JFormattedTextField txtEstData;
     public static javax.swing.JFormattedTextField txtEstQuantidade;

@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import util.Util;
 
 /**
  *
@@ -23,6 +24,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     private String cbPesquisar = "codigo";
     public static boolean confimaTela;
     public static boolean confirmarEscolha;
+    Util frame = new Util();
 
     /**
      * Creates new form TelaPesquisarInsumos
@@ -82,9 +84,12 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     //seta o campo da descrição na tela de movimentação de estoque
     private void setarCampos2() {
         int setar = this.tblCadInsumos.getSelectedRow();
+        TelaMovimentacaoEstoque.txtCodigo.setText(this.tblCadInsumos.getModel().getValueAt(setar, 0).toString());
         TelaMovimentacaoEstoque.txtDescricao.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
         TelaMovimentacaoEstoque.txtEstUM.setText(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
-        TelaMovimentacaoEstoque.txtEstUM.setEnabled(false);
+        TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
+        TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
+        TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
     }
 
     //seta os campos do formulário com o coteúdo da tabela
@@ -110,10 +115,14 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setResizable(true);
         setTitle("Pesquisar Insumos");
         setToolTipText("");
         setPreferredSize(new java.awt.Dimension(858, 560));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel6.setText("Pesquisar por:");
@@ -209,6 +218,26 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_cbPesquisarInsActionPerformed
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+        // Chama o metodo para bloquear a movimentação do frame
+        if (this.confirmarEscolha == true) {
+
+            if (this.confimaTela == true) {
+                this.frame.bloquearMovimentacao(TelaCadInsumo.framePesqInsumo, 0, 89);
+            } else {
+                this.frame.bloquearMovimentacao(TelaCadReceita.framePesInsumo, 0, 89);
+            }
+        } else {
+            this.frame.bloquearMovimentacao(TelaMovimentacaoEstoque.framePesInsumo, 0, 89);
+        }
+
+        if (this.confirmarEscolha == true) {
+            this.frame.bloquearMovimentacao(TelaCadReceita.framePesInsumo, 0, 89);
+        } else {
+            this.frame.bloquearMovimentacao(TelaMovimentacaoEstoque.framePesInsumo, 0, 89);
+        }
+    }//GEN-LAST:event_formComponentMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receita" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92c3435c-6327-4c4d-b1d2-f3136444b016">
-	<property name="ireport.zoom" value="1.6105100000000019"/>
+	<property name="ireport.zoom" value="1.331000000000002"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
 		<![CDATA[select r.descricao as descri_r, tp.descricao as descri_tp, r.pantone, r.datavencimento, i.descricao as descri_i, ri.consumo from tbReceitaInsumo as ri
 inner join tbreceita as r on r.codigorec = ri.codigoReceita
@@ -15,6 +18,15 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 	<field name="datavencimento" class="java.lang.Object"/>
 	<field name="descri_i" class="java.lang.Object"/>
 	<field name="consumo" class="java.lang.Object"/>
+	<group name="Receita">
+		<groupExpression><![CDATA[$F{descri_r}]]></groupExpression>
+		<groupHeader>
+			<band height="13"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="13"/>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -153,14 +165,14 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="433" y="4" width="80" height="20" uuid="ef19f880-6cc9-4217-851d-385e1bba8aa5"/>
+				<reportElement x="434" y="4" width="80" height="20" uuid="ef19f880-6cc9-4217-851d-385e1bba8aa5"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="519" y="4" width="31" height="20" uuid="7bba2164-c68d-4f24-948c-ed022d7a86ca"/>
+			<textField evaluationTime="Report">
+				<reportElement x="517" y="4" width="34" height="20" uuid="27151973-1b5c-4e5e-ac03-a0b3bd711177"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>

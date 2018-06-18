@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import util.Util;
 
 /**
  *
@@ -21,9 +22,10 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     Connection conexao = null;
 
     private String cbPesquisar = "codigorec";
-    private int codRecIns = 0;
+    public int codRecIns = 0;
     public int codIns = 0;
     public static boolean confirmarEscolha;
+    Util frame = new Util();
 
     /**
      * Creates new form TelaPesquisarReceita
@@ -67,19 +69,19 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                     rs.getString(5)});
             }
             pst.close();
-        }catch(java.sql.SQLException ex){     
-            
-        }catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);            
+        } catch (java.sql.SQLException ex) {
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
 
     //seta a tabela tblCadRecComponentes com os dados do banco
-    public void setarTbComponentes() {
+    public void setarTbComponentes(int codigoRec) {
         String sql = "select i.descricao, ri.consumo from tbreceita as r "
                 + "inner join tbReceitaInsumo as ri on ri.codigoReceita = r.codigorec "
                 + "inner join tbinsumos as i on i.codigo = ri.codigoInsumo "
-                + "where r.codigorec ='" + this.codRecIns + "'";
+                + "where r.codigorec ='" + codigoRec + "'";
 
         PreparedStatement pst;
 
@@ -109,7 +111,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     }
 
     //seta os campos na tela de cadastro de receita
-    private void setarCampos() {
+    public void setarCampos() {
         int setar = this.tblPesquisarReceita.getSelectedRow();
         TelaCadReceita.txtCadRecCodigo.setEnabled(false);
         TelaCadReceita.txtCadRecCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
@@ -118,13 +120,21 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaCadReceita.cbCadReceitaTipo.setSelectedItem(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
         this.codRecIns = Integer.parseInt(TelaCadReceita.txtCadRecCodigo.getText());
-        setarTbComponentes();
+        setarTbComponentes(this.codRecIns);
     }
 
     //seta os campos na tela de movimentação de estoque
     private void setarCampos2() {
         int setar = this.tblPesquisarReceita.getSelectedRow();
+        TelaMovimentacaoEstoque.txtCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
         TelaMovimentacaoEstoque.txtDescricao.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 1).toString());
+        TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
+        TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
+        TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+    }
+
+    private void setarCampos3(int codigoRec) {
+
     }
 
     /**
@@ -147,6 +157,11 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         setTitle("Pesquisar Receita");
         setToolTipText("");
         setMaximumSize(null);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+        });
 
         jLabel6.setText("Pesquisar por:");
 
@@ -259,6 +274,15 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_cbPesquisarReceitaActionPerformed
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+        // Chama o metodo para bloquear a movimentação do frame
+        if (this.confirmarEscolha == true) {
+            this.frame.bloquearMovimentacao(TelaCadReceita.framePesReceita, 0, 96);
+        } else {
+            this.frame.bloquearMovimentacao(TelaMovimentacaoEstoque.framePesReceita, 0, 96);
+        }
+    }//GEN-LAST:event_formComponentMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,6 +6,8 @@
 package util;
 
 import conexao.ModuloConexao;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -78,16 +80,18 @@ public class Util {
 
     public void comandoInternal(JInternalFrame frame) {
         try {
-
-            if (!frame.isVisible()) {
-                Desktop.remove(frame);
-                Desktop.add(frame);
-                frame.setVisible(true);
-            }
-            if (frame.isIcon()) {
-                frame.setIcon(false);
-            }
+            Desktop.add(frame);
+            frame.setVisible(true);
             frame.toFront();
+//            if (!frame.isVisible()) {
+//                Desktop.remove(frame);
+//                Desktop.add(frame);
+//                frame.setVisible(true);
+//            }
+//            if (frame.isIcon()) {
+//                frame.setIcon(false);
+//            }
+//            frame.toFront();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
@@ -95,10 +99,23 @@ public class Util {
 
     }
 
-    public String formatador(double valor){
-        
-        DecimalFormat formatador = new DecimalFormat("0.00");
-        return formatador.format(valor).replace(",", ".");         
+    public void bloquearMovimentacao(JInternalFrame frame, int x, int y) {
+        try {
+            frame.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentMoved(ComponentEvent evento) {
+                    frame.setLocation(x, y);
+                }
+            });
+
+        } catch (Exception e) {
+        }
     }
-    
+
+    public String formatador(double valor) {
+
+        DecimalFormat formatador = new DecimalFormat("0.00");
+        return formatador.format(valor).replace(",", ".");
+    }
+
 }

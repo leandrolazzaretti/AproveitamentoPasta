@@ -28,7 +28,7 @@ import util.Util;
 public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    JInternalFrame framePesqInsumo;
+    public static JInternalFrame framePesqInsumo;
     Util util = new Util();
     TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
 
@@ -54,13 +54,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
         insumoDto.setDescricao(this.txtCadInsDes.getText());
         insumoDto.setUm(this.cbCadInsUm.getSelectedItem().toString());
-        
-        String valorQuant =this.util.formatador(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
+
+        String valorQuant = this.util.formatador(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
         BigDecimal valor = new BigDecimal(this.txtCadInsPreco.getText().replace(",", "."));
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         String formatado = nf.format(valor);
         //System.out.println(formatado);
-        
+
         insumoDto.setQuantidade(valorQuant);
         insumoDto.setPreco(formatado);
 
@@ -154,6 +154,11 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Cadastro de Insumos");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnCadInsAdicionar.setText("Salvar");
@@ -163,6 +168,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 330, 79, -1));
+
+        txtCadInsCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCadInsCodigoFocusLost(evt);
+            }
+        });
         getContentPane().add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 140, -1));
 
         jLabel2.setText("Descrição:");
@@ -248,9 +259,14 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         if (this.txtCadInsCodigo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione um insumo válido.");
         } else {
-            InsumoDao deletar = new InsumoDao();
-            deletar.deletarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
-            limparCampos();
+            InsumoDao insumoDao = new InsumoDao();
+            boolean conf = insumoDao.contInsumo(Integer.parseInt(this.txtCadInsCodigo.getText()));
+            if (conf == true) {
+                JOptionPane.showMessageDialog(null, "Este insumo não pode ser eliminado.");
+            } else {            
+                insumoDao.deletarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
+                limparCampos();
+            }
         }
 
     }//GEN-LAST:event_btnCadInsDeletarActionPerformed
@@ -264,9 +280,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
         if (this.framePesqInsumo == null) {
             this.framePesqInsumo = new TelaPesquisarInsumos();
+        } else {
+            this.framePesqInsumo.dispose();
+            this.framePesqInsumo = new TelaPesquisarInsumos();
         }
-        this.insumo.pesquisarInsumos();
         this.util.comandoInternal(this.framePesqInsumo);
+        this.insumo.pesquisarInsumos();
         TelaPesquisarInsumos.confimaTela = true;
         TelaPesquisarInsumos.confirmarEscolha = true;
 
@@ -275,6 +294,19 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 //        insumos.setVisible(true);
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtCadInsCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadInsCodigoFocusLost
+        //evento ao sair do campo ele busca os dados de determinado codigo
+        if (!this.txtCadInsCodigo.getText().equals("")) {
+            InsumoDao pesq = new InsumoDao();
+            pesq.pesquisarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
+        }
+    }//GEN-LAST:event_txtCadInsCodigoFocusLost
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+        // Chama o metodo para bloquear a movimentação do frame  
+        this.util.bloquearMovimentacao(TelaPrincipal.frameInsumo, 148, 72);
+    }//GEN-LAST:event_formComponentMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

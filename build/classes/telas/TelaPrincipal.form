@@ -92,7 +92,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="menRelIns">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+I"/>
+                  <KeyStroke key="Ctrl+I"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Insumo"/>
               </Properties>
@@ -103,7 +103,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="menRelRec">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+R"/>
+                  <KeyStroke key="Ctrl+R"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Receita"/>
               </Properties>
@@ -114,7 +114,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="menRelUsu">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+U"/>
+                  <KeyStroke key="Ctrl+U"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Usu&#xe1;rio"/>
               </Properties>
@@ -128,7 +128,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="menRelMovEst">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+M"/>
+                  <KeyStroke key="Ctrl+M"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Movimenta&#xe7;&#xe3;o"/>
               </Properties>
@@ -194,6 +194,10 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="99" green="99" red="0" type="rgb"/>
         </Property>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[860, 560]"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>

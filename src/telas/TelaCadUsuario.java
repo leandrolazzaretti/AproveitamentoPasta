@@ -28,7 +28,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     private int index = -1;
     private int codigo;
     Util frame = new Util();
-    JInternalFrame framePesUsuario;
+    public static JInternalFrame framePesUsuario;
 
     /**
      * Creates new form TelaCadUsuario
@@ -194,6 +194,11 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         setTitle("Cadastro de Usuários");
         setMaximumSize(new java.awt.Dimension(417, 409));
         setPreferredSize(new java.awt.Dimension(420, 406));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText(" Nome:");
@@ -311,7 +316,10 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         // chama a TelaPesquisarUsuario framePesUsuario
         if (this.framePesUsuario == null) {
             this.framePesUsuario = new TelaPesquisarUsuario();
-        }
+        }else {
+            this.framePesUsuario.dispose();
+            this.framePesUsuario = new TelaPesquisarUsuario();
+        } 
         this.user.pesquisarUsuario();
         this.frame.comandoInternal(this.framePesUsuario);     
     }//GEN-LAST:event_btnCadUsePesquisarActionPerformed
@@ -418,6 +426,11 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_btnAdiActionPerformed
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+        // Chama o metodo para bloquear a movimentação do frame
+            this.frame.bloquearMovimentacao(TelaPrincipal.frameUsuario, 221, 77); 
+    }//GEN-LAST:event_formComponentMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

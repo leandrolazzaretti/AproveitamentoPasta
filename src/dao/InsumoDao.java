@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import telas.TelaCadInsumo;
+import telas.TelaMovimentacaoEstoque;
 import util.Util;
 
 /**
@@ -99,6 +101,60 @@ public class InsumoDao {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
+        }
+    }
+    
+    public void pesquisarInsumos(int codigo) {
+       
+       
+        String sql = "select * from tbinsumos where codigo ='" + codigo + "'";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                TelaCadInsumo.txtCadInsCodigo.setEnabled(false);
+                TelaCadInsumo.txtCadInsDes.setText(rs.getString(2));
+                TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
+                TelaCadInsumo.txtCadInsQuant.setText(rs.getString(4));
+                TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
+            } else {
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    public void pesquisarInsumos2(int codigo) {
+       
+       
+        String sql = "select descricao, UM from tbinsumos where codigo ='" + codigo + "'";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
+                TelaMovimentacaoEstoque.txtDescricao.setEnabled(false);
+                TelaMovimentacaoEstoque.txtEstUM.setEnabled(false);
+                TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
+                TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+                TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
+                TelaMovimentacaoEstoque.txtEstUM.setText(rs.getString(2));
+                      
+            } else {
+                JOptionPane.showMessageDialog(null, "Código inválido.");
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
 
@@ -224,5 +280,22 @@ public class InsumoDao {
             }
         }
         return total;
+    }
+    
+    public boolean contInsumo(int codigo){
+        String sql = "select count (codigoInsumo) as total from tbReceitaInsumo where codigoInsumo = '" + codigo + "'";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total > 0;
     }
 }

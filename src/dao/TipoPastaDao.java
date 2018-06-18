@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package dao;
 
 import conexao.ModuloConexao;
@@ -18,15 +17,15 @@ import telas.TelaCadReceita;
  *
  * @author Leandro
  */
-
 public class TipoPastaDao {
 
     Connection conexao = null;
+
     public TipoPastaDao() {
-        this.conexao = ModuloConexao.conector();     
+        this.conexao = ModuloConexao.conector();
     }
-    
-        //Seta o combobox tipo de pastas com os dados do banco
+
+    //Seta o combobox tipo de pastas com os dados do banco
     public void setarComboBox() {
         String sql = "select descricao from tbTipoPasta";
 
@@ -81,6 +80,9 @@ public class TipoPastaDao {
                 JOptionPane.showMessageDialog(null, "Apagado com sucesso.");
             }
             pst.close();
+
+        } catch (SQLException sqlException) {
+            JOptionPane.showMessageDialog(null, sqlException);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -104,5 +106,22 @@ public class TipoPastaDao {
             //pst.close();
         }
         return codigo;
+    }
+
+    public boolean contTipoPasta(int codigo) {
+        String sql = "select count (codigoTipoPasta) as total from tbreceita where codigoTipoPasta = '" + codigo + "'";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if(rs.next()){
+                total = rs.getInt(1);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total > 0;
     }
 }

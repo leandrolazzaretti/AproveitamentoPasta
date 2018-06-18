@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import telas.TelaCadReceita;
+import telas.TelaMovimentacaoEstoque;
 
 /**
  *
@@ -94,10 +96,35 @@ public class ReceitaDao {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-        //confirma se o codigo da receita já existe
+
+    public void pesquisarReceita(int codigo) {
+        String sql = "select r.descricao, r.pantone, t.descricao, r.datavencimento "
+                + "from tbreceita as r "
+                + "inner join tbTipoPasta as t on r.codigoTipoPasta = t.codigo "
+                + "where r.codigorec = '" + codigo + "'";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                TelaCadReceita.txtCadRecCodigo.setEnabled(false);
+                TelaCadReceita.txtCadRecDes.setText(rs.getString(1));
+                TelaCadReceita.txtCadRecPan.setText(rs.getString(2));
+                TelaCadReceita.cbCadReceitaTipo.setSelectedItem(rs.getString(3));
+                TelaCadReceita.txtCadRecVal.setText(rs.getString(4));
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //confirma se o codigo da receita já existe
     public boolean confirmaCodigo(String codigo) {
-        String sql = "select count (codigorec) as total from tbreceita where codigorec ='" + codigo + "';";
+        String sql = "select count (codigorec) as total from tbreceita where codigorec ='" + codigo + "'";
         int total = 0;
         PreparedStatement pst;
         try {
@@ -127,6 +154,46 @@ public class ReceitaDao {
             JOptionPane.showMessageDialog(null, e);
         }
         return total <= 0;
+    }
+
+    public void pesquisarReceitaMovi(int codigo) {
+
+        String sql = "select descricao from tbreceita where codigorec ='" + codigo + "'";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
+                TelaMovimentacaoEstoque.txtDescricao.setEnabled(false);
+                TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
+                TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+                TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
+            } else {
+                JOptionPane.showMessageDialog(null, "Código inválido.");
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    public String buscaCodigo(String descricao) {
+        String sql = "select codigorec from tbreceita where descricao = '" + descricao + "'";
+        String codigo = null;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            codigo = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return codigo;
     }
 
 }

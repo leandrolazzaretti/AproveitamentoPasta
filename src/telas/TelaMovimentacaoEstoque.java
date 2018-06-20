@@ -237,14 +237,20 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             } else {
                 // confirma se é entrada ou saida
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
-                    movimentacao(true, "Insumo");
+
+                    if (this.movEstDao.dataComparar(this.movEstDao.dataAtual(), inverterData(this.txtEstData.getText().replace("/", "-"))) == false) {
+                        JOptionPane.showMessageDialog(null, "Não é possivel dar entrada com uma data futura.");
+                    } else {
+                        this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
+                        movimentacao(true, "Insumo");
+                        limparCampos();
+                    }
                 } else {
                     //this.txtEstData.setText(inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
                     this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(false, "Insumo");
-                }
                 limparCampos();
+                }
             }
         }
         if (conf == true) {
@@ -524,7 +530,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         if ((!this.txtCodigo.getText().equals("")) && (this.txtEstData.getText().equals("  /  /    "))) {
             this.txtEstData.setText(this.movEstDao.inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
         }
-        
+
         if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
             if (this.cbTipo.getSelectedItem().equals("Saída")) {
                 this.btnMovEstPesquisar.setEnabled(false);
@@ -536,7 +542,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             }
         } else {
             this.btnMovEstPesquisar.setEnabled(true);
-            this.btnMovEstPesquisar.setVisible(true);          
+            this.btnMovEstPesquisar.setVisible(true);
         }
     }//GEN-LAST:event_cbTipoActionPerformed
 

@@ -6,9 +6,13 @@
 package telas;
 
 import conexao.ModuloConexao;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
@@ -53,6 +57,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
     }
 
+    // metodo para retirar todasd as bordas do JinternalFrame(gambiarra)
+//    private void retirarBordas(JInternalFrame frame) {
+//        ((BasicInternalFrameUI) frame.getUI()).setNorthPane(null); //retirar o painel superior
+//        frame.setBorder(null);//retirar bordas
+//    }
+   
+   //criando evento compartilhado
+//    private ActionListener tratadorEvento = new ActionListener() {
+//
+//        public void MouseEntered(MouseEvent evt) {
+//            this.jPanel8.setBackground(new Color(210, 226, 186));
+//            this.btnInsumo.setForeground(new Color(134, 145, 119));
+//        }
+//    };
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,7 +101,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
         menu = new javax.swing.JMenuBar();
         menCadastro = new javax.swing.JMenu();
         menCadIns = new javax.swing.JMenuItem();
@@ -101,10 +119,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        setMaximumSize(new java.awt.Dimension(1100, 620));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        Desktop.setBackground(new java.awt.Color(0, 153, 153));
+        Desktop.setBackground(new java.awt.Color(255, 255, 255));
         Desktop.setMaximumSize(new java.awt.Dimension(860, 560));
         Desktop.setName(""); // NOI18N
 
@@ -121,10 +140,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         getContentPane().add(Desktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 860, 560));
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(143, 165, 110));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel5.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel5.setBackground(new java.awt.Color(157, 181, 121));
 
         btnUsuario.setBackground(new java.awt.Color(153, 153, 255));
         btnUsuario.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -143,18 +162,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(btnUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(btnUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 160, 30));
+        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 240, 40));
 
-        jPanel6.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel6.setBackground(new java.awt.Color(157, 181, 121));
 
         btnMovEstoque.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnMovEstoque.setForeground(new java.awt.Color(255, 255, 255));
@@ -172,17 +191,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(btnMovEstoque)
-                .addGap(0, 1, Short.MAX_VALUE))
+                .addComponent(btnMovEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 30, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnMovEstoque, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(btnMovEstoque, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 370, 160, 30));
+        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 240, 40));
 
-        jPanel7.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel7.setBackground(new java.awt.Color(157, 181, 121));
 
         btnReceita.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnReceita.setForeground(new java.awt.Color(255, 255, 255));
@@ -199,16 +218,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnReceita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(btnReceita, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnReceita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(btnReceita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 160, 30));
+        jPanel3.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 240, 40));
 
-        jPanel8.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel8.setBackground(new java.awt.Color(157, 181, 121));
 
         btnInsumo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnInsumo.setForeground(new java.awt.Color(255, 255, 255));
@@ -225,26 +246,30 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnInsumo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(btnInsumo, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnInsumo, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(btnInsumo, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 160, 30));
+        jPanel3.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 240, 40));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Controle");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 60, -1));
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Cadastro");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, -1));
         jPanel3.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 160, -1));
         jPanel3.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, 160, 10));
 
-        jPanel9.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel9.setBackground(new java.awt.Color(157, 181, 121));
 
         tbnEstPasta.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         tbnEstPasta.setForeground(new java.awt.Color(255, 255, 255));
@@ -261,24 +286,24 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tbnEstPasta, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addComponent(tbnEstPasta, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 22, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(tbnEstPasta, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(tbnEstPasta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 160, 30));
+        jPanel3.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 240, 40));
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 220, 620));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 620));
 
-        jPanel4.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, -10, 860, 30));
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(210, 226, 186));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -287,26 +312,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, -1, -1));
 
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        lblUsuario.setForeground(new java.awt.Color(153, 153, 255));
+        lblUsuario.setForeground(new java.awt.Color(170, 196, 131));
         lblUsuario.setText("Usuário");
         jPanel1.add(lblUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 10, -1, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 580, 860, 40));
-
-        jPanel2.setBackground(new java.awt.Color(102, 102, 102));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 620, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 20, 620));
 
         menu.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -440,9 +450,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         //comandoInternal(new TelaCadUsuario());
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
+            //retirarBordas(this.frameUsuario);
         } else {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
+            //retirarBordas(this.frameUsuario);
         }
         this.frame.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
@@ -455,45 +467,54 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // cahama a TelaCadUsu     
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
+            //retirarBordas(this.frameUsuario);
         } else {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
+            //retirarBordas(this.frameUsuario);
         }
         this.frame.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_menCadUsuActionPerformed
 
     private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
-          // chama a TelaCadInsumos       
-            if (this.frameInsumo == null) {
-                this.frameInsumo = new TelaCadInsumo();
-            } else {
-                this.frameInsumo.dispose();
-                this.frameInsumo = new TelaCadInsumo();
-            }
-            this.frame.comandoInternal(this.frameInsumo);
+        // chama a TelaCadInsumos       
+        this.jPanel8.setBackground(new Color(210, 226, 186));
+        if (this.frameInsumo == null) {
+            this.frameInsumo = new TelaCadInsumo();
+            //retirarBordas(this.frameInsumo);
+        } else {
+            this.frameInsumo.dispose();
+            this.frameInsumo = new TelaCadInsumo();
+            //retirarBordas(this.frameInsumo);
+        }
+        this.frame.comandoInternal(this.frameInsumo);
 //        }
     }//GEN-LAST:event_btnInsumoActionPerformed
 
     private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
         // chama a TelaCadInsumos       
-       
-            if (this.frameInsumo == null) {
-                this.frameInsumo = new TelaCadInsumo();
-            } else {
-                this.frameInsumo.dispose();
-                this.frameInsumo = new TelaCadInsumo();
-            }
-            this.frame.comandoInternal(this.frameInsumo);
-        
+
+        if (this.frameInsumo == null) {
+            this.frameInsumo = new TelaCadInsumo();
+            //retirarBordas(this.frameInsumo);
+        } else {
+            this.frameInsumo.dispose();
+            this.frameInsumo = new TelaCadInsumo();
+            //retirarBordas(this.frameInsumo);
+        }
+        this.frame.comandoInternal(this.frameInsumo);
+
     }//GEN-LAST:event_menCadInsActionPerformed
 
     private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed
         // chama a TelaCadReceita
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
+            //retirarBordas(this.frameReceita);
         } else {
             this.frameReceita.dispose();
             this.frameReceita = new TelaCadReceita();
+            //retirarBordas(this.frameReceita);
         }
         this.frame.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_btnReceitaActionPerformed
@@ -502,9 +523,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama a TelaCadReceita
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
+            //retirarBordas(this.frameReceita);
         } else {
             this.frameReceita.dispose();
             this.frameReceita = new TelaCadReceita();
+            //retirarBordas(this.frameReceita);
         }
         this.frame.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_menCadRecActionPerformed
@@ -513,9 +536,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaMovimentacaoEstoque
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
+            //retirarBordas(this.frameMovimentacao);
         } else {
             this.frameMovimentacao.dispose();
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
+            //retirarBordas(this.frameMovimentacao);
         }
         this.frame.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_menConMovEstActionPerformed
@@ -547,9 +572,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaMovimentação Estoque
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
+            //retirarBordas(this.frameMovimentacao);
         } else {
             this.frameMovimentacao.dispose();
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
+            //retirarBordas(this.frameMovimentacao);
         }
         this.frame.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_btnMovEstoqueActionPerformed
@@ -620,7 +647,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     public static javax.swing.JPanel jPanel5;

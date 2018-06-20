@@ -43,7 +43,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsPreco.setDocument(new SoNumeros());
         this.txtCadInsQuant.setDocument(new SoNumeros());
         mascaraInsumo();
-        limparCampos();
+        limparCampos();       
     }
 
     private void confirmar(boolean confirmar) {
@@ -216,7 +216,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsAdicionarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 330, 79, -1));
+        getContentPane().add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 330, 79, -1));
 
         txtCadInsCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -239,7 +239,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsDeletarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 330, 79, -1));
+        getContentPane().add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 330, 79, -1));
 
         jLabel3.setText("Unidade de Medida (UM):");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, -1, -1));
@@ -262,7 +262,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 btnCadInsLimparActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 330, 79, -1));
+        getContentPane().add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 330, 79, -1));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         jButton1.setToolTipText("Pesquisar");

@@ -220,7 +220,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         txtCadRecComponentes = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         btnInsumoPesquisar = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnAddConsumo = new javax.swing.JButton();
         txtCadRecConsumo = new javax.swing.JFormattedTextField();
         cbCadReceitaTipo = new javax.swing.JComboBox<>();
         tbnCadRecTipo = new javax.swing.JButton();
@@ -295,6 +295,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnCadRecLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 79, -1));
 
+        txtCadRecCodigo.setText("0");
         txtCadRecCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtCadRecCodigoFocusLost(evt);
@@ -372,16 +373,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jPanel1.add(btnInsumoPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 0, 30, 30));
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
-        jButton2.setToolTipText("Adicionar");
-        jButton2.setContentAreaFilled(false);
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnAddConsumo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
+        btnAddConsumo.setToolTipText("Adicionar");
+        btnAddConsumo.setContentAreaFilled(false);
+        btnAddConsumo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddConsumo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnAddConsumoActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 30, -1));
+        jPanel1.add(btnAddConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 30, -1));
         jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 110, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 830, 360));
@@ -471,7 +472,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_btnInsumoPesquisarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnAddConsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddConsumoActionPerformed
         // chama metodo para setar a tabela
         boolean total;
         if ((this.txtCadRecComponentes.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
@@ -498,7 +499,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 }
             }
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnAddConsumoActionPerformed
 
     private void tbnCadRecTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnCadRecTipoActionPerformed
         // chama o metodo adicionar tipo de pasta
@@ -556,7 +557,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
         // Chama o metodo atualizar enquanto digita
-        this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+        if (!this.txtCadRecCodigo.getText().equals("")) {
+        this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));          
+        }
     }//GEN-LAST:event_tblCadRecComponentesKeyReleased
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
@@ -594,6 +597,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton btnAddConsumo;
     private javax.swing.JButton btnCadRecAdicionar;
     private javax.swing.JButton btnCadRecDeletar;
     private javax.swing.JButton btnCadRecLimpar;
@@ -601,7 +605,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnReceitaPesquisar;
     public static javax.swing.JComboBox<String> cbCadReceitaTipo;
     private javax.swing.JButton jButton1;
-    public static javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

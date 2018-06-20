@@ -80,6 +80,7 @@ public class ReceitaInsumoDao {
             }
 
             pst.close();
+        } catch (ArrayIndexOutOfBoundsException e2) {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);

@@ -71,7 +71,7 @@ public class TelaLogin extends javax.swing.JFrame {
      */
     public TelaLogin() {
         initComponents();
-        this.conexao = ModuloConexao.conector();
+        this.conexao = ModuloConexao.conector();     
         if (this.conexao != null) {
             System.out.println("Conectado!");
         } else {
@@ -91,37 +91,57 @@ public class TelaLogin extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
-        btnAcessar = new javax.swing.JButton();
-        tbnFechar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        btnAcessar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtSenha = new javax.swing.JPasswordField();
         txtUsuario = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        tbnFechar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
         setLocationByPlatform(true);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(134, 145, 119));
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jPanel1KeyPressed(evt);
             }
         });
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jSeparator1.setForeground(new java.awt.Color(210, 226, 186));
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 100, 190, -1));
+
+        jSeparator2.setForeground(new java.awt.Color(210, 226, 186));
         jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 190, 10));
 
+        jPanel2.setBackground(new java.awt.Color(143, 165, 110));
+
         btnAcessar.setBackground(new java.awt.Color(102, 102, 255));
-        btnAcessar.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        btnAcessar.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
         btnAcessar.setForeground(new java.awt.Color(255, 255, 255));
         btnAcessar.setText("Acessar");
         btnAcessar.setBorder(null);
         btnAcessar.setContentAreaFilled(false);
+        btnAcessar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAcessarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAcessarMouseExited(evt);
+            }
+        });
         btnAcessar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAcessarActionPerformed(evt);
@@ -132,44 +152,31 @@ public class TelaLogin extends javax.swing.JFrame {
                 btnAcessarKeyPressed(evt);
             }
         });
-        jPanel1.add(btnAcessar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 190, 30));
-
-        tbnFechar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        tbnFechar.setForeground(new java.awt.Color(153, 153, 255));
-        tbnFechar.setText("X");
-        tbnFechar.setContentAreaFilled(false);
-        tbnFechar.setPreferredSize(new java.awt.Dimension(35, 35));
-        tbnFechar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tbnFecharActionPerformed(evt);
-            }
-        });
-        jPanel1.add(tbnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 0, 50, 30));
-
-        jPanel2.setBackground(new java.awt.Color(153, 153, 255));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 190, Short.MAX_VALUE)
+            .addComponent(btnAcessar, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnAcessar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 190, 30));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 300, 40));
 
-        jLabel1.setForeground(new java.awt.Color(153, 153, 153));
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Login");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, -1, -1));
 
-        jLabel2.setForeground(new java.awt.Color(153, 153, 153));
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Senha");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 120, -1, -1));
 
-        txtSenha.setBackground(new java.awt.Color(102, 102, 102));
+        txtSenha.setBackground(new java.awt.Color(134, 145, 119));
         txtSenha.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtSenha.setForeground(new java.awt.Color(255, 255, 255));
         txtSenha.setText("admin");
@@ -177,6 +184,9 @@ public class TelaLogin extends javax.swing.JFrame {
         txtSenha.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtSenhaFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSenhaFocusLost(evt);
             }
         });
         txtSenha.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -186,7 +196,7 @@ public class TelaLogin extends javax.swing.JFrame {
         });
         jPanel1.add(txtSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 190, 20));
 
-        txtUsuario.setBackground(new java.awt.Color(102, 102, 102));
+        txtUsuario.setBackground(new java.awt.Color(134, 145, 119));
         txtUsuario.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtUsuario.setForeground(new java.awt.Color(255, 255, 255));
         txtUsuario.setText("admin");
@@ -209,9 +219,48 @@ public class TelaLogin extends javax.swing.JFrame {
         });
         jPanel1.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, 190, 20));
 
+        jPanel3.setBackground(new java.awt.Color(134, 145, 119));
+
+        tbnFechar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        tbnFechar.setForeground(new java.awt.Color(210, 226, 186));
+        tbnFechar.setText("X");
+        tbnFechar.setContentAreaFilled(false);
+        tbnFechar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        tbnFechar.setPreferredSize(new java.awt.Dimension(35, 35));
+        tbnFechar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tbnFecharMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tbnFecharMouseExited(evt);
+            }
+        });
+        tbnFechar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tbnFecharActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(tbnFechar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(tbnFechar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 0, 50, 30));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 293, 268));
 
-        setSize(new java.awt.Dimension(293, 266));
+        setSize(new java.awt.Dimension(292, 266));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -227,14 +276,14 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void txtSenhaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSenhaFocusGained
         // muda cor da lblSenha
-        this.jLabel2.setForeground(new Color(153, 153, 255));
-        this.jLabel1.setForeground(new Color(153, 153, 153));
+        this.jLabel2.setForeground(new Color(157,181,121));
+        this.jLabel1.setForeground(new Color(255,255,255));
     }//GEN-LAST:event_txtSenhaFocusGained
 
     private void txtUsuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUsuarioFocusGained
         // muda cor da lblusuario
-        this.jLabel1.setForeground(new Color(153, 153, 255));
-        this.jLabel2.setForeground(new Color(153, 153, 153));
+        this.jLabel1.setForeground(new Color(157,181,121));
+        this.jLabel2.setForeground(new Color(255,255,255));
     }//GEN-LAST:event_txtUsuarioFocusGained
 
 
@@ -266,6 +315,41 @@ public class TelaLogin extends javax.swing.JFrame {
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
 
     }//GEN-LAST:event_txtUsuarioActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // faz o campo de login receber o focu
+        this.txtUsuario.requestFocus();
+    }//GEN-LAST:event_formWindowActivated
+
+    private void txtSenhaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSenhaFocusLost
+        // quando perder o focu muda a cor da lblsenha
+        this.jLabel2.setForeground(new Color(255,255,255));
+        
+    }//GEN-LAST:event_txtSenhaFocusLost
+
+    private void tbnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbnFecharMouseEntered
+        // quando o mouse estiver em cima
+        this.jPanel3.setBackground(new Color(210,226,186));
+        this.tbnFechar.setForeground(new Color(134,145,119));
+    }//GEN-LAST:event_tbnFecharMouseEntered
+
+    private void tbnFecharMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbnFecharMouseExited
+        //  quando o mouse sair de cima
+        this.jPanel3.setBackground(new Color(134,145,119));
+        this.tbnFechar.setForeground(new Color(210,226,186));
+    }//GEN-LAST:event_tbnFecharMouseExited
+
+    private void btnAcessarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAcessarMouseEntered
+         // quando o mouse estiver em cima
+        this.jPanel2.setBackground(new Color(210,226,186));
+        this.btnAcessar.setForeground(new Color(143,165,110));
+    }//GEN-LAST:event_btnAcessarMouseEntered
+
+    private void btnAcessarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAcessarMouseExited
+         // quando o mouse sair de cima
+        this.jPanel2.setBackground(new Color(143,165,110));
+        this.btnAcessar.setForeground(new Color(255,255,255));
+    }//GEN-LAST:event_btnAcessarMouseExited
 
     /**
      * @param args the command line arguments
@@ -309,6 +393,7 @@ public class TelaLogin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JButton tbnFechar;

@@ -103,10 +103,9 @@ public class InsumoDao {
             }
         }
     }
-    
+
     public void pesquisarInsumos(int codigo) {
-       
-       
+
         String sql = "select * from tbinsumos where codigo ='" + codigo + "'";
 
         PreparedStatement pst;
@@ -120,7 +119,7 @@ public class InsumoDao {
                 TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
                 TelaCadInsumo.txtCadInsQuant.setText(rs.getString(4));
                 TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
-                
+
             } else {
             }
 
@@ -129,10 +128,9 @@ public class InsumoDao {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     public void pesquisarInsumos2(int codigo) {
-       
-       
+
         String sql = "select descricao, UM from tbinsumos where codigo ='" + codigo + "'";
 
         PreparedStatement pst;
@@ -148,7 +146,11 @@ public class InsumoDao {
                 TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
                 TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
                 TelaMovimentacaoEstoque.txtEstUM.setText(rs.getString(2));
-                      
+                if (TelaMovimentacaoEstoque.cbTipo.getSelectedItem().equals("Saída")) {
+                    MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+                    TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
+                }
+
             } else {
                 JOptionPane.showMessageDialog(null, "Código inválido.");
             }
@@ -282,8 +284,8 @@ public class InsumoDao {
         }
         return total;
     }
-    
-    public boolean contInsumo(int codigo){
+
+    public boolean contInsumo(int codigo) {
         String sql = "select count (codigoInsumo) as total from tbReceitaInsumo where codigoInsumo = '" + codigo + "'";
         int total = 0;
         PreparedStatement pst;

@@ -6,6 +6,7 @@
 package telas;
 
 import conexao.ModuloConexao;
+import dao.MovimentacaoEstoqueDao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -90,6 +91,10 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
         TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
         TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+        if (TelaMovimentacaoEstoque.cbTipo.getSelectedItem().equals("Saída")) {
+            MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+            TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
+        }
     }
 
     //seta os campos do formulário com o coteúdo da tabela

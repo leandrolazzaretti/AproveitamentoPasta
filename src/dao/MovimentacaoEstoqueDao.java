@@ -180,4 +180,9 @@ public class MovimentacaoEstoqueDao {
         int data2 = Integer.parseInt(dataVencimento.replace("-", ""));
         return data2 <= data1;
     }
+    
+    public String inverterData(String data) {
+        String[] dataInvertida = data.split("-");
+        return dataInvertida[2] + "-" + dataInvertida[1] + "-" + dataInvertida[0];
+    }
 }

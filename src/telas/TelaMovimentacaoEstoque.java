@@ -151,7 +151,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void ativarInsumo() {
         this.btnMovEstPesquisar.setEnabled(true);
+        this.btnMovEstPesquisar.setVisible(true);
+        this.txtEstQuantidade.setEnabled(false);
+        this.txtEstData.setEnabled(false);
         this.txtCodigo.setText(null);
+        this.txtCodigo.setEnabled(true);
         this.txtDescricao.setText(null);
         this.txtEstUM.setText(null);
         this.txtEstQuantidade.setText(null);
@@ -216,6 +220,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     }
 
                 } else {
+                    //this.txtEstData.setText(inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
                     double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",", "."));
                     int soma = this.movEstDao.somaPastas(this.txtDescricao.getText());
                     if (soma < quantidade) {
@@ -235,6 +240,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(true, "Insumo");
                 } else {
+                    //this.txtEstData.setText(inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
                     this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(false, "Insumo");
                 }
@@ -503,6 +509,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             ativarTblPasta();
             if (this.cbTipo.getSelectedItem().equals("Saída")) {
                 this.btnMovEstPesquisar.setEnabled(false);
+                this.btnMovEstPesquisar.setVisible(false);
             }
         }
     }//GEN-LAST:event_cbEstoqueActionPerformed
@@ -514,14 +521,22 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
         // Altera entre saida ou entrada
+        if ((!this.txtCodigo.getText().equals("")) && (this.txtEstData.getText().equals("  /  /    "))) {
+            this.txtEstData.setText(this.movEstDao.inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
+        }
+        
         if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
             if (this.cbTipo.getSelectedItem().equals("Saída")) {
                 this.btnMovEstPesquisar.setEnabled(false);
+                this.btnMovEstPesquisar.setVisible(false);
+
             } else {
                 this.btnMovEstPesquisar.setEnabled(true);
+                this.btnMovEstPesquisar.setVisible(true);
             }
         } else {
             this.btnMovEstPesquisar.setEnabled(true);
+            this.btnMovEstPesquisar.setVisible(true);          
         }
     }//GEN-LAST:event_cbTipoActionPerformed
 
@@ -584,6 +599,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             this.txtCodigo.setEnabled(false);
             this.txtEstQuantidade.setEnabled(true);
             this.txtEstData.setEnabled(true);
+            if (this.cbTipo.getSelectedItem().equals("Saída")) {
+                this.txtEstData.setText(this.movEstDao.inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
+            }
         }
     }//GEN-LAST:event_tblEstPastaMouseClicked
 
@@ -646,7 +664,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnMovEstPesquisar;
     private javax.swing.JComboBox<String> cbEstoque;
     private javax.swing.JComboBox<String> cbPesMovEst;
-    private javax.swing.JComboBox<String> cbTipo;
+    public static javax.swing.JComboBox<String> cbTipo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

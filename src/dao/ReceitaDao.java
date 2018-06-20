@@ -114,7 +114,7 @@ public class ReceitaDao {
                 TelaCadReceita.txtCadRecPan.setText(rs.getString(2));
                 TelaCadReceita.cbCadReceitaTipo.setSelectedItem(rs.getString(3));
                 TelaCadReceita.txtCadRecVal.setText(rs.getString(4));
-            }else{
+            } else {
             }
 
             pst.close();
@@ -173,6 +173,11 @@ public class ReceitaDao {
                 TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
                 TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
                 TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
+                if (TelaMovimentacaoEstoque.cbTipo.getSelectedItem().equals("Saída")) {
+                    MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+                TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
+                    
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Código inválido.");
             }
@@ -197,7 +202,7 @@ public class ReceitaDao {
         }
         return codigo;
     }
-    
+
     public int buscaVencimento(int codigorec) {
         String sql = "select datavencimento from tbreceita where codigorec = '" + codigorec + "'";
         int codigo = 0;

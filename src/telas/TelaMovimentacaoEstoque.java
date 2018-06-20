@@ -5,6 +5,7 @@
  */
 package telas;
 
+import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import dao.InsumoDao;
 import dao.MovimentacaoDao;
@@ -28,9 +29,10 @@ import util.SoNumeros;
 public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     Connection conexao = null;
-    private String cbPesquisar = "ep.ID";
+    private String cbPesquisar = "ep.codigoReceita";
     MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
     InsumoDao insumoDao = new InsumoDao();
+    ReceitaDao receitaDao = new ReceitaDao();
     Util frame = new Util();
     public static JInternalFrame framePesReceita;
     public static JInternalFrame framePesInsumo;
@@ -63,14 +65,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
             movDto.setCodigo(codigo);
             movDto.setDescricao(this.txtDescricao.getText());
-            movDto.setData(inverterData(this.txtEstData.getText()));
+            movDto.setData(inverterData(this.txtEstData.getText().replace("/", "-")));
             movDto.setQuantidade(this.txtEstQuantidade.getText().replace(",", "."));
 
         } else {
             movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
             movDto.setCodigo(codigo);
             movDto.setDescricao(this.txtDescricao.getText());
-            movDto.setData(inverterData(this.txtEstData.getText()));
+            movDto.setData(inverterData(this.txtEstData.getText().replace("/", "-")));
             movDto.setQuantidade("-" + this.txtEstQuantidade.getText().replace(",", "."));
         }
         movDao.movimentacao(movDto);
@@ -83,19 +85,19 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         movEstDto.setCodigoReceita(movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
         movEstDto.setUM(this.txtEstUM.getText());
         movEstDto.setQuantidade(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")));
-        movEstDto.setData(inverterData(this.txtEstData.getText()));
+        movEstDto.setData(inverterData(this.txtEstData.getText().replace("/", "-")));
+        movEstDto.setDataVencimento(movEstDao.dataVencimento(inverterData(this.txtEstData.getText().replace("/", "-")), this.receitaDao.buscaVencimento(Integer.parseInt(this.txtCodigo.getText()))));
 
         if (confirma == true) {
             movEstDao.entradaPasta(movEstDto);
         } else {
             movEstDao.saidaPasta(movEstDto.getQuantidade(), movEstDto.getCodigoReceita());
         }
-
     }
 
     //Seta a tabela de estoque de pastas
     public void setarTabelaPasta() {
-        String sql = "select ep.ID, r.descricao, ep.quantidade, r.datavencimento, ep.data from tbEstoquePasta as ep"
+        String sql = "select ep.codigoReceita, r.descricao, ep.quantidade, r.datavencimento, ep.data, ep.dataVencimento from tbEstoquePasta as ep"
                 + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
                 + " where " + this.cbPesquisar + " like ?";
 
@@ -103,13 +105,13 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblEstPasta.getModel();
         modelo.setNumRows(0);
-        Util buscarDes = new Util();
 
         this.tblEstPasta.getColumnModel().getColumn(0).setPreferredWidth(20);
-        this.tblEstPasta.getColumnModel().getColumn(1).setPreferredWidth(40);
-        this.tblEstPasta.getColumnModel().getColumn(2).setPreferredWidth(40);
+        this.tblEstPasta.getColumnModel().getColumn(1).setPreferredWidth(30);
+        this.tblEstPasta.getColumnModel().getColumn(2).setPreferredWidth(30);
         this.tblEstPasta.getColumnModel().getColumn(3).setPreferredWidth(20);
         this.tblEstPasta.getColumnModel().getColumn(4).setPreferredWidth(20);
+        this.tblEstPasta.getColumnModel().getColumn(5).setPreferredWidth(20);
 
         try {
             pst = this.conexao.prepareStatement(sql);
@@ -122,12 +124,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     rs.getString(2),
                     rs.getString(3).replace(".", ","),
                     rs.getString(4),
-                    inverterData(rs.getString(5))
+                    inverterData(rs.getString(5)).replace("-", "/"),
+                    inverterData(rs.getString(6)).replace("-", "/")
                 });
             }
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
         }
 
     }
@@ -147,10 +151,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void ativarInsumo() {
         this.btnMovEstPesquisar.setEnabled(true);
+        this.txtCodigo.setText(null);
         this.txtDescricao.setText(null);
         this.txtEstUM.setText(null);
         this.txtEstQuantidade.setText(null);
-        this.txtEstData.setText(null);
+        this.txtEstData.setValue(null);
         this.txtEstUM.setEnabled(false);
         this.tblEstPasta.setVisible(false);
         this.cbPesMovEst.setEnabled(false);
@@ -165,8 +170,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtEstQuantidade.setEnabled(false);
         this.txtEstData.setEnabled(false);
         this.txtCodigo.setText(null);
+        this.txtDescricao.setText(null);
         this.txtEstQuantidade.setText(null);
-        this.txtEstData.setText(null);
+        this.txtEstData.setValue(null);
     }
 
     // verifica se todos os campos estão setados
@@ -179,8 +185,70 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     }
 
     private String inverterData(String data) {
-        String[] dataInvertida = data.split("/");
-        return dataInvertida[2] + "/" + dataInvertida[1] + "/" + dataInvertida[0];
+        String[] dataInvertida = data.split("-");
+        return dataInvertida[2] + "-" + dataInvertida[1] + "-" + dataInvertida[0];
+    }
+
+    private void confirmaAcao(boolean conf) {
+        // confirma a ação de entrada ou saida    
+        //Verifica se existe algum campo vazio 
+        boolean conf2 = false;
+        if (verificaCampos() == true) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
+            conf2 = true;
+        } else {
+            //confirma se é pasta ou insumo
+            if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
+                //confirma se é entrada ou saida                
+                if (this.cbTipo.getSelectedItem().equals("Entrada")) {
+                    if (this.movEstDao.dataComparar(this.movEstDao.dataAtual(), inverterData(this.txtEstData.getText().replace("/", "-"))) == false) {
+                        JOptionPane.showMessageDialog(null, "Não é possivel dar entrada com uma data futura.");
+                    } else {
+                        if (this.movEstDao.dataComparar(this.movEstDao.dataAtual(), this.movEstDao.dataVencimento(inverterData(this.txtEstData.getText().replace("/", "-")), this.receitaDao.buscaVencimento(Integer.parseInt(this.txtCodigo.getText())))) == true) {
+                            JOptionPane.showMessageDialog(null, "Data de vencimento da pasta é inferior a data atual.");
+                        } else {
+                            confirmaEstoquePasta(true);
+                            movimentacao(true, "Pasta");
+                            this.insumoDao.retirarInsumo(this.movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
+                            setarTabelaPasta();
+                            limparCampos();
+                        }
+                    }
+
+                } else {
+                    double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",", "."));
+                    int soma = this.movEstDao.somaPastas(this.txtDescricao.getText());
+                    if (soma < quantidade) {
+                        JOptionPane.showMessageDialog(null, "Quantidade em estoque " + soma + "kg\nNão atende a sua necessidade.");
+                        conf2 = true;
+
+                    } else {
+                        confirmaEstoquePasta(false);
+                        movimentacao(false, "Pasta");
+                        setarTabelaPasta();
+                        limparCampos();
+                    }
+                }
+            } else {
+                // confirma se é entrada ou saida
+                if (this.cbTipo.getSelectedItem().equals("Entrada")) {
+                    this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
+                    movimentacao(true, "Insumo");
+                } else {
+                    this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
+                    movimentacao(false, "Insumo");
+                }
+                limparCampos();
+            }
+        }
+        if (conf == true) {
+            if (conf2 == true) {
+                this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            } else {
+                this.setVisible(false);
+                this.dispose();
+            }
+        }
     }
 
     /**
@@ -223,6 +291,23 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Movimentação Estoque");
         setToolTipText("");
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
@@ -275,9 +360,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         });
         jPanel1.add(cbEstoque, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 84, -1));
 
-        txtCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtCodigoFocusLost(evt);
+        txtCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoKeyPressed(evt);
             }
         });
         jPanel1.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 180, -1));
@@ -294,11 +379,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         jPanel1.add(btnMovEstPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 30, 30));
 
         txtDescricao.setEnabled(false);
-        txtDescricao.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtDescricaoFocusLost(evt);
-            }
-        });
         jPanel1.add(txtDescricao, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 120, 240, -1));
 
         txtEstUM.setEnabled(false);
@@ -322,7 +402,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 btnConfirmarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 100, -1));
+        jPanel1.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 180, 100, -1));
 
         btnLimpar.setText("Limpar");
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
@@ -330,7 +410,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 btnLimparActionPerformed(evt);
             }
         });
-        jPanel1.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 100, -1));
+        jPanel1.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 100, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 824, 210));
 
@@ -339,7 +419,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         jLabel6.setText("Pesquisar por:");
 
-        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Pasta", "Quantidade", "Validade", "Data" }));
+        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Pasta", "Quantidade", "Validade" }));
         cbPesMovEst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbPesMovEstActionPerformed(evt);
@@ -357,11 +437,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID Estoque", "Pasta", "Quantidade ", "Validade", "Data"
+                "Código", "Pasta", "Quantidade ", "Validade", "Data", "Data Vencimento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -428,44 +508,8 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbEstoqueActionPerformed
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
-        // confirma a ação de entrada ou saida    
-        //Verifica se existe algum campo vazio 
-
-        if (verificaCampos() == true) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
-        } else {
-            //confirma se é pasta ou insumo
-            if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
-                //confirma se é entrada ou saida                
-                if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    confirmaEstoquePasta(true);
-                    movimentacao(true, "Pasta");
-                    this.insumoDao.retirarInsumo(this.movEstDao.buscaCodigoReceita(this.txtDescricao.getText()));
-                    setarTabelaPasta();
-                } else {
-                    double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",", "."));
-                    int soma = this.movEstDao.somaPastas(this.txtDescricao.getText());
-                    if (soma < quantidade) {
-                        JOptionPane.showMessageDialog(null, "Quantidade em estoque " + soma + "kg\nNão atende a sua necessidade.");
-
-                    } else {
-                        confirmaEstoquePasta(false);
-                        movimentacao(false, "Pasta");
-                        setarTabelaPasta();
-                    }
-                }
-            } else {
-                // confirma se é entrada ou saida
-                if (this.cbTipo.getSelectedItem().equals("Entrada")) {
-                    this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
-                    movimentacao(true, "Insumo");
-                } else {
-                    this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
-                    movimentacao(false, "Insumo");
-                }
-            }
-            limparCampos();
-        }
+        //chama o metodo para dar entrado ou saida em insumo ou pasta
+        confirmaAcao(false);
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
@@ -510,8 +554,8 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void cbPesMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPesMovEstActionPerformed
         //  // adiciona um valor a variável cbPesquizar
-        if (this.cbPesMovEst.getSelectedItem().equals("ID")) {
-            this.cbPesquisar = "ep.ID";
+        if (this.cbPesMovEst.getSelectedItem().equals("Código")) {
+            this.cbPesquisar = "ep.codigoReceita";
         } else {
             if (this.cbPesMovEst.getSelectedItem().equals("Pasta")) {
                 this.cbPesquisar = "r.descricao";
@@ -519,11 +563,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 if (this.cbPesMovEst.getSelectedItem().equals("Quantidade")) {
                     this.cbPesquisar = "ep.quantidade";
                 } else {
-                    if (this.cbPesMovEst.getSelectedItem().equals("Validade")) {
-                        this.cbPesquisar = "r.datavencimento";
-                    } else {
-                        this.cbPesquisar = "ep.data";
-                    }
+                    this.cbPesquisar = "r.datavencimento";
                 }
             }
         }
@@ -547,28 +587,10 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tblEstPastaMouseClicked
 
-    private void txtDescricaoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDescricaoFocusLost
-        //Metodo ao sair do campo ele verifica se existe determinado codigo já cadastrado, se não haver ele gera uma msg dede erro
-    }//GEN-LAST:event_txtDescricaoFocusLost
-
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
         // Chama o metodo para bloquear a movimentação do frame
         this.frame.bloquearMovimentacao(TelaPrincipal.frameMovimentacao, 0, 0);
     }//GEN-LAST:event_formComponentMoved
-
-    private void txtCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoFocusLost
-        //evento ao sair do campo ele busca os dados de determinado codigo
-        if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
-            if (!this.txtCodigo.getText().equals("")) {
-                ReceitaDao pesq = new ReceitaDao();
-                pesq.pesquisarReceitaMovi(Integer.parseInt(this.txtCodigo.getText()));
-            }         
-        } else {
-            if (!this.txtCodigo.getText().equals("")) {               
-                insumoDao.pesquisarInsumos2(Integer.parseInt(this.txtCodigo.getText()));
-            }  
-        }
-    }//GEN-LAST:event_txtCodigoFocusLost
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // chama o metodo limpar
@@ -578,6 +600,45 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             this.txtEstUM.setText(null);
         }
     }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        // gerar mensagem de salvar antes de sair
+        if (this.txtCodigo.getText().isEmpty()) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                } else {
+                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        }
+    }//GEN-LAST:event_formInternalFrameClosing
+
+    private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
+        // chama metodo ao pressionar a tecla Enter ou Tab     
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
+                if (!this.txtCodigo.getText().equals("")) {
+                    ReceitaDao pesq = new ReceitaDao();
+                    pesq.pesquisarReceitaMovi(Integer.parseInt(this.txtCodigo.getText()));
+                }
+            } else {
+                if (!this.txtCodigo.getText().equals("")) {
+                    insumoDao.pesquisarInsumos2(Integer.parseInt(this.txtCodigo.getText()));
+                }
+
+            }
+        }
+
+    }//GEN-LAST:event_txtCodigoKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfirmar;

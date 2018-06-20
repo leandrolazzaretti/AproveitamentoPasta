@@ -120,6 +120,7 @@ public class InsumoDao {
                 TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
                 TelaCadInsumo.txtCadInsQuant.setText(rs.getString(4));
                 TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
+                
             } else {
             }
 

@@ -158,6 +158,56 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         setarCodigo();
     }
 
+    private void confirmaAcao(boolean conf) {
+        // chama o metodo adicionar
+        boolean total;
+        boolean campos;
+        boolean conf2 = false;
+        // verifica os campos
+        campos = verificaCampos();
+        if (campos == false) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+            conf2 = true;
+        } else {
+            total = confirmaCodigo(this.txtCadUsuId.getText());
+            if (total == false) {
+                if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
+                    confirmar(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
+                    conf2 = true;
+                }
+            } else {
+                //chama o metodo para confirmar se o login já existe
+                total = confirmaLogin(this.txtCadUsuLogin.getText());
+                if (total == false) {
+                    JOptionPane.showMessageDialog(null, "Login já existe.");
+                    conf2 = true;
+
+                } else {
+                    //verifica a compatibilidade das senhas
+                    if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
+                        //adicionar();
+                        confirmar(true);
+                        limparCampos();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
+                        conf2 = true;
+                    }
+                }
+            }
+        }
+        if (conf == true) {
+            if (conf2 == true) {
+                this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            } else {
+                this.setVisible(false);
+                this.dispose();
+            }
+            
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -194,6 +244,23 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         setTitle("Cadastro de Usuários");
         setMaximumSize(new java.awt.Dimension(417, 409));
         setPreferredSize(new java.awt.Dimension(420, 406));
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
@@ -316,12 +383,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         // chama a TelaPesquisarUsuario framePesUsuario
         if (this.framePesUsuario == null) {
             this.framePesUsuario = new TelaPesquisarUsuario();
-        }else {
+        } else {
             this.framePesUsuario.dispose();
             this.framePesUsuario = new TelaPesquisarUsuario();
-        } 
+        }
         this.user.pesquisarUsuario();
-        this.frame.comandoInternal(this.framePesUsuario);     
+        this.frame.comandoInternal(this.framePesUsuario);
     }//GEN-LAST:event_btnCadUsePesquisarActionPerformed
 
     private void btnUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUltimoActionPerformed
@@ -391,46 +458,34 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnExcActionPerformed
 
     private void btnAdiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdiActionPerformed
-        // chama o metodo adicionar
-        boolean total;
-        boolean campos;
-        // verifica os campos
-        campos = verificaCampos();
-        if (campos == false) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-        } else {
-            total = confirmaCodigo(this.txtCadUsuId.getText());
-            if (total == false) {
-                if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
-                    confirmar(false);
-                } else {
-                    JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
-                }
-            } else {
-                //chama o metodo para confirmar se o login já existe
-                total = confirmaLogin(this.txtCadUsuLogin.getText());
-                if (total == false) {
-                    JOptionPane.showMessageDialog(null, "Login já existe.");
-
-                } else {
-                    //verifica a compatibilidade das senhas
-                    if (this.txtCadUsuSenha.getText().equals(this.txtCadUsuConfirmarSenha.getText())) {
-                        //adicionar();
-                        confirmar(true);
-                        limparCampos();
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "As senhas não são correspondentes.");
-                    }
-                }
-            }
-        }
+        //chama o metodo adicionar / salvar
+        confirmaAcao(false);
     }//GEN-LAST:event_btnAdiActionPerformed
 
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
         // Chama o metodo para bloquear a movimentação do frame
-            this.frame.bloquearMovimentacao(TelaPrincipal.frameUsuario, 221, 77); 
+        this.frame.bloquearMovimentacao(TelaPrincipal.frameUsuario, 221, 77);
     }//GEN-LAST:event_formComponentMoved
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        // gerar mensagem de salvar antes de sair
+        if ((this.txtCadUsuLogin.getText().isEmpty()) && (this.txtCadUsuNome.getText().isEmpty()) && (this.txtCadUsuSenha.getText().isEmpty()) && (this.txtCadUsuConfirmarSenha.getText().isEmpty())) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                } else {
+                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        }
+    }//GEN-LAST:event_formInternalFrameClosing
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -64,7 +64,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void confirmar(boolean confirmar) {
         ReceitaDto receitaDto = new ReceitaDto();
         ReceitaDao receitaDao = new ReceitaDao();
-        
 
         receitaDto.setCodigo(Integer.parseInt(this.txtCadRecCodigo.getText()));
         receitaDto.setDescricao(this.txtCadRecDes.getText());
@@ -79,7 +78,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             receitaDao.atualizarReceita(receitaDto, Integer.parseInt(this.txtCadRecCodigo.getText()));
         }
     }
-    
 
     private void limparCampos() {
         this.txtCadRecCodigo.setEnabled(true);
@@ -93,7 +91,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.cbCadReceitaTipo.setSelectedItem(null);
 
     }
-
 
     //evento para setar tblCadRecComponentes
     private void setarTabela() {
@@ -132,8 +129,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.tblCadRecComponentes.setComponentPopupMenu(popupMenu);
     }
 
-
-
     private boolean verificaCampos() {
         if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
             return false;
@@ -153,7 +148,41 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
 
-
+    private void confirmaAcao(boolean conf) {
+        // chama o metodo adicionar / ou Atualizar       
+        boolean total;
+        boolean campos;
+        boolean conf2 = false;
+        ReceitaDao receitaDao = new ReceitaDao();
+        // verifica os campos
+        campos = verificaCampos();
+        if (campos == false) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+            conf2 = true;
+        } else {
+            //chama o metodo para confirmar se o codigo já existe
+            total = receitaDao.confirmaCodigo(this.txtCadRecCodigo.getText());
+            if (total == false) {
+                confirmar(false);
+            } else {
+                total = receitaDao.confirmaDescricao(this.txtCadRecDes.getText());
+                if (total == false) {
+                    JOptionPane.showMessageDialog(null, "Descrição já existe.");
+                } else {
+                    confirmar(true);
+                    limparCampos();
+                }
+            }
+        }
+        if (conf == true) {
+            if (conf2 == true) {
+                this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            } else {
+                this.setVisible(false);
+                this.dispose();
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -195,6 +224,23 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Cadastro de Receitas");
         setMaximumSize(new java.awt.Dimension(860, 560));
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
@@ -248,6 +294,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 txtCadRecCodigoFocusLost(evt);
             }
         });
+        txtCadRecCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadRecCodigoKeyPressed(evt);
+            }
+        });
         getContentPane().add(txtCadRecCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 130, -1));
         getContentPane().add(txtCadRecPan, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 80, 130, -1));
 
@@ -283,14 +334,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
-            }
-        });
-        tblCadRecComponentes.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblCadRecComponentesMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tblCadRecComponentesMouseReleased(evt);
             }
         });
         tblCadRecComponentes.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -366,30 +409,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadRecAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarActionPerformed
-        // chama o metodo adicionar / ou Atualizar       
-        boolean total;
-        boolean campos;
-        ReceitaDao receitaDao = new ReceitaDao();
-        // verifica os campos
-        campos = verificaCampos();
-        if (campos == false) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-        } else {
-            //chama o metodo para confirmar se o codigo já existe
-            total = receitaDao.confirmaCodigo(this.txtCadRecCodigo.getText());
-            if (total == false) {
-                confirmar(false);
-            } else {
-                total = receitaDao.confirmaDescricao(this.txtCadRecDes.getText());
-                if (total == false) {
-                    JOptionPane.showMessageDialog(null, "Descrição já existe.");
-                } else {
-                    confirmar(true);
-                    limparCampos();
-                }
-            }
-
-        }
+        //chama o metodo adicionar/salvar
+        confirmaAcao(false);
     }//GEN-LAST:event_btnCadRecAdicionarActionPerformed
 
     private void btnCadRecLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecLimparActionPerformed
@@ -418,7 +439,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         // chama a TelaPesquisarReceita
         if (this.framePesReceita == null) {
             this.framePesReceita = new TelaPesquisarReceita();
-        }else{
+        } else {
             this.framePesReceita.dispose();
             this.framePesReceita = new TelaPesquisarReceita();
         }
@@ -426,27 +447,22 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.frame.comandoInternal(this.framePesReceita);
         TelaPesquisarReceita.confirmarEscolha = true;
 
-        
 
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
-    private void tblCadRecComponentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseClicked
-
-    }//GEN-LAST:event_tblCadRecComponentesMouseClicked
-
     private void btnInsumoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoPesquisarActionPerformed
         // chama a TelaPesquisarInsumos
-        
+
         if (this.framePesInsumo == null) {
             this.framePesInsumo = new TelaPesquisarInsumos();
-        }else {
+        } else {
             this.framePesInsumo.dispose();
             this.framePesInsumo = new TelaPesquisarInsumos();
-        }      
+        }
         this.frame.comandoInternal(this.framePesInsumo);
         TelaPesquisarInsumos.confirmarEscolha = true;
         TelaPesquisarInsumos.confimaTela = false;
-       
+
     }//GEN-LAST:event_btnInsumoPesquisarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -478,10 +494,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void tblCadRecComponentesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseReleased
-
-    }//GEN-LAST:event_tblCadRecComponentesMouseReleased
-
     private void tbnCadRecTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnCadRecTipoActionPerformed
         // chama o metodo adicionar tipo de pasta
         boolean conf = this.pasta.buscaCodTipoPasta(this.cbCadReceitaTipo.getSelectedItem().toString()) <= 0;
@@ -491,9 +503,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             if (conf == false) {
                 JOptionPane.showMessageDialog(null, "Tipo de pasta já existe.");
             } else {
+                String pastaAdicionada = this.cbCadReceitaTipo.getSelectedItem().toString();
                 this.pasta.addComboBox(this.cbCadReceitaTipo.getSelectedItem().toString());
                 this.cbCadReceitaTipo.removeAllItems();
                 this.pasta.setarComboBox();
+                this.cbCadReceitaTipo.setSelectedItem(pastaAdicionada);
             }
         }
     }//GEN-LAST:event_tbnCadRecTipoActionPerformed
@@ -518,11 +532,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tblCadRecComponentesKeyPressed
 
-    private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
-        // Chama o metodo atualizar enquanto digita
-       this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-    }//GEN-LAST:event_tblCadRecComponentesKeyReleased
-
     private void txtCadRecCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadRecCodigoFocusLost
         // Evento ao sair do campo de codigo, ele irar trazer todas as irformações referentes ao codigo
         if (!this.txtCadRecCodigo.getText().equals("")) {
@@ -534,8 +543,46 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCadRecCodigoFocusLost
 
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-       this.frame.bloquearMovimentacao(TelaPrincipal.frameReceita, 0, 0);
+        this.frame.bloquearMovimentacao(TelaPrincipal.frameReceita, 0, 0);
     }//GEN-LAST:event_formComponentMoved
+
+    private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
+        // Chama o metodo atualizar enquanto digita
+        this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+    }//GEN-LAST:event_tblCadRecComponentesKeyReleased
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        // gerar mensagem de salvar antes de sair
+        if ((this.txtCadRecCodigo.getText().isEmpty()) && (this.txtCadRecDes.getText().isEmpty()) && (this.txtCadRecPan.getText().isEmpty()) && (this.txtCadRecVal.getText().isEmpty()) && (this.txtCadRecComponentes.getText().isEmpty()) && (this.txtCadRecConsumo.getText().isEmpty())) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                } else {
+                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        }
+    }//GEN-LAST:event_formInternalFrameClosing
+
+    private void txtCadRecCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecCodigoKeyPressed
+        // chama o metodo atraves da tecla enter
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!this.txtCadRecCodigo.getText().equals("")) {
+                ReceitaDao pesq = new ReceitaDao();
+                TelaPesquisarReceita pesqRec = new TelaPesquisarReceita();
+                pesq.pesquisarReceita(Integer.parseInt(this.txtCadRecCodigo.getText()));
+                pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            }
+        }
+       
+    }//GEN-LAST:event_txtCadRecCodigoKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

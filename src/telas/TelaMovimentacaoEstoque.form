@@ -15,6 +15,7 @@
     <SyntheticProperty name="generateSize" type="boolean" value="true"/>
   </SyntheticProperties>
   <Events>
+    <EventHandler event="internalFrameClosing" listener="javax.swing.event.InternalFrameListener" parameters="javax.swing.event.InternalFrameEvent" handler="formInternalFrameClosing"/>
     <EventHandler event="componentMoved" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="formComponentMoved"/>
   </Events>
   <AuxValues>
@@ -179,7 +180,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtCodigo">
           <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtCodigoFocusLost"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCodigoKeyPressed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -214,9 +215,6 @@
           <Properties>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtDescricaoFocusLost"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
           </AuxValues>
@@ -278,7 +276,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="110" y="170" width="100" height="-1"/>
+              <AbsoluteConstraints x="110" y="180" width="100" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -291,7 +289,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="10" y="170" width="100" height="-1"/>
+              <AbsoluteConstraints x="10" y="180" width="100" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -360,12 +358,11 @@
         <Component class="javax.swing.JComboBox" name="cbPesMovEst">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="5">
-                <StringItem index="0" value="ID"/>
+              <StringArray count="4">
+                <StringItem index="0" value="C&#xf3;digo"/>
                 <StringItem index="1" value="Pasta"/>
                 <StringItem index="2" value="Quantidade"/>
                 <StringItem index="3" value="Validade"/>
-                <StringItem index="4" value="Data"/>
               </StringArray>
             </Property>
           </Properties>
@@ -391,12 +388,13 @@
             <Component class="javax.swing.JTable" name="tblEstPasta">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="5" rowCount="0">
-                    <Column editable="false" title="ID Estoque" type="java.lang.Object"/>
+                  <Table columnCount="6" rowCount="0">
+                    <Column editable="false" title="C&#xf3;digo" type="java.lang.Object"/>
                     <Column editable="false" title="Pasta" type="java.lang.Object"/>
                     <Column editable="false" title="Quantidade " type="java.lang.Object"/>
                     <Column editable="false" title="Validade" type="java.lang.Object"/>
                     <Column editable="false" title="Data" type="java.lang.Object"/>
+                    <Column editable="false" title="Data Vencimento" type="java.lang.Object"/>
                   </Table>
                 </Property>
               </Properties>

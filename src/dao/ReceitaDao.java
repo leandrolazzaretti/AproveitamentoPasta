@@ -114,6 +114,7 @@ public class ReceitaDao {
                 TelaCadReceita.txtCadRecPan.setText(rs.getString(2));
                 TelaCadReceita.cbCadReceitaTipo.setSelectedItem(rs.getString(3));
                 TelaCadReceita.txtCadRecVal.setText(rs.getString(4));
+            }else{
             }
 
             pst.close();
@@ -171,6 +172,7 @@ public class ReceitaDao {
                 TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
                 TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
                 TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
+                TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
             } else {
                 JOptionPane.showMessageDialog(null, "Código inválido.");
             }
@@ -189,6 +191,21 @@ public class ReceitaDao {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             codigo = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return codigo;
+    }
+    
+    public int buscaVencimento(int codigorec) {
+        String sql = "select datavencimento from tbreceita where codigorec = '" + codigorec + "'";
+        int codigo = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            codigo = rs.getInt(1);
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

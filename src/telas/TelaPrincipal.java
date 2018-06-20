@@ -440,11 +440,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         //comandoInternal(new TelaCadUsuario());
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
-        }else {
+        } else {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
         }
-            this.frame.comandoInternal(this.frameUsuario);
+        this.frame.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
     private void menCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadastroActionPerformed
@@ -459,30 +459,32 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
         }
-            this.frame.comandoInternal(this.frameUsuario);
+        this.frame.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_menCadUsuActionPerformed
 
     private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
-        // chama a TelaCadInsumos
-        if (this.frameInsumo == null) {
-            this.frameInsumo = new TelaCadInsumo();
-        } else {
-            this.frameInsumo.dispose();
-            this.frameInsumo = new TelaCadInsumo();
-        }
+          // chama a TelaCadInsumos       
+            if (this.frameInsumo == null) {
+                this.frameInsumo = new TelaCadInsumo();
+            } else {
+                this.frameInsumo.dispose();
+                this.frameInsumo = new TelaCadInsumo();
+            }
             this.frame.comandoInternal(this.frameInsumo);
-
+//        }
     }//GEN-LAST:event_btnInsumoActionPerformed
 
     private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
         // chama a TelaCadInsumos       
-        if (this.frameInsumo == null) {
-            this.frameInsumo = new TelaCadInsumo();
-        } else {
-            this.frameInsumo.dispose();
-            this.frameInsumo = new TelaCadInsumo();
-        }
+       
+            if (this.frameInsumo == null) {
+                this.frameInsumo = new TelaCadInsumo();
+            } else {
+                this.frameInsumo.dispose();
+                this.frameInsumo = new TelaCadInsumo();
+            }
             this.frame.comandoInternal(this.frameInsumo);
+        
     }//GEN-LAST:event_menCadInsActionPerformed
 
     private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed
@@ -493,8 +495,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameReceita.dispose();
             this.frameReceita = new TelaCadReceita();
         }
-            this.frame.comandoInternal(this.frameReceita);
-
+        this.frame.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_btnReceitaActionPerformed
 
     private void menCadRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadRecActionPerformed
@@ -505,7 +506,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameReceita.dispose();
             this.frameReceita = new TelaCadReceita();
         }
-            this.frame.comandoInternal(this.frameReceita);
+        this.frame.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_menCadRecActionPerformed
 
     private void menConMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConMovEstActionPerformed
@@ -516,7 +517,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameMovimentacao.dispose();
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
         }
-            this.frame.comandoInternal(this.frameMovimentacao);
+        this.frame.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_menConMovEstActionPerformed
 
     private void tbnEstPastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnEstPastaActionPerformed
@@ -527,7 +528,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameEstoquePasta.dispose();
             this.frameEstoquePasta = new TelaEstoquePasta();
         }
-            this.frame.comandoInternal(this.frameEstoquePasta);
+        this.frame.comandoInternal(this.frameEstoquePasta);
     }//GEN-LAST:event_tbnEstPastaActionPerformed
 
     private void menConEstPasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConEstPasActionPerformed
@@ -550,7 +551,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameMovimentacao.dispose();
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
         }
-            this.frame.comandoInternal(this.frameMovimentacao);
+        this.frame.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_btnMovEstoqueActionPerformed
 
     private void menRelMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelMovEstActionPerformed

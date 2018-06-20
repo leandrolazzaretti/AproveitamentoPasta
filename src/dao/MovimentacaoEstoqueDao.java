@@ -26,8 +26,8 @@ public class MovimentacaoEstoqueDao {
 
     //da entrada no estoque de pasta
     public void entradaPasta(MovimentacaoEstoqueDto movEstoqueDto) {
-        String sql = "insert into tbEstoquePasta(codigoReceita,UM,quantidade,data)"
-                + " values(?,?,?,?)";
+        String sql = "insert into tbEstoquePasta(codigoReceita,UM,quantidade,data,dataVencimento)"
+                + " values(?,?,?,?,?)";
         PreparedStatement pst;
 
         try {
@@ -36,6 +36,7 @@ public class MovimentacaoEstoqueDao {
             pst.setString(2, movEstoqueDto.getUM());
             pst.setDouble(3, movEstoqueDto.getQuantidade());
             pst.setString(4, movEstoqueDto.getData());
+            pst.setString(5, movEstoqueDto.getDataVencimento());
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
                 JOptionPane.showMessageDialog(null, "Entrada de pasta efetuada com sucesso.");
@@ -143,5 +144,40 @@ public class MovimentacaoEstoqueDao {
             JOptionPane.showMessageDialog(null, e);
         }
         return codigo;
+    }
+
+    public String dataVencimento(String data, int validade) {
+        String sql = "SELECT date('"+data+"','"+validade+" day')";
+        String retorno = null;
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            retorno = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return retorno;
+    }
+    public String dataAtual(){
+        String sql = "SELECT date('now')";
+        String data = null;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            data = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return data;
+    }
+    
+    public boolean dataComparar(String dataAtual, String dataVencimento){
+        int data1 = Integer.parseInt(dataAtual.replace("-", ""));
+        int data2 = Integer.parseInt(dataVencimento.replace("-", ""));
+        return data2 <= data1;
     }
 }

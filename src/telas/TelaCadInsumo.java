@@ -5,6 +5,7 @@
  */
 package telas;
 
+import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import dao.InsumoDao;
 import dto.InsumoDto;
@@ -126,6 +127,37 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsPreco.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
+    private void confirmaAcao(boolean conf) {
+        // chama o metodo adicionar
+        boolean total;
+        boolean campos;
+        boolean conf2 = false;
+        // verifica os campos
+        campos = verificaCampos();
+        if (campos == false) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+            conf2 = true;
+        } else {
+            //chama o metodo para confirmar se o codigo já existe
+            total = confirmaCodigo(this.txtCadInsCodigo.getText());
+            if (total == false) {
+                confirmar(false);
+            } else {
+                confirmar(true);
+                limparCampos();
+            }
+        }
+        if (conf == true) {
+            if (conf2 == true) {
+                this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            } else {
+                this.setVisible(false);
+                this.dispose();
+            }
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,6 +186,23 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Cadastro de Insumos");
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
@@ -172,6 +221,11 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         txtCadInsCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtCadInsCodigoFocusLost(evt);
+            }
+        });
+        txtCadInsCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadInsCodigoKeyPressed(evt);
             }
         });
         getContentPane().add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 140, -1));
@@ -234,24 +288,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadInsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarActionPerformed
-        // chama o metodo adicionar
-        boolean total;
-        boolean campos;
-        // verifica os campos
-        campos = verificaCampos();
-        if (campos == false) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-        } else {
-            //chama o metodo para confirmar se o codigo já existe
-            total = confirmaCodigo(this.txtCadInsCodigo.getText());
-            if (total == false) {
-                confirmar(false);
-            } else {
-                confirmar(true);
-                limparCampos();
-            }
-
-        }
+        //chama o metodo adicionar/salvar
+        confirmaAcao(false);
     }//GEN-LAST:event_btnCadInsAdicionarActionPerformed
 
     private void btnCadInsDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsDeletarActionPerformed
@@ -263,7 +301,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             boolean conf = insumoDao.contInsumo(Integer.parseInt(this.txtCadInsCodigo.getText()));
             if (conf == true) {
                 JOptionPane.showMessageDialog(null, "Este insumo não pode ser eliminado.");
-            } else {            
+            } else {
                 insumoDao.deletarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
                 limparCampos();
             }
@@ -307,6 +345,36 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         // Chama o metodo para bloquear a movimentação do frame  
         this.util.bloquearMovimentacao(TelaPrincipal.frameInsumo, 148, 72);
     }//GEN-LAST:event_formComponentMoved
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        // gerar mensagem de salvar antes de sair
+        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && (this.txtCadInsPreco.getText().isEmpty()) && (this.txtCadInsQuant.getText().equals("0"))) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                } else {
+                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        }
+    }//GEN-LAST:event_formInternalFrameClosing
+
+    private void txtCadInsCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadInsCodigoKeyPressed
+        // chama o metodo atraves da tecla enter
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!this.txtCadInsCodigo.getText().equals("")) {
+                InsumoDao pesq = new InsumoDao();
+                pesq.pesquisarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
+            }
+        }
+    }//GEN-LAST:event_txtCadInsCodigoKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

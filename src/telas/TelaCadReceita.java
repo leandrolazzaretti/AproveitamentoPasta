@@ -19,11 +19,12 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+import util.ComboKeyHandler;
 import util.SoNumeros;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import util.Util;
 
 /**
@@ -56,9 +57,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         popupTabela();
         mascaraConsu();
         this.pasta.setarComboBox();
-        AutoCompleteDecorator.decorate(cbCadReceitaTipo);
+        //AutoCompleteDecorator.decorate(this.cbCadReceitaTipo);
         this.cbCadReceitaTipo.setSelectedItem(null);
 
+        cbAtivar();
     }
 
     private void confirmar(boolean confirmar) {
@@ -184,6 +186,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }
 
+    private void cbAtivar(){
+        JTextField text = (JTextField)this.cbCadReceitaTipo.getEditor().getEditorComponent();        
+        text.addKeyListener(new ComboKeyHandler(this.cbCadReceitaTipo));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -281,7 +287,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         getContentPane().add(btnCadRecDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 79, -1));
 
-        btnCadRecLimpar.setText("Novo");
+        btnCadRecLimpar.setText("Limpar");
         btnCadRecLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadRecLimparActionPerformed(evt);
@@ -508,6 +514,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 this.cbCadReceitaTipo.removeAllItems();
                 this.pasta.setarComboBox();
                 this.cbCadReceitaTipo.setSelectedItem(pastaAdicionada);
+                cbAtivar();
             }
         }
     }//GEN-LAST:event_tbnCadRecTipoActionPerformed
@@ -522,6 +529,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             this.pasta.removeComboBox(this.cbCadReceitaTipo.getSelectedItem().toString());
             this.cbCadReceitaTipo.removeAllItems();
             this.pasta.setarComboBox();
+            cbAtivar();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -581,7 +589,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
             }
         }
-       
+
     }//GEN-LAST:event_txtCadRecCodigoKeyPressed
 
 

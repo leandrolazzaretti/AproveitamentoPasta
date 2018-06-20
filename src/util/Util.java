@@ -20,14 +20,16 @@ import static telas.TelaPrincipal.Desktop;
  *
  * @author Leandro
  */
-public class Util {
+public class Util{
 
     Connection conexao = null;
 
     public Util() {
-        this.conexao = ModuloConexao.conector();
+        this.conexao = ModuloConexao.conector();               
     }
-
+        
+    
+    
     //busca a menor data correspondente ao codigo da receita no banco
     public String buscarDataMenor(int codigoReceita) {
         String sql = "select min(ep.data) from tbEstoquePasta as ep where codigoReceita =?";

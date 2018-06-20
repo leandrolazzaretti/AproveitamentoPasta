@@ -256,7 +256,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "g", "mg", "L" }));
         getContentPane().add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, 140, -1));
 
-        btnCadInsLimpar.setText("Novo");
+        btnCadInsLimpar.setText("Limpar");
         btnCadInsLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadInsLimparActionPerformed(evt);

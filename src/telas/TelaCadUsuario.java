@@ -311,7 +311,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         jLabel6.setText("Cadastro de Usuários");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, -1, -1));
 
-        btnLimpar.setText("Novo");
+        btnLimpar.setText("Limpar");
         btnLimpar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

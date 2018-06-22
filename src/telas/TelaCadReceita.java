@@ -11,13 +11,19 @@ import dao.ReceitaDao;
 import dao.ReceitaInsumoDao;
 import dao.TipoPastaDao;
 import dto.ReceitaDto;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -190,6 +196,26 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         JTextField text = (JTextField)this.cbCadReceitaTipo.getEditor().getEditorComponent();        
         text.addKeyListener(new ComboKeyHandler(this.cbCadReceitaTipo));
     }
+    
+        // quando o mouse estiver em cima
+    private void alteraCor(JPanel painel, JButton botao) {
+        painel.setBackground(new Color(192, 221, 147));
+        botao.setForeground(new Color(66, 66, 66));
+    }
+
+    // retorna a cor original do botão
+    public void retornaCor(JPanel painel, JButton botao) {
+        painel.setBackground(new Color(255, 255, 255));
+        botao.setForeground(new Color(66, 66, 66));
+
+    }
+
+    // quando o botão for pressionado
+    private void alteraCorPressionado(JPanel painel, JButton botao) {
+        painel.setBackground(new Color(172, 198, 132));
+        botao.setForeground(new Color(66, 66, 66));
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -199,6 +225,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtCadRecDes = new javax.swing.JTextField();
@@ -206,9 +233,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtCadRecVal = new javax.swing.JTextField();
-        btnCadRecAdicionar = new javax.swing.JButton();
-        btnCadRecDeletar = new javax.swing.JButton();
-        btnCadRecLimpar = new javax.swing.JButton();
         txtCadRecCodigo = new javax.swing.JTextField();
         txtCadRecPan = new javax.swing.JTextField();
         btnReceitaPesquisar = new javax.swing.JButton();
@@ -225,6 +249,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         cbCadReceitaTipo = new javax.swing.JComboBox<>();
         tbnCadRecTipo = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        btnMinimi = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        btnFechar = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        btnCadRecAdicionar = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        btnCadRecDeletar = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        btnCadRecLimpar = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -232,6 +266,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         setMaximumSize(new java.awt.Dimension(860, 560));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -241,6 +276,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameDeiconified(evt);
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -252,48 +288,33 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 formComponentMoved(evt);
             }
         });
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel2.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(219, 237, 194)));
+        jPanel2.setMinimumSize(new java.awt.Dimension(860, 530));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setForeground(new java.awt.Color(79, 79, 79));
         jLabel1.setText("Código:");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
+        jLabel2.setForeground(new java.awt.Color(79, 79, 79));
         jLabel2.setText("Pantone:");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 50, -1, -1));
-        getContentPane().add(txtCadRecDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 190, -1));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 80, -1, -1));
+        jPanel2.add(txtCadRecDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 190, -1));
 
+        jLabel3.setForeground(new java.awt.Color(79, 79, 79));
         jLabel3.setText("Tipo de pasta:");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 50, -1, -1));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, -1, -1));
 
+        jLabel4.setForeground(new java.awt.Color(79, 79, 79));
         jLabel4.setText("Descrição:");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, -1, -1));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, -1, -1));
 
+        jLabel5.setForeground(new java.awt.Color(79, 79, 79));
         jLabel5.setText("Validade:");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 50, -1, -1));
-        getContentPane().add(txtCadRecVal, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 80, 120, -1));
-
-        btnCadRecAdicionar.setText("Salvar");
-        btnCadRecAdicionar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadRecAdicionarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadRecAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 79, -1));
-
-        btnCadRecDeletar.setText("Eliminar");
-        btnCadRecDeletar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadRecDeletarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadRecDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 79, -1));
-
-        btnCadRecLimpar.setText("Limpar");
-        btnCadRecLimpar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadRecLimparActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnCadRecLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 79, -1));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 80, -1, -1));
+        jPanel2.add(txtCadRecVal, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 110, 120, -1));
 
         txtCadRecCodigo.setText("0");
         txtCadRecCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -306,8 +327,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 txtCadRecCodigoKeyPressed(evt);
             }
         });
-        getContentPane().add(txtCadRecCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 130, -1));
-        getContentPane().add(txtCadRecPan, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 80, 130, -1));
+        jPanel2.add(txtCadRecCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 130, -1));
+        jPanel2.add(txtCadRecPan, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 110, 130, -1));
 
         btnReceitaPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         btnReceitaPesquisar.setToolTipText("Pesquisar");
@@ -318,13 +339,15 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 btnReceitaPesquisarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnReceitaPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, 28, 31));
+        jPanel2.add(btnReceitaPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 28, 31));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(79, 79, 79));
         jLabel6.setText("Cadastro de Receita");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(188, 188, 188)));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tblCadRecComponentes.setModel(new javax.swing.table.DefaultTableModel(
@@ -355,10 +378,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 660, 270));
 
+        jLabel8.setForeground(new java.awt.Color(79, 79, 79));
         jLabel8.setText("Componentes:");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
         jPanel1.add(txtCadRecComponentes, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 260, -1));
 
+        jLabel7.setForeground(new java.awt.Color(79, 79, 79));
         jLabel7.setText("Consumo por kg:");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
 
@@ -385,10 +410,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jPanel1.add(btnAddConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 40, 30, -1));
         jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 110, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 830, 360));
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 820, 360));
 
         cbCadReceitaTipo.setEditable(true);
-        getContentPane().add(cbCadReceitaTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, 150, -1));
+        jPanel2.add(cbCadReceitaTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 110, 150, -1));
 
         tbnCadRecTipo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
         tbnCadRecTipo.setToolTipText("Adicionar");
@@ -399,7 +424,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 tbnCadRecTipoActionPerformed(evt);
             }
         });
-        getContentPane().add(tbnCadRecTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 80, 20, -1));
+        jPanel2.add(tbnCadRecTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 110, 20, -1));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/x.png"))); // NOI18N
         jButton1.setToolTipText("Apagar");
@@ -410,24 +435,162 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 80, 20, -1));
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 110, 20, -1));
+
+        jPanel6.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnMinimi.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        btnMinimi.setForeground(new java.awt.Color(79, 79, 79));
+        btnMinimi.setText("-");
+        btnMinimi.setContentAreaFilled(false);
+        btnMinimi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnMinimi.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        btnMinimi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnMinimiMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnMinimiMouseExited(evt);
+            }
+        });
+        btnMinimi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinimiActionPerformed(evt);
+            }
+        });
+        jPanel6.add(btnMinimi, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 44, 20));
+
+        jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(776, 2, 40, 20));
+
+        jPanel3.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnFechar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnFechar.setForeground(new java.awt.Color(79, 79, 79));
+        btnFechar.setText("X");
+        btnFechar.setContentAreaFilled(false);
+        btnFechar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnFecharMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnFecharMouseExited(evt);
+            }
+        });
+        btnFechar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFecharActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 40, 20));
+
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(816, 2, 40, 20));
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnCadRecAdicionar.setForeground(new java.awt.Color(69, 69, 69));
+        btnCadRecAdicionar.setText("Salvar");
+        btnCadRecAdicionar.setContentAreaFilled(false);
+        btnCadRecAdicionar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCadRecAdicionarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCadRecAdicionarMouseExited(evt);
+            }
+        });
+        btnCadRecAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecAdicionarActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnCadRecAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
+
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 150, 80, 25));
+
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnCadRecDeletar.setForeground(new java.awt.Color(69, 69, 69));
+        btnCadRecDeletar.setText("Eliminar");
+        btnCadRecDeletar.setContentAreaFilled(false);
+        btnCadRecDeletar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCadRecDeletarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCadRecDeletarMouseExited(evt);
+            }
+        });
+        btnCadRecDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecDeletarActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnCadRecDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
+
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 80, 25));
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnCadRecLimpar.setForeground(new java.awt.Color(69, 69, 69));
+        btnCadRecLimpar.setText("Limpar");
+        btnCadRecLimpar.setContentAreaFilled(false);
+        btnCadRecLimpar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCadRecLimparMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCadRecLimparMouseExited(evt);
+            }
+        });
+        btnCadRecLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadRecLimparActionPerformed(evt);
+            }
+        });
+        jPanel7.add(btnCadRecLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
+
+        jPanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 80, 25));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
+        );
 
         setBounds(0, 0, 860, 560);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadRecAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarActionPerformed
         //chama o metodo adicionar/salvar
+        alteraCorPressionado(this.jPanel4, this.btnCadRecAdicionar);
         confirmaAcao(false);
     }//GEN-LAST:event_btnCadRecAdicionarActionPerformed
 
     private void btnCadRecLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecLimparActionPerformed
-        // chama o metodo limpar campos;     
+        // chama o metodo limpar campos; 
+        alteraCorPressionado(this.jPanel7, this.btnCadRecLimpar);
         limparCampos();
         //desabilitarCampos();
     }//GEN-LAST:event_btnCadRecLimparActionPerformed
 
     private void btnCadRecDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadRecDeletarActionPerformed
         // chama o metodo deletar
+        alteraCorPressionado(this.jPanel5, this.btnCadRecDeletar);
         if (this.txtCadRecCodigo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione uma receita válida.");
         } else {
@@ -595,13 +758,93 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_txtCadRecCodigoKeyPressed
 
+    private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
+        // quando o mouse estiver em cima
+        this.jPanel6.setBackground(new Color(192, 221, 147));
+        this.btnMinimi.setForeground(new Color(79, 79, 79));
+    }//GEN-LAST:event_btnMinimiMouseEntered
+
+    private void btnMinimiMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseExited
+        // quando o mouse sair de cima
+        this.jPanel6.setBackground(new Color(229, 247, 203));
+        this.btnMinimi.setForeground(new Color(79, 79, 79));
+    }//GEN-LAST:event_btnMinimiMouseExited
+
+    private void btnMinimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimiActionPerformed
+        try {
+            // minimiza a tela
+            this.setIcon(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnMinimiActionPerformed
+
+    private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
+        // quando o mouse está em cima
+        this.jPanel3.setBackground(new Color(211, 57, 33));
+        this.btnFechar.setForeground(new Color(255, 255, 255));
+    }//GEN-LAST:event_btnFecharMouseEntered
+
+    private void btnFecharMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseExited
+        // quando o mouse sair de cima
+        this.jPanel3.setBackground(new Color(229, 247, 203));
+        this.btnFechar.setForeground(new Color(79, 79, 79));
+    }//GEN-LAST:event_btnFecharMouseExited
+
+    private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
+        // chama o metodo sair
+        this.dispose();
+    }//GEN-LAST:event_btnFecharActionPerformed
+
+    private void btnCadRecLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecLimparMouseEntered
+        // quando o mouse estiver em cima
+        alteraCor(this.jPanel7, this.btnCadRecLimpar);
+    }//GEN-LAST:event_btnCadRecLimparMouseEntered
+
+    private void btnCadRecLimparMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecLimparMouseExited
+        // quando o mouse sair de cima     
+        retornaCor(this.jPanel7, this.btnCadRecLimpar);
+    }//GEN-LAST:event_btnCadRecLimparMouseExited
+
+    private void btnCadRecAdicionarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarMouseEntered
+       // quando o mouse estiver em cima
+        alteraCor(this.jPanel4, this.btnCadRecAdicionar);
+    }//GEN-LAST:event_btnCadRecAdicionarMouseEntered
+
+    private void btnCadRecAdicionarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecAdicionarMouseExited
+        // quando o mouse sair de cima     
+        retornaCor(this.jPanel4, this.btnCadRecAdicionar);
+    }//GEN-LAST:event_btnCadRecAdicionarMouseExited
+
+    private void btnCadRecDeletarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecDeletarMouseEntered
+         // quando o mouse estiver em cima
+        alteraCor(this.jPanel5, this.btnCadRecDeletar);
+    }//GEN-LAST:event_btnCadRecDeletarMouseEntered
+
+    private void btnCadRecDeletarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecDeletarMouseExited
+        // quando o mouse sair de cima     
+        retornaCor(this.jPanel5, this.btnCadRecDeletar);
+    }//GEN-LAST:event_btnCadRecDeletarMouseExited
+
+    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
+        // transfere o foco para o campo de codigo
+        this.txtCadRecCodigo.requestFocus();
+    }//GEN-LAST:event_formInternalFrameActivated
+
+    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
+        // transfere o foco para o campo de codigo
+        this.txtCadRecCodigo.requestFocus();
+    }//GEN-LAST:event_formInternalFrameDeiconified
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddConsumo;
     private javax.swing.JButton btnCadRecAdicionar;
     private javax.swing.JButton btnCadRecDeletar;
     private javax.swing.JButton btnCadRecLimpar;
+    private javax.swing.JButton btnFechar;
     public static javax.swing.JButton btnInsumoPesquisar;
+    private javax.swing.JButton btnMinimi;
     private javax.swing.JButton btnReceitaPesquisar;
     public static javax.swing.JComboBox<String> cbCadReceitaTipo;
     private javax.swing.JButton jButton1;
@@ -614,6 +857,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane2;
     public static javax.swing.JTable tblCadRecComponentes;
     private javax.swing.JButton tbnCadRecTipo;

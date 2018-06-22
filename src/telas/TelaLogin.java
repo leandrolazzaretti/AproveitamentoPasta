@@ -21,6 +21,8 @@ import util.HashUtil;
 public class TelaLogin extends javax.swing.JFrame {
 
     Connection conexao = null;
+    int xMouse;
+    int yMouse;
 
     public void logar() {
         String sql = "select * from tbusuarios where login=? and senha=?";
@@ -66,6 +68,8 @@ public class TelaLogin extends javax.swing.JFrame {
             //System.out.println(e1);
         }
     }
+    
+       	
     /**
      * Creates new form TelaLogin
      */
@@ -113,6 +117,16 @@ public class TelaLogin extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(134, 145, 119));
+        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                jPanel1MouseDragged(evt);
+            }
+        });
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel1MousePressed(evt);
+            }
+        });
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jPanel1KeyPressed(evt);
@@ -157,7 +171,9 @@ public class TelaLogin extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnAcessar, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(btnAcessar, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,6 +366,20 @@ public class TelaLogin extends javax.swing.JFrame {
         this.jPanel2.setBackground(new Color(143,165,110));
         this.btnAcessar.setForeground(new Color(255,255,255));
     }//GEN-LAST:event_btnAcessarMouseExited
+
+    private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
+        // evento para mover o frame sem a barra superior
+        int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        
+        this.setLocation(x - this.xMouse, y - this.yMouse);
+    }//GEN-LAST:event_jPanel1MouseDragged
+
+    private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+        // evento para mover o frame sem a barra superior
+      this.xMouse = evt.getX();
+      this.yMouse = evt.getY();
+    }//GEN-LAST:event_jPanel1MousePressed
 
     /**
      * @param args the command line arguments

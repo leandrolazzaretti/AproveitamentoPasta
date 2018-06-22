@@ -9,14 +9,20 @@ import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import dao.InsumoDao;
 import dto.InsumoDto;
+import java.awt.Color;
+import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
@@ -43,7 +49,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsPreco.setDocument(new SoNumeros());
         this.txtCadInsQuant.setDocument(new SoNumeros());
         mascaraInsumo();
-        limparCampos();       
+        limparCampos();
     }
 
     private void confirmar(boolean confirmar) {
@@ -158,6 +164,25 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     }
 
+    // quando o mouse estiver em cima
+    private void alteraCor(JPanel painel, JButton botao) {
+        painel.setBackground(new Color(192, 221, 147));
+        botao.setForeground(new Color(66, 66, 66));
+    }
+
+    // retorna a cor original do botão
+    public void retornaCor(JPanel painel, JButton botao) {
+        painel.setBackground(new Color(255, 255, 255));
+        botao.setForeground(new Color(66, 66, 66));
+
+    }
+
+    // quando o botão for pressionado
+    private void alteraCorPressionado(JPanel painel, JButton botao) {
+        painel.setBackground(new Color(172, 198, 132));
+        botao.setForeground(new Color(66, 66, 66));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -167,27 +192,37 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnCadInsAdicionar = new javax.swing.JButton();
-        txtCadInsCodigo = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        btnCadInsDeletar = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        cbCadInsUm = new javax.swing.JComboBox<>();
-        btnCadInsLimpar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        txtCadInsDes = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        txtCadInsPreco = new javax.swing.JFormattedTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        btnFechar = new javax.swing.JButton();
         txtCadInsQuant = new javax.swing.JTextField();
+        txtCadInsPreco = new javax.swing.JFormattedTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtCadInsDes = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        cbCadInsUm = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtCadInsCodigo = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        btnCadInsAdicionar = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        btnCadInsLimpar = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        btnCadInsDeletar = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        btnMinimi = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(229, 247, 203));
         setClosable(true);
         setIconifiable(true);
         setTitle("Cadastro de Insumos");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -197,6 +232,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameDeiconified(evt);
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -208,15 +244,81 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 formComponentMoved(evt);
             }
         });
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnCadInsAdicionar.setText("Salvar");
-        btnCadInsAdicionar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadInsAdicionarActionPerformed(evt);
+        jPanel2.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel2.setForeground(new java.awt.Color(79, 79, 79));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnFechar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnFechar.setForeground(new java.awt.Color(79, 79, 79));
+        btnFechar.setText("X");
+        btnFechar.setContentAreaFilled(false);
+        btnFechar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnFecharMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnFecharMouseExited(evt);
             }
         });
-        getContentPane().add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 330, 79, -1));
+        btnFechar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFecharActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 40, 20));
+
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 2, 40, 20));
+
+        txtCadInsQuant.setBackground(new java.awt.Color(240, 240, 240));
+        txtCadInsQuant.setEnabled(false);
+        jPanel2.add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 250, 270, -1));
+        jPanel2.add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 290, 270, -1));
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel6.setText("Cadastro de Insumos");
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, -1, -1));
+        jPanel2.add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, 270, -1));
+
+        jButton1.setForeground(new java.awt.Color(53, 53, 53));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
+        jButton1.setToolTipText("Pesquisar");
+        jButton1.setContentAreaFilled(false);
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 120, 30, 30));
+
+        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "g", "mg", "L" }));
+        jPanel2.add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 210, 140, -1));
+
+        jLabel1.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel1.setText("Código:");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, -1, -1));
+
+        jLabel5.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel5.setText("Preço:");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 290, -1, -1));
+
+        jLabel4.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel4.setText("Quantidade:");
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 250, -1, -1));
+
+        jLabel3.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel3.setText("Unidade de Medida (UM):");
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, -1, -1));
+
+        jLabel2.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel2.setText("Descrição:");
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 170, -1, -1));
 
         txtCadInsCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -228,72 +330,132 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 txtCadInsCodigoKeyPressed(evt);
             }
         });
-        getContentPane().add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 140, -1));
+        jPanel2.add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 140, -1));
 
-        jLabel2.setText("Descrição:");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, -1, -1));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnCadInsDeletar.setText("Eliminar");
-        btnCadInsDeletar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadInsDeletarActionPerformed(evt);
+        btnCadInsAdicionar.setForeground(new java.awt.Color(66, 66, 66));
+        btnCadInsAdicionar.setText("Salvar");
+        btnCadInsAdicionar.setContentAreaFilled(false);
+        btnCadInsAdicionar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCadInsAdicionarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCadInsAdicionarMouseExited(evt);
             }
         });
-        getContentPane().add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 330, 79, -1));
+        btnCadInsAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadInsAdicionarActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jLabel3.setText("Unidade de Medida (UM):");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, -1, -1));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 360, 80, 25));
 
-        jLabel4.setText("Quantidade:");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, -1, -1));
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setText("Preço:");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, -1, -1));
-
-        jLabel1.setText("Código:");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
-
-        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "g", "mg", "L" }));
-        getContentPane().add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, 140, -1));
-
+        btnCadInsLimpar.setForeground(new java.awt.Color(66, 66, 66));
         btnCadInsLimpar.setText("Limpar");
+        btnCadInsLimpar.setContentAreaFilled(false);
+        btnCadInsLimpar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCadInsLimparMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCadInsLimparMouseExited(evt);
+            }
+        });
         btnCadInsLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadInsLimparActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 330, 79, -1));
+        jPanel4.add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
-        jButton1.setToolTipText("Pesquisar");
-        jButton1.setContentAreaFilled(false);
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 360, 80, 25));
+
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnCadInsDeletar.setForeground(new java.awt.Color(66, 66, 66));
+        btnCadInsDeletar.setText("Eliminar");
+        btnCadInsDeletar.setContentAreaFilled(false);
+        btnCadInsDeletar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCadInsDeletarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCadInsDeletarMouseExited(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 100, 30, 30));
-        getContentPane().add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 150, 270, -1));
+        btnCadInsDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadInsDeletarActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Cadastro de Insumos");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
-        getContentPane().add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 270, -1));
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 360, 80, 25));
 
-        txtCadInsQuant.setEnabled(false);
-        getContentPane().add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 270, -1));
+        jPanel6.setBackground(new java.awt.Color(229, 247, 203));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnMinimi.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        btnMinimi.setForeground(new java.awt.Color(79, 79, 79));
+        btnMinimi.setText("-");
+        btnMinimi.setContentAreaFilled(false);
+        btnMinimi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnMinimi.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        btnMinimi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnMinimiMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnMinimiMouseExited(evt);
+            }
+        });
+        btnMinimi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinimiActionPerformed(evt);
+            }
+        });
+        jPanel6.add(btnMinimi, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 44, 20));
+        btnMinimi.getAccessibleContext().setAccessibleDescription("");
+
+        jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 2, 40, 20));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 548, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 384, Short.MAX_VALUE)
+        );
 
         setBounds(148, 72, 564, 416);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadInsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarActionPerformed
         //chama o metodo adicionar/salvar
+        // altera a cor quando pressionado
+        alteraCorPressionado(this.jPanel3, this.btnCadInsAdicionar);
         confirmaAcao(false);
     }//GEN-LAST:event_btnCadInsAdicionarActionPerformed
 
     private void btnCadInsDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsDeletarActionPerformed
         // chama o metodo deletar
+        // altera a cor quando pressionado
+        alteraCorPressionado(this.jPanel5, this.btnCadInsDeletar);
         if (this.txtCadInsCodigo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione um insumo válido.");
         } else {
@@ -311,7 +473,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnCadInsLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsLimparActionPerformed
         // chama o metodo limpar    
+        // altera a cor quando pressionado
+        alteraCorPressionado(this.jPanel4, this.btnCadInsLimpar);
         limparCampos();
+
     }//GEN-LAST:event_btnCadInsLimparActionPerformed
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Chama a TelePesquisarInsumos
@@ -376,11 +541,90 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCadInsCodigoKeyPressed
 
+    private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
+        // quando o mouse está em cima
+        this.jPanel1.setBackground(new Color(211, 57, 33));
+        this.btnFechar.setForeground(new Color(255, 255, 255));
+    }//GEN-LAST:event_btnFecharMouseEntered
+
+    private void btnFecharMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseExited
+        // quando o mouse sair de cima
+        this.jPanel1.setBackground(new Color(229, 247, 203));
+        this.btnFechar.setForeground(new Color(79, 79, 79));
+    }//GEN-LAST:event_btnFecharMouseExited
+
+    private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
+        // chama o metodo sair
+        this.dispose();
+    }//GEN-LAST:event_btnFecharActionPerformed
+
+    private void btnCadInsLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsLimparMouseEntered
+        // quando o mouse estiver em cima
+        alteraCor(this.jPanel4, this.btnCadInsLimpar);
+    }//GEN-LAST:event_btnCadInsLimparMouseEntered
+
+    private void btnCadInsLimparMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsLimparMouseExited
+        // quando o mouse sair de cima     
+        retornaCor(this.jPanel4, this.btnCadInsLimpar);
+    }//GEN-LAST:event_btnCadInsLimparMouseExited
+
+    private void btnCadInsAdicionarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarMouseEntered
+        // quando o mouse estiver em cima
+        alteraCor(this.jPanel3, this.btnCadInsAdicionar);
+    }//GEN-LAST:event_btnCadInsAdicionarMouseEntered
+
+    private void btnCadInsAdicionarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarMouseExited
+        // quando o mouse sair de cima     
+        retornaCor(this.jPanel3, this.btnCadInsAdicionar);
+    }//GEN-LAST:event_btnCadInsAdicionarMouseExited
+
+    private void btnCadInsDeletarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsDeletarMouseEntered
+        // quando o mouse estiver em cima
+        alteraCor(this.jPanel5, this.btnCadInsDeletar);
+    }//GEN-LAST:event_btnCadInsDeletarMouseEntered
+
+    private void btnCadInsDeletarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsDeletarMouseExited
+        // quando o mouse sair de cima     
+        retornaCor(this.jPanel5, this.btnCadInsDeletar);
+    }//GEN-LAST:event_btnCadInsDeletarMouseExited
+
+    private void btnMinimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimiActionPerformed
+        try {
+            // minimiza a tela
+            this.setIcon(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnMinimiActionPerformed
+
+    private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
+        // quando o mouse estiver em cima
+        alteraCor(this.jPanel6, this.btnMinimi);
+    }//GEN-LAST:event_btnMinimiMouseEntered
+
+    private void btnMinimiMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseExited
+        // quando o mouse sair de cima  
+        this.jPanel6.setBackground(new Color(229, 247, 203));
+        this.btnMinimi.setForeground(new Color(79, 79, 79));
+    }//GEN-LAST:event_btnMinimiMouseExited
+
+    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
+        // passa o focu para o campo de texto 
+        this.txtCadInsCodigo.requestFocus();
+    }//GEN-LAST:event_formInternalFrameActivated
+
+    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
+        // passa o focu para o campo de texto 
+        this.txtCadInsCodigo.requestFocus();
+    }//GEN-LAST:event_formInternalFrameDeiconified
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadInsAdicionar;
     private javax.swing.JButton btnCadInsDeletar;
     private javax.swing.JButton btnCadInsLimpar;
+    private javax.swing.JButton btnFechar;
+    private javax.swing.JButton btnMinimi;
     public static javax.swing.JComboBox<String> cbCadInsUm;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -389,6 +633,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     public static javax.swing.JTextField txtCadInsCodigo;
     public static javax.swing.JTextField txtCadInsDes;
     public static javax.swing.JFormattedTextField txtCadInsPreco;

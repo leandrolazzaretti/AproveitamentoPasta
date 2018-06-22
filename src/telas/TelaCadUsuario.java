@@ -12,8 +12,10 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import dto.UsuarioDto;
 import dao.UsuarioDao;
+import java.awt.Color;
 import javax.swing.JInternalFrame;
 import util.Util;
+import telas.TelaPrincipal;
 
 /**
  *

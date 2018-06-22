@@ -354,7 +354,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         });
         jPanel3.add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 360, 80, 25));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(142, 360, 80, 25));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -402,7 +402,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         });
         jPanel5.add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 360, 80, 25));
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(224, 360, 80, 25));
 
         jPanel6.setBackground(new java.awt.Color(229, 247, 203));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -482,10 +482,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         //Chama a TelePesquisarInsumos
 
         if (this.framePesqInsumo == null) {
-            this.framePesqInsumo = new TelaPesquisarInsumos();
+            this.framePesqInsumo = new TelaPesquisarInsumos();          
         } else {
             this.framePesqInsumo.dispose();
-            this.framePesqInsumo = new TelaPesquisarInsumos();
+            this.framePesqInsumo = new TelaPesquisarInsumos();           
         }
         this.util.comandoInternal(this.framePesqInsumo);
         this.insumo.pesquisarInsumos();
@@ -609,13 +609,16 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnMinimiMouseExited
 
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-        // passa o focu para o campo de texto 
+        // passa o foco para o campo de texto 
         this.txtCadInsCodigo.requestFocus();
     }//GEN-LAST:event_formInternalFrameActivated
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        // passa o focu para o campo de texto 
+        // passa o foco para o campo de texto 
         this.txtCadInsCodigo.requestFocus();
+        // quando o mouse sair de cima  
+        this.jPanel6.setBackground(new Color(229, 247, 203));
+        this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
 
 

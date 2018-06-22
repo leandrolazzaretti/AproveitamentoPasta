@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import static telas.TelaPrincipal.Desktop;
 
 /**
@@ -28,6 +29,11 @@ public class Util{
         this.conexao = ModuloConexao.conector();               
     }
         
+    // metodo para retirar todasd as bordas do JinternalFrame(gambiarra)
+    public void retirarBordas(JInternalFrame frame) {
+        ((BasicInternalFrameUI) frame.getUI()).setNorthPane(null); //retirar o painel superior
+        frame.setBorder(null);//retirar bordas
+    }
     
     
     //busca a menor data correspondente ao codigo da receita no banco

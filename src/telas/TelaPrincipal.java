@@ -61,11 +61,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
     }
 
-    // metodo para retirar todasd as bordas do JinternalFrame(gambiarra)
-    private void retirarBordas(JInternalFrame frame) {
-        ((BasicInternalFrameUI) frame.getUI()).setNorthPane(null); //retirar o painel superior
-        frame.setBorder(null);//retirar bordas
-    }
+//    // metodo para retirar todasd as bordas do JinternalFrame(gambiarra)
+//    private void retirarBordas(JInternalFrame frame) {
+//        ((BasicInternalFrameUI) frame.getUI()).setNorthPane(null); //retirar o painel superior
+//        frame.setBorder(null);//retirar bordas
+//    }
 
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JSeparator separador, JButton botao) {
@@ -521,11 +521,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // Chama a tela usuario
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
-            //retirarBordas(this.frameUsuario);
+            this.util.retirarBordas(this.frameUsuario);
+
         } else {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
-            //retirarBordas(this.frameUsuario);
+            this.util.retirarBordas(this.frameUsuario);
         }
         this.util.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
@@ -538,11 +539,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // cahama a TelaCadUsu     
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
-            //retirarBordas(this.frameUsuario);
+            this.util.retirarBordas(this.frameUsuario);
         } else {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
-            //retirarBordas(this.frameUsuario);
+            this.util.retirarBordas(this.frameUsuario);
         }
         this.util.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_menCadUsuActionPerformed
@@ -551,11 +552,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama a TelaCadInsumos  
         if (this.frameInsumo == null) {
             this.frameInsumo = new TelaCadInsumo();
-            retirarBordas(this.frameInsumo);
+            this.util.retirarBordas(this.frameInsumo);
         } else {
             this.frameInsumo.dispose();
             this.frameInsumo = new TelaCadInsumo();
-            retirarBordas(this.frameInsumo);
+            this.util.retirarBordas(this.frameInsumo);
         }
         this.util.comandoInternal(this.frameInsumo);
 //        }
@@ -565,11 +566,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama a TelaCadInsumos     
         if (this.frameInsumo == null) {
             this.frameInsumo = new TelaCadInsumo();
-            retirarBordas(this.frameInsumo);
+            this.util.retirarBordas(this.frameInsumo);
         } else {
             this.frameInsumo.dispose();
             this.frameInsumo = new TelaCadInsumo();
-            retirarBordas(this.frameInsumo);
+            this.util.retirarBordas(this.frameInsumo);
         }
         this.util.comandoInternal(this.frameInsumo);
 
@@ -579,11 +580,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama a TelaCadReceita
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
-            retirarBordas(this.frameReceita);
+            this.util.retirarBordas(this.frameReceita);
         } else {
             this.frameReceita.dispose();
             this.frameReceita = new TelaCadReceita();
-            retirarBordas(this.frameReceita);
+            this.util.retirarBordas(this.frameReceita);
         }
         this.util.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_btnReceitaActionPerformed
@@ -592,11 +593,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama a TelaCadReceita
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
-            retirarBordas(this.frameReceita);
+            this.util.retirarBordas(this.frameReceita);
         } else {
             this.frameReceita.dispose();
             this.frameReceita = new TelaCadReceita();
-            retirarBordas(this.frameReceita);
+            this.util.retirarBordas(this.frameReceita);
         }
         this.util.comandoInternal(this.frameReceita);
     }//GEN-LAST:event_menCadRecActionPerformed
@@ -605,11 +606,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaMovimentacaoEstoque
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
-            //retirarBordas(this.frameMovimentacao);
+            this.util.retirarBordas(this.frameMovimentacao);
         } else {
             this.frameMovimentacao.dispose();
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
-            //retirarBordas(this.frameMovimentacao);
+            this.util.retirarBordas(this.frameMovimentacao);
         }
         this.util.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_menConMovEstActionPerformed
@@ -618,9 +619,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaEstoquePasta
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
+             //this.util.retirarBordas(this.frameEstoquePasta);
         } else {
             this.frameEstoquePasta.dispose();
             this.frameEstoquePasta = new TelaEstoquePasta();
+             //this.util.retirarBordas(this.frameEstoquePasta);
         }
         this.util.comandoInternal(this.frameEstoquePasta);
     }//GEN-LAST:event_tbnEstPastaActionPerformed
@@ -629,9 +632,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaEstoquePasta
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
+             //this.util.retirarBordas(this.frameEstoquePasta);
         } else {
             this.frameEstoquePasta.dispose();
             this.frameEstoquePasta = new TelaEstoquePasta();
+             //this.util.retirarBordas(this.frameEstoquePasta);
 
         }
         this.util.comandoInternal(this.frameEstoquePasta);
@@ -641,11 +646,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaMovimentação Estoque
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
-            //retirarBordas(this.frameMovimentacao);
+            this.util.retirarBordas(this.frameMovimentacao);
         } else {
             this.frameMovimentacao.dispose();
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
-            //retirarBordas(this.frameMovimentacao);
+            this.util.retirarBordas(this.frameMovimentacao);
         }
 
         this.util.comandoInternal(this.frameMovimentacao);

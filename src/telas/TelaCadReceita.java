@@ -29,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+import static telas.TelaCadInsumo.framePesqInsumo;
 import util.ComboKeyHandler;
 import util.SoNumeros;
 import util.Util;
@@ -45,7 +46,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     TipoPastaDao pasta = new TipoPastaDao();
     ReceitaInsumoDao recInsDao = new ReceitaInsumoDao();
     TelaPesquisarReceita rec = new TelaPesquisarReceita();
-    Util frame = new Util();
+    Util util = new Util();
 
     public static JInternalFrame framePesInsumo;
     public static JInternalFrame framePesReceita;
@@ -341,10 +342,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jPanel2.add(btnReceitaPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 28, 31));
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(79, 79, 79));
         jLabel6.setText("Cadastro de Receita");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
 
         jPanel1.setBackground(new java.awt.Color(229, 247, 203));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(188, 188, 188)));
@@ -509,7 +510,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jPanel4.add(btnCadRecAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 150, 80, 25));
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(102, 150, 80, 25));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -533,7 +534,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jPanel5.add(btnCadRecDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 80, 25));
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(184, 150, 80, 25));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -614,7 +615,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             this.framePesReceita = new TelaPesquisarReceita();
         }
         this.rec.pesquisarReceita();
-        this.frame.comandoInternal(this.framePesReceita);
+        this.util.comandoInternal(this.framePesReceita);
         TelaPesquisarReceita.confirmarEscolha = true;
 
 
@@ -625,11 +626,13 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         if (this.framePesInsumo == null) {
             this.framePesInsumo = new TelaPesquisarInsumos();
+            this.util.retirarBordas(framePesqInsumo);
         } else {
             this.framePesInsumo.dispose();
             this.framePesInsumo = new TelaPesquisarInsumos();
+            this.util.retirarBordas(framePesqInsumo);
         }
-        this.frame.comandoInternal(this.framePesInsumo);
+        this.util.comandoInternal(this.framePesInsumo);
         TelaPesquisarInsumos.confirmarEscolha = true;
         TelaPesquisarInsumos.confimaTela = false;
 
@@ -715,7 +718,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtCadRecCodigoFocusLost
 
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        this.frame.bloquearMovimentacao(TelaPrincipal.frameReceita, 0, 0);
+        this.util.bloquearMovimentacao(TelaPrincipal.frameReceita, 0, 0);
     }//GEN-LAST:event_formComponentMoved
 
     private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
@@ -834,6 +837,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
         // transfere o foco para o campo de codigo
         this.txtCadRecCodigo.requestFocus();
+        // quando o mouse sair de cima
+        this.jPanel6.setBackground(new Color(229, 247, 203));
+        this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
 
 

@@ -13,7 +13,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
@@ -60,6 +59,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         }
     }
+    
+    
 
 //    // metodo para retirar todasd as bordas do JinternalFrame(gambiarra)
 //    private void retirarBordas(JInternalFrame frame) {
@@ -150,7 +151,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1100, 620));
-        setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -505,7 +505,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         setJMenuBar(menu);
 
-        setSize(new java.awt.Dimension(1100, 646));
+        setSize(new java.awt.Dimension(1105, 674));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

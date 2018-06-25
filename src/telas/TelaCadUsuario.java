@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import util.Util;
-import telas.TelaPrincipal;
 
 /**
  *

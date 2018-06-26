@@ -3,6 +3,20 @@
 	<property name="ireport.zoom" value="1.331000000000002"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<subDataset name="New Dataset 1" uuid="0535aac7-eeb6-4be2-86df-6be724cb35e7">
+		<queryString language="SQL">
+			<![CDATA[select r.descricao as desc_r, tp.descricao as desc_tp, r.pantone, r.datavencimento, i.descricao as desc_i, ri.consumo from tbReceitaInsumo as ri
+inner join tbreceita as r on r.codigorec = ri.codigoReceita
+inner join tbinsumos as i on i.codigo = ri.codigoInsumo
+inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
+		</queryString>
+		<field name="desc_r" class="java.lang.Object"/>
+		<field name="desc_tp" class="java.lang.Object"/>
+		<field name="pantone" class="java.lang.Object"/>
+		<field name="datavencimento" class="java.lang.Object"/>
+		<field name="desc_i" class="java.lang.Object"/>
+		<field name="consumo" class="java.lang.Object"/>
+	</subDataset>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
 	</parameter>
@@ -21,10 +35,53 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 	<group name="Receita">
 		<groupExpression><![CDATA[$F{descri_r}]]></groupExpression>
 		<groupHeader>
-			<band height="13"/>
+			<band height="22">
+				<textField>
+					<reportElement x="6" y="1" width="110" height="20" uuid="4daabfd9-c516-4811-ad8f-7e12b995fb6b"/>
+					<textElement>
+						<font fontName="Arial" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[""+$F{descri_r}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="126" y="1" width="92" height="20" uuid="efb88734-1b0e-4652-a1de-be08133fa052"/>
+					<textElement>
+						<font fontName="Arial" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[""+$F{descri_tp}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="228" y="1" width="92" height="20" uuid="c9c77d08-cfac-4a09-bb4c-e087649a9cbe"/>
+					<textElement>
+						<font fontName="Arial" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[""+$F{pantone}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="320" y="1" width="58" height="20" uuid="8c9ac9cb-a5f7-41f1-b01f-3c3f1cdd24dc"/>
+					<textElement>
+						<font fontName="Arial" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[""+$F{datavencimento}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="389" y="0" width="94" height="20" uuid="84982293-1e32-4398-8fbd-93aaf82544cc"/>
+					<textElement>
+						<font fontName="Arial" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[""+$F{descri_i}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="483" y="2" width="68" height="20" uuid="8354700a-eb63-4406-8ecb-1b5553e886a9"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
+				</textField>
+			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="13"/>
+			<band/>
 		</groupFooter>
 	</group>
 	<background>
@@ -40,7 +97,7 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 				<text><![CDATA[Relatório]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="202" height="63" forecolor="#875E0C" uuid="13913384-7ecc-44e4-a1a4-b63522d1914b"/>
+				<reportElement x="0" y="0" width="202" height="63" forecolor="#8FA56E" uuid="13913384-7ecc-44e4-a1a4-b63522d1914b"/>
 				<textElement>
 					<font fontName="Calibri Light" size="50"/>
 				</textElement>
@@ -55,48 +112,48 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="27" splitType="Stretch">
+		<band height="23" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="19" width="555" height="1" forecolor="#999999" uuid="80f0d339-28f6-4a18-9167-13336367ec08"/>
+			</line>
 			<staticText>
-				<reportElement x="6" y="0" width="110" height="20" forecolor="#875E0C" uuid="8545fe18-eb4e-4bc1-9c9c-4923b3b6184c"/>
+				<reportElement x="0" y="0" width="110" height="20" forecolor="#8FA56E" uuid="8545fe18-eb4e-4bc1-9c9c-4923b3b6184c"/>
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="126" y="0" width="92" height="20" forecolor="#875E0C" uuid="d6cc8061-d44e-460b-9f0c-4e4be2c58512"/>
+				<reportElement x="126" y="0" width="92" height="20" forecolor="#8FA56E" uuid="d6cc8061-d44e-460b-9f0c-4e4be2c58512"/>
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tipo Pasta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="305" y="0" width="84" height="20" forecolor="#875E0C" uuid="c808d9bd-0d6b-4c8f-89a5-c44f317c2e5b"/>
+				<reportElement x="305" y="0" width="84" height="20" forecolor="#8FA56E" uuid="c808d9bd-0d6b-4c8f-89a5-c44f317c2e5b"/>
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vencimento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="471" y="0" width="80" height="20" forecolor="#875E0C" uuid="24d80334-01c5-4dfd-a1ad-19e301afce7e"/>
-				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Consumo (%)]]></text>
-			</staticText>
-			<line>
-				<reportElement x="0" y="19" width="555" height="1" forecolor="#999999" uuid="80f0d339-28f6-4a18-9167-13336367ec08"/>
-			</line>
-			<staticText>
-				<reportElement x="228" y="0" width="77" height="20" forecolor="#875E0C" uuid="9509b1ed-16a7-4f20-adc7-56d32e4c2fcf"/>
+				<reportElement x="228" y="0" width="77" height="20" forecolor="#8FA56E" uuid="9509b1ed-16a7-4f20-adc7-56d32e4c2fcf"/>
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Pantone]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="389" y="0" width="81" height="20" forecolor="#875E0C" uuid="338929b0-cc7b-430d-853d-1bf0d199dbca"/>
-				<textElement>
+				<reportElement x="470" y="0" width="80" height="20" forecolor="#8FA56E" uuid="24d80334-01c5-4dfd-a1ad-19e301afce7e"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Consumo (%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="389" y="0" width="81" height="20" forecolor="#8FA56E" uuid="338929b0-cc7b-430d-853d-1bf0d199dbca"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Insumo]]></text>
@@ -104,56 +161,50 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch">
-			<textField>
-				<reportElement x="6" y="0" width="110" height="20" uuid="4daabfd9-c516-4811-ad8f-7e12b995fb6b"/>
-				<textElement>
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{descri_r}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="126" y="0" width="92" height="20" uuid="efb88734-1b0e-4652-a1de-be08133fa052"/>
-				<textElement>
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{descri_tp}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="228" y="0" width="92" height="20" uuid="c9c77d08-cfac-4a09-bb4c-e087649a9cbe"/>
-				<textElement>
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{pantone}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="320" y="0" width="58" height="20" uuid="8c9ac9cb-a5f7-41f1-b01f-3c3f1cdd24dc"/>
-				<textElement>
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{datavencimento}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="378" y="0" width="105" height="20" uuid="84982293-1e32-4398-8fbd-93aaf82544cc"/>
-				<textElement>
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{descri_i}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="483" y="0" width="68" height="20" uuid="8354700a-eb63-4406-8ecb-1b5553e886a9"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
-			</textField>
+		<band height="144" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" x="190" y="0" width="180" height="140" uuid="fea2d8b7-db9c-4d17-893d-30d865edecf6"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="New Dataset 1" uuid="85d3572d-102f-4d11-a5ff-6e80626740d9">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource(1)]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="160" uuid="90bff475-7862-42bd-bdbf-ed63115827f2">
+						<jr:tableHeader height="53" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="160" height="53" uuid="ffb9222c-d325-4f2c-b04e-c05e25c270c6"/>
+								<text><![CDATA[Insumo]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:columnHeader height="48" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="160" height="48" uuid="b13c4a70-9678-437c-ab87-5827b5819f4b"/>
+								<textFieldExpression><![CDATA[""+$F{desc_i}]]></textFieldExpression>
+							</textField>
+						</jr:columnHeader>
+					</jr:column>
+					<jr:column width="146" uuid="3ece22b4-167e-4c4f-8937-fb0ba2e9d95f">
+						<jr:tableHeader height="53" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="146" height="53" uuid="26660668-8993-4a59-b4ad-f2a6c8211304"/>
+								<text><![CDATA[Consumo]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:columnHeader height="48" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="146" height="48" uuid="dfed3340-18c8-46df-a23a-6774180bf5d9"/>
+								<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
+							</textField>
+						</jr:columnHeader>
+					</jr:column>
+				</jr:table>
+			</componentElement>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="32" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="81" splitType="Stretch">
+		<band height="31" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" forecolor="#999999" uuid="297e2866-e9e7-47a0-afdb-c45dbb6b6d41"/>
 			</line>
@@ -181,6 +232,6 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="36" splitType="Stretch"/>
 	</summary>
 </jasperReport>

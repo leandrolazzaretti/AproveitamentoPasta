@@ -18,6 +18,7 @@ import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -25,7 +26,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
-import static telas.TelaCadInsumo.framePesqInsumo;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import util.Util;
 import util.SoNumeros;
 
@@ -56,6 +58,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtCodigo.setDocument(new SoNumeros());
         this.txtEstData.setDocument(new SoNumeros());
         this.txtEstQuantidade.setDocument(new SoNumeros());
+        mascaraInsumo();
         ativarTblPasta();
     }
 
@@ -70,14 +73,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         }
         if (confirmaTipo == true) {
             movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
-            movDto.setCodigo(codigo);
+            movDto.setCodigoID(codigo);
             movDto.setDescricao(this.txtDescricao.getText());
             movDto.setData(inverterData(this.txtEstData.getText().replace("/", "-")));
             movDto.setQuantidade(this.txtEstQuantidade.getText().replace(",", "."));
 
         } else {
             movDto.setTipo(this.cbEstoque.getSelectedItem().toString());
-            movDto.setCodigo(codigo);
+            movDto.setCodigoID(codigo);
             movDto.setDescricao(this.txtDescricao.getText());
             movDto.setData(inverterData(this.txtEstData.getText().replace("/", "-")));
             movDto.setQuantidade("-" + this.txtEstQuantidade.getText().replace(",", "."));
@@ -129,7 +132,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 modelo.addRow(new Object[]{
                     rs.getInt(1),
                     rs.getString(2),
-                    rs.getString(3).replace(".", ","),
+                    this.util.formatadorQuant(rs.getString(3)),
                     rs.getString(4),
                     inverterData(rs.getString(5)).replace("-", "/"),
                     inverterData(rs.getString(6)).replace("-", "/")
@@ -165,7 +168,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtCodigo.setEnabled(true);
         this.txtDescricao.setText(null);
         this.txtEstUM.setText(null);
-        this.txtEstQuantidade.setText(null);
+        this.txtEstQuantidade.setValue(null);
         this.txtEstData.setValue(null);
         this.txtEstUM.setEnabled(false);
         this.tblEstPasta.setVisible(false);
@@ -182,14 +185,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtEstData.setEnabled(false);
         this.txtCodigo.setText(null);
         this.txtDescricao.setText(null);
-        this.txtEstQuantidade.setText(null);
+        this.txtEstQuantidade.setValue(null);
         this.txtEstData.setValue(null);
     }
 
     // verifica se todos os campos estão setados
     private boolean verificaCampos() {
         int confirma = 0;
-        if ((this.txtDescricao.getText().isEmpty()) || (this.txtEstQuantidade.getText().isEmpty()) || (this.txtEstUM.getText().isEmpty()) || (this.txtEstData.getText().isEmpty())) {
+        if ((this.txtDescricao.getText().isEmpty()) || (this.txtEstQuantidade.getText().isEmpty()) || (this.txtEstUM.getText().isEmpty()) || (this.txtEstData.getText().equals("  /  /    "))) {
             confirma = 1;
         }
         return confirma > 0;
@@ -248,12 +251,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     if (this.movEstDao.dataComparar(this.movEstDao.dataAtual(), inverterData(this.txtEstData.getText().replace("/", "-"))) == false) {
                         JOptionPane.showMessageDialog(null, "Não é possivel dar entrada com uma data futura.");
                     } else {
+
                         this.insumoDao.entradaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                         movimentacao(true, "Insumo");
                         limparCampos();
                     }
                 } else {
                     //this.txtEstData.setText(inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
+                    
                     this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(false, "Insumo");
                     limparCampos();
@@ -289,6 +294,16 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         botao.setForeground(new Color(66, 66, 66));
     }
 
+    private void mascaraInsumo() {
+        DecimalFormat dFormat2 = new DecimalFormat("##,##0.00");
+        NumberFormatter formatter2 = new NumberFormatter(dFormat2);
+
+        formatter2.setFormat(dFormat2);
+        formatter2.setAllowsInvalid(false);
+
+        this.txtEstQuantidade.setFormatterFactory(new DefaultFormatterFactory(formatter2));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -313,7 +328,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         btnMovEstPesquisar = new javax.swing.JButton();
         txtDescricao = new javax.swing.JTextField();
         txtEstUM = new javax.swing.JTextField();
-        txtEstQuantidade = new javax.swing.JFormattedTextField();
         txtEstData = new javax.swing.JFormattedTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -330,6 +344,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         btnConfirmar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         btnLimpar = new javax.swing.JButton();
+        txtEstQuantidade = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -342,7 +357,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameClosing(evt);
             }
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -352,11 +366,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
             }
         });
 
@@ -435,9 +444,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         txtEstUM.setEnabled(false);
         jPanel2.add(txtEstUM, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 150, 130, -1));
-
-        txtEstQuantidade.setEnabled(false);
-        jPanel2.add(txtEstQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 150, 170, -1));
 
         try {
             txtEstData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
@@ -627,6 +633,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
         jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 100, 25));
 
+        txtEstQuantidade.setEnabled(false);
+        jPanel2.add(txtEstQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 150, 170, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -685,6 +694,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void btnMovEstPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovEstPesquisarActionPerformed
         // chama a tela de pesquisa receita ou insumo
+
         if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
 
             if (this.framePesReceita == null) {
@@ -700,11 +710,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         } else {
             if (this.framePesInsumo == null) {
                 this.framePesInsumo = new TelaPesquisarInsumos();
-                this.util.retirarBordas(framePesqInsumo);
             } else {
                 this.framePesInsumo.dispose();
                 this.framePesInsumo = new TelaPesquisarInsumos();
-                this.util.retirarBordas(framePesqInsumo);
             }
             this.ins.pesquisarInsumos();
             this.util.comandoInternal(this.framePesInsumo);
@@ -736,6 +744,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void tblEstPastaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEstPastaMouseClicked
         // seta a descrição da pasta nno campo Receita, através de duplo click com o mouse
+
         if (evt.getClickCount() > 1) {
             ReceitaDao receitaDao = new ReceitaDao();
             int setar = this.tblEstPasta.getSelectedRow();
@@ -750,11 +759,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tblEstPastaMouseClicked
 
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // Chama o metodo para bloquear a movimentação do frame
-        this.util.bloquearMovimentacao(TelaPrincipal.frameMovimentacao, 0, 0);
-    }//GEN-LAST:event_formComponentMoved
-
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // chama o metodo limpar
         alteraCorPressionado(this.jPanel4, this.btnLimpar);
@@ -764,26 +768,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             this.txtEstUM.setText(null);
         }
     }//GEN-LAST:event_btnLimparActionPerformed
-
-    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        // gerar mensagem de salvar antes de sair
-        if (this.txtCodigo.getText().isEmpty()) {
-            this.setVisible(false);
-            this.dispose();
-        } else {
-            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                confirmaAcao(true);
-            } else {
-                if (result == JOptionPane.NO_OPTION) {
-                    this.setVisible(false);
-                    this.dispose();
-                } else {
-                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-                }
-            }
-        }
-    }//GEN-LAST:event_formInternalFrameClosing
 
     private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
         // chama metodo ao pressionar a tecla Enter ou Tab     
@@ -837,8 +821,21 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFecharMouseExited
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
-        // chama o metodo sair
-        this.dispose();
+        // gerar mensagem de salvar antes de sair
+        if (this.txtCodigo.getText().isEmpty()) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                }
+            }
+        }
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimparMouseEntered

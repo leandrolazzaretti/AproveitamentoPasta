@@ -31,7 +31,7 @@ public class MovimentacaoDao {
         try {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, movDto.getTipo());
-            pst.setInt(2, movDto.getCodigo());
+            pst.setInt(2, movDto.getCodigoID());
             pst.setString(3, movDto.getDescricao());
             pst.setString(4, movDto.getData());
             pst.setString(5, movDto.getQuantidade());

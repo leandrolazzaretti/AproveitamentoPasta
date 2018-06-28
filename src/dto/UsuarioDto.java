@@ -11,14 +11,14 @@ package dto;
  */
 public class UsuarioDto {
 
-    private int iduser;
+    private int codigo;
     private String nome;
     private String login;
     private String senha;
     private String perfil;
 
     public UsuarioDto(int iduser, String nome, String login, String senha, String perfil) {
-        this.iduser = iduser;
+        this.codigo = iduser;
         this.nome = nome;
         this.login = login;
         this.senha = senha;
@@ -29,12 +29,12 @@ public class UsuarioDto {
 
     }
 
-    public int getIduser() {
-        return iduser;
+    public int getCodigo() {
+        return codigo;
     }
 
-    public void setIduser(int iduser) {
-        this.iduser = iduser;
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
     }
 
     public String getNome() {

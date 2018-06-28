@@ -135,11 +135,6 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
-            }
-        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tblCadUsuario.setModel(new javax.swing.table.DefaultTableModel(
@@ -270,11 +265,6 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_cbCadUsuarioPesquisarActionPerformed
-
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // Chama o metodo para bloquear a movimentação do frame
-            this.frame.bloquearMovimentacao(TelaCadUsuario.framePesUsuario, 209, 77); 
-    }//GEN-LAST:event_formComponentMoved
 
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
         /// quando o mouse está em cima

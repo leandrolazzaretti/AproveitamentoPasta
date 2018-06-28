@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d6bcf438-8cf7-4d0a-95d6-0d6a0a802c64">
-	<property name="ireport.zoom" value="1.4641000000000008"/>
-	<property name="ireport.x" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2538bf18-ccef-4287-9ce5-cbfeab89715a">
+	<property name="ireport.zoom" value="1.9487171000000014"/>
+	<property name="ireport.x" value="92"/>
 	<property name="ireport.y" value="0"/>
-	<field name="field1" class="java.lang.String"/>
-	<field name="field2" class="java.lang.String"/>
-	<field name="field3" class="java.lang.String"/>
-	<field name="field4" class="java.lang.String"/>
+	<field name="codigoReceita" class="java.lang.String"/>
+	<field name="descRec" class="java.lang.String"/>
+	<field name="descTP" class="java.lang.String"/>
+	<field name="pantone" class="java.lang.String"/>
+	<field name="dataVencimento" class="java.lang.String"/>
+	<field name="descIns" class="java.lang.String"/>
+	<field name="UM" class="java.lang.String"/>
+	<field name="consumo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="92" splitType="Stretch">
+		<band height="81" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="-11" width="202" height="63" forecolor="#875E0C" uuid="06a006a4-b00e-45dc-b2b3-f1eef4a36963"/>
+				<reportElement x="0" y="-10" width="195" height="63" forecolor="#246012" uuid="a3d2c7c9-b739-4d23-a99f-02e56dfb24e6"/>
 				<textElement>
 					<font fontName="Calibri Light" size="50"/>
 				</textElement>
-				<text><![CDATA[Insumos]]></text>
+				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="100" y="52" width="102" height="24" uuid="02eff0db-f5ef-44a0-a416-4168604b5e57"/>
+				<reportElement x="82" y="53" width="113" height="24" uuid="036205be-063f-4598-80f0-d77974c0b736"/>
 				<textElement>
 					<font fontName="Calibri Light" size="18"/>
 				</textElement>
@@ -32,32 +36,125 @@
 		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch"/>
+		<band height="40" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="30" uuid="a4e36e8f-0b87-422f-ab46-63c066354b77"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="8" y="5" width="61" height="20" uuid="0f1d39d1-3d98-4fbc-a328-70d0a29f3cd0"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="69" y="5" width="79" height="20" uuid="a55ac15c-3c30-4ac0-8a86-22dac340dbf6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="148" y="5" width="69" height="20" uuid="ce84064f-cd81-4cbe-baa8-7a905d037c5e"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Pasta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="5" width="69" height="20" uuid="7fa44065-984c-4a22-9d0b-76db02f8944c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pantone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="286" y="5" width="74" height="20" uuid="da8e7be0-1308-4496-bca8-6c1dbf1ef1f6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="5" width="87" height="20" uuid="40f00f5f-711a-4102-ac45-70495597a115"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Insumo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="447" y="5" width="42" height="20" uuid="9a6c70db-4829-4063-ac45-99093eefc838"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="496" y="5" width="55" height="20" uuid="64ac2868-8df8-4859-81f2-6bb84bff8639"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Consumo]]></text>
+			</staticText>
+		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="8" y="0" width="61" height="20" uuid="adffeacc-51fd-4786-98ac-990fb3ce8434"/>
+				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="69" y="0" width="79" height="20" uuid="b0058ae9-2f25-40b1-ba57-74ff3f7678dd"/>
+				<textFieldExpression><![CDATA[$F{descRec}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="148" y="0" width="69" height="20" uuid="56d95cef-884b-4c6b-8014-e571a46764dd"/>
+				<textFieldExpression><![CDATA[$F{descTP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="217" y="0" width="69" height="20" uuid="046b85d9-a1ec-4bea-815b-cf2ebc769869"/>
+				<textFieldExpression><![CDATA[$F{pantone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="297" y="0" width="48" height="20" uuid="dc3efe2b-0e64-4812-a818-492f55b44fd3"/>
+				<textFieldExpression><![CDATA[$F{dataVencimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="0" width="87" height="20" uuid="40b4c897-1e77-46d4-9068-773cac28cff1"/>
+				<textFieldExpression><![CDATA[$F{descIns}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="447" y="0" width="42" height="20" uuid="25ba61ee-03c7-4508-ad20-a3e1ba43300c"/>
+				<textFieldExpression><![CDATA[$F{UM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="496" y="0" width="56" height="20" uuid="c9335a07-6f1e-4ecc-929c-67caac1eda02"/>
+				<textFieldExpression><![CDATA[$F{consumo}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="52" splitType="Stretch">
+		<band height="54" splitType="Stretch">
 			<textField evaluationTime="Report">
-				<reportElement x="513" y="10" width="34" height="20" uuid="bc044302-99d6-42b9-9145-d96e1a5deb2e"/>
+				<reportElement x="517" y="4" width="34" height="20" uuid="780b65fa-1fb9-4369-ae35-5a78942e9ddf"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="5" y="10" width="137" height="20" uuid="ffedb9fd-2a67-47d3-b623-3e37c619b41b"/>
+				<reportElement x="8" y="8" width="137" height="20" uuid="dd188e60-dc64-42d4-a35f-e7fecb81f8e6"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="427" y="10" width="80" height="20" uuid="357c2b5d-e9b5-413c-acf6-1455b19f13d3"/>
+				<reportElement x="432" y="4" width="80" height="20" uuid="44b04faf-59ee-40a6-87ad-660cd63adefe"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial"/>
 				</textElement>

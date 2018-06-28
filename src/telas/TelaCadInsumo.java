@@ -60,16 +60,17 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
         insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
         insumoDto.setDescricao(this.txtCadInsDes.getText());
-        insumoDto.setUm(this.cbCadInsUm.getSelectedItem().toString());
+        insumoDto.setUM(this.cbCadInsUm.getSelectedItem().toString());
 
-        String valorQuant = this.util.formatador(Double.parseDouble(this.txtCadInsQuant.getText().replace(",", ".")));
         BigDecimal valor = new BigDecimal(this.txtCadInsPreco.getText().replace(",", "."));
         NumberFormat nf = NumberFormat.getCurrencyInstance();
-        String formatado = nf.format(valor);
-        //System.out.println(formatado);
+        //String QuantFormatado = nf.format(quant);
+        String ValorFormatado = nf.format(valor);
+        
+        //QuantFormatado = QuantFormatado.replace("R$ ", "");
 
-        insumoDto.setQuantidade(valorQuant);
-        insumoDto.setPreco(formatado);
+        insumoDto.setQuantidade(this.txtCadInsQuant.getText());
+        insumoDto.setPreco(ValorFormatado);
 
         if (confirmar == true) {
             insumoDao.adicionarInsumos(insumoDto);
@@ -124,12 +125,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     //mascara para o campo preço/ quantidade(foramato de moeda)
     private void mascaraInsumo() {
-        DecimalFormat dFormat2 = new DecimalFormat("#,###.00");
+        DecimalFormat dFormat2 = new DecimalFormat("#,##0.00");
         NumberFormatter formatter2 = new NumberFormatter(dFormat2);
 
         formatter2.setFormat(dFormat2);
         formatter2.setAllowsInvalid(false);
 
+        //this.txtCadInsQuant.setFormatterFactory(new DefaultFormatterFactory(formatter2));
         this.txtCadInsPreco.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
@@ -195,10 +197,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         btnFechar = new javax.swing.JButton();
-        txtCadInsQuant = new javax.swing.JTextField();
         txtCadInsPreco = new javax.swing.JFormattedTextField();
         jLabel6 = new javax.swing.JLabel();
         txtCadInsDes = new javax.swing.JTextField();
+        txtCadInsQuant = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         cbCadInsUm = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
@@ -227,7 +229,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameClosing(evt);
             }
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -237,11 +238,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
             }
         });
 
@@ -273,10 +269,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jPanel1.add(btnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 40, 20));
 
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 2, 40, 20));
-
-        txtCadInsQuant.setBackground(new java.awt.Color(240, 240, 240));
-        txtCadInsQuant.setEnabled(false);
-        jPanel2.add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 250, 270, -1));
         jPanel2.add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 290, 270, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
@@ -284,6 +276,9 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jLabel6.setText("Cadastro de Insumos");
         jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, -1, -1));
         jPanel2.add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, 270, -1));
+
+        txtCadInsQuant.setEnabled(false);
+        jPanel2.add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 250, 270, -1));
 
         jButton1.setForeground(new java.awt.Color(53, 53, 53));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
@@ -506,31 +501,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCadInsCodigoFocusLost
 
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // Chama o metodo para bloquear a movimentação do frame  
-        this.util.bloquearMovimentacao(TelaPrincipal.frameInsumo, 148, 72);
-    }//GEN-LAST:event_formComponentMoved
-
-    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        // gerar mensagem de salvar antes de sair
-        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && (this.txtCadInsPreco.getText().isEmpty()) && (this.txtCadInsQuant.getText().equals("0"))) {
-            this.setVisible(false);
-            this.dispose();
-        } else {
-            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                confirmaAcao(true);
-            } else {
-                if (result == JOptionPane.NO_OPTION) {
-                    this.setVisible(false);
-                    this.dispose();
-                } else {
-                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-                }
-            }
-        }
-    }//GEN-LAST:event_formInternalFrameClosing
-
     private void txtCadInsCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadInsCodigoKeyPressed
         // chama o metodo atraves da tecla enter
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -554,8 +524,21 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFecharMouseExited
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
-        // chama o metodo sair
-        this.dispose();
+        // gerar mensagem de salvar antes de sair
+        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && (this.txtCadInsPreco.getText().isEmpty()) && (this.txtCadInsQuant.getText().equals("0"))) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                } 
+            }
+        }
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnCadInsLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsLimparMouseEntered

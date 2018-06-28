@@ -17,6 +17,10 @@ public class TipoPastaDto {
         this.codigo = codigo;
         this.descricao = descricao;       
     }
+    
+    public TipoPastaDto(){
+        
+    }
 
     public int getCodigo() {
         return codigo;

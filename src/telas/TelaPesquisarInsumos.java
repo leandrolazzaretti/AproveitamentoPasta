@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
@@ -41,17 +40,16 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         this.conexao = ModuloConexao.conector();
         pesquisarInsumos();
-        
+
         retirarBordas();
     }
 
-     // metodo para retirar as bordas do JinternalFrame
+    // metodo para retirar as bordas do JinternalFrame
     private void retirarBordas() {
         ((BasicInternalFrameUI) this.getUI()).setNorthPane(null); //retirar o painel superior
         this.setBorder(null);//retirar bordas
     }
-    
-    
+
     public void pesquisarInsumos() {
         String sql = "select * from tbinsumos where " + this.cbPesquisar + " like ?";
 
@@ -76,7 +74,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
-                    rs.getString(4),
+                    this.util.formatadorQuant(rs.getString(4)),
                     rs.getString(5)});
             }
 
@@ -93,7 +91,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.txtCadInsCodigo.setText(this.tblCadInsumos.getModel().getValueAt(setar, 0).toString());
         TelaCadInsumo.txtCadInsDes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
         TelaCadInsumo.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
-        TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString().replace(".", ","));
+        TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString());
         TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
     }
 
@@ -161,11 +159,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
             }
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -319,35 +312,15 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_cbPesquisarInsActionPerformed
 
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // Chama o metodo para bloquear a movimentação do frame
-        if (this.confirmarEscolha == true) {
-
-            if (this.confimaTela == true) {
-                this.util.bloquearMovimentacao(TelaCadInsumo.framePesqInsumo, 0, 89);
-            } else {
-                this.util.bloquearMovimentacao(TelaCadReceita.framePesInsumo, 0, 89);
-            }
-        } else {
-            this.util.bloquearMovimentacao(TelaMovimentacaoEstoque.framePesInsumo, 0, 89);
-        }
-
-        if (this.confirmarEscolha == true) {
-            this.util.bloquearMovimentacao(TelaCadReceita.framePesInsumo, 0, 89);
-        } else {
-            this.util.bloquearMovimentacao(TelaMovimentacaoEstoque.framePesInsumo, 0, 89);
-        }
-    }//GEN-LAST:event_formComponentMoved
-
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
         /// quando o mouse está em cima
-        this.jPanel6.setBackground(new Color(210,226,186));
+        this.jPanel6.setBackground(new Color(210, 226, 186));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnMinimiMouseEntered
 
     private void btnMinimiMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseExited
         // quando o mouse sair de cima
-        this.jPanel6.setBackground(new Color(143,165,110));
+        this.jPanel6.setBackground(new Color(143, 165, 110));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnMinimiMouseExited
 
@@ -368,7 +341,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
     private void btnFecharMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseExited
         // quando o mouse sair de cima
-        this.jPanel1.setBackground(new Color(143,165,110));
+        this.jPanel1.setBackground(new Color(143, 165, 110));
         this.btnFechar.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnFecharMouseExited
 
@@ -378,10 +351,10 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-       // passa o foco para o campo de texto 
+        // passa o foco para o campo de texto 
         this.txtPesquisarInsumos.requestFocus();
         // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143,165,110));
+        this.jPanel6.setBackground(new Color(143, 165, 110));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameActivated
 
@@ -389,7 +362,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         // passa o foco para o campo de texto 
         this.txtPesquisarInsumos.requestFocus();
         // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143,165,110));
+        this.jPanel6.setBackground(new Color(143, 165, 110));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
 

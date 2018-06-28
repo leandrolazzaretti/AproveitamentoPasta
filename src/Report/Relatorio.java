@@ -5,91 +5,166 @@
  */
 package Report;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.HashMap;
-
 import conexao.ModuloConexao;
+import dto.InsumoDto;
+import dto.MovimentacaoDto;
+import dto.ReceitaDto;
+import dto.ReceitaInsumoDto;
+import dto.RelatorioReceitaDto;
+import dto.TipoPastaDto;
+import dto.UsuarioDto;
+import java.io.InputStream;
 import java.sql.Connection;
-import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JRExporterParameter;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
  * @author Leandro
  */
-public class Relatorio implements Serializable{
-    Connection conexao; 
-    private static final long serialVersionUID = 1L;
-    
-    private static final String FOLDER_RELATORIOS = "/Report";
-    private String caminhoArquivoRelatorio = null;
-    private JRExporter exporter = null;
-    private File arquivoGerado = null;
-    
-    public Relatorio(){
+public class Relatorio {
+
+    Connection conexao;
+    List<UsuarioDto> listaUsuario = new ArrayList<>();
+    List<InsumoDto> listaInsumo = new ArrayList<>();
+    List<MovimentacaoDto> listaMovimentacao = new ArrayList<>();
+    List <RelatorioReceitaDto> listaReceita = new ArrayList<>();
+    List lista;
+    String url;
+
+    public Relatorio() {
         this.conexao = ModuloConexao.conector();
     }
-    
-    public String gerarRelatorio(HashMap parametrosRelatorio,
-            String nomeRelatorioJasper, String tipoExportar) throws Exception {
- 
-        String caminhoRelatorio = this.getClass()
-                .getResource(FOLDER_RELATORIOS).getPath();
- 
-        /* caminho completo até o relatório compilado indicado */
-        String caminhoArquivosJasper = caminhoRelatorio + File.separator
-                + nomeRelatorioJasper + ".jasper";
- 
-        /* Faz o carregamento do relatório */
-        JasperReport relatorioJasper = (JasperReport) JRLoader
-                .loadObjectFromFile(caminhoArquivosJasper);
- 
-        /* Carrega o arquivo */
-        JasperPrint impressoraJasper = JasperFillManager.fillReport(
-                relatorioJasper, parametrosRelatorio, this.conexao);
- 
-        if (tipoExportar.equalsIgnoreCase("pdf")) {
-            exporter = new JRPdfExporter();
-        } else if (tipoExportar.equalsIgnoreCase("xls")) {
-            exporter = new JRXlsExporter();
-        }
- 
-        /* Caminho relatorio exportado */
-        caminhoArquivoRelatorio = caminhoRelatorio + File.separator
-                + nomeRelatorioJasper + "." + tipoExportar;
- 
-        /* Criar novo arquivos exportado */
- 
-        arquivoGerado = new File(caminhoArquivoRelatorio);
- 
-        /* Prepara a impressão */
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT,
-                impressoraJasper);
- 
-        exporter.setParameter(JRExporterParameter.OUTPUT_FILE, arquivoGerado);
- 
-        /* Excuta a exportação */
-        exporter.exportReport();
- 
-        return caminhoArquivoRelatorio;
- 
+
+    public void gerarRelatorio() throws JRException {
+
+        InputStream arq = Relatorio.class.getResourceAsStream(this.url);
+        JasperReport report = JasperCompileManager.compileReport(arq);
+        JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(this.lista));
+        JasperViewer.viewReport(print, false);
     }
-    
-//    public void gerarRelatorio(List<UsuarioDto> lista) throws JRException{
-//    
-//        InputStream fonte = this.getClass().getResourceAsStream("/Report/Usuarios.jrxml");
-//        
-//        //String fonte = "C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\Usuarios.jrxml";
-//        
-//        JasperReport report = JasperCompileManager.compileReport(fonte);
-//        JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(lista));
-//        JasperViewer.viewReport(print, false);
-//    }
+
+    //Seta a lista de usuarios com os dados do banco
+    public void relatorioUsuarioSetar() {
+        String sql = "select codigo, nome, login, perfil from tbusuarios";
+        PreparedStatement pst;
+        this.url = "/Report/Usuarios.jrxml";
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                UsuarioDto user = new UsuarioDto();
+                user.setCodigo(rs.getInt(1));
+                user.setNome(rs.getString(2));
+                user.setLogin(rs.getString(3));
+                user.setPerfil(rs.getString(4));
+
+                this.listaUsuario.add(user);
+            }
+            this.lista = this.listaUsuario;
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    //Seta a lista de insumos com os dados do banco
+    public void relatorioInsumoSetar() {
+        String sql = "select * from tbinsumos";
+        PreparedStatement pst;
+        this.url = "/Report/Insumos.jrxml";
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                InsumoDto ins = new InsumoDto();
+                ins.setCodigo(rs.getInt(1));
+                ins.setDescricao(rs.getString(2));
+                ins.setUM(rs.getString(3));
+                ins.setQuantidade(rs.getString(4));
+                ins.setPreco(rs.getString(5));
+
+                this.listaInsumo.add(ins);
+            }
+            this.lista = this.listaInsumo;
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public void relatorioMovimentacaoSetar() {
+        String sql = "select * from tbMovimentacao";
+        PreparedStatement pst;
+        this.url = "/Report/Movimentacao.jrxml";
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                MovimentacaoDto mov = new MovimentacaoDto();
+                mov.setTipo(rs.getString(1));
+                mov.setCodigoID(rs.getInt(2));
+                mov.setDescricao(rs.getString(3));
+                mov.setData(rs.getString(4));
+                mov.setQuantidade(rs.getString(5));
+
+                this.listaMovimentacao.add(mov);
+            }
+            this.lista = this.listaMovimentacao;
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public void relatorioReceitaSetar() {
+        String sql = "select ri.codigoReceita, r.descricao as desc_r, tp.descricao as desc_tp, r.pantone, r.datavencimento, i.descricao as desc_i, i.UM, ri.consumo   from tbReceitaInsumo as ri"
+                + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
+                + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
+                + " inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;";
+        PreparedStatement pst;
+        this.url = "/Report/Receitas.jrxml";
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                RelatorioReceitaDto relRec = new RelatorioReceitaDto();
+                
+                
+                relRec.setCodigoReceita(rs.getInt(1));
+                relRec.setDescRec(rs.getString(2));
+                relRec.setDescTP(rs.getString(3));
+                relRec.setPantone(rs.getString(4));
+                relRec.setDataVencimento(rs.getInt(5));
+                relRec.setDescIns(rs.getString(6));
+                relRec.setUM(rs.getString(7));
+                relRec.setConsumo(rs.getDouble(8));
+
+                this.listaReceita.add(relRec);
+            }
+            this.lista = this.listaReceita;
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
 }

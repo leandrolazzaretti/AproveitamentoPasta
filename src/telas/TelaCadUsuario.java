@@ -51,7 +51,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         UsuarioDto usuarioDto = new UsuarioDto();
         UsuarioDao usuarioDao = new UsuarioDao();
 
-        usuarioDto.setIduser(Integer.parseInt(this.txtCadUsuId.getText()));
+        usuarioDto.setCodigo(Integer.parseInt(this.txtCadUsuId.getText()));
         usuarioDto.setNome(this.txtCadUsuNome.getText());
         usuarioDto.setLogin(this.txtCadUsuLogin.getText());
         usuarioDto.setSenha(this.txtCadUsuSenha.getText());
@@ -122,7 +122,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     //seta os campos através da lista
     private void setarCamposLista(UsuarioDto user) {
         this.txtCadUsuId.setEnabled(false);
-        this.txtCadUsuId.setText(String.valueOf(user.getIduser()));
+        this.txtCadUsuId.setText(String.valueOf(user.getCodigo()));
         this.txtCadUsuNome.setText(user.getNome());
         this.txtCadUsuLogin.setText(user.getLogin());
         this.cbCadUsuPerfil.setSelectedItem(user.getPerfil());
@@ -288,7 +288,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameClosing(evt);
             }
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -298,11 +297,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
             }
         });
 
@@ -689,31 +683,6 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         confirmaAcao(false);
     }//GEN-LAST:event_btnAdiActionPerformed
 
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // Chama o metodo para bloquear a movimentação do frame
-        this.frame.bloquearMovimentacao(TelaPrincipal.frameUsuario, 221, 77);
-    }//GEN-LAST:event_formComponentMoved
-
-    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        // gerar mensagem de salvar antes de sair
-        if ((this.txtCadUsuLogin.getText().isEmpty()) && (this.txtCadUsuNome.getText().isEmpty()) && (this.txtCadUsuSenha.getText().isEmpty()) && (this.txtCadUsuConfirmarSenha.getText().isEmpty())) {
-            this.setVisible(false);
-            this.dispose();
-        } else {
-            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                confirmaAcao(true);
-            } else {
-                if (result == JOptionPane.NO_OPTION) {
-                    this.setVisible(false);
-                    this.dispose();
-                } else {
-                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-                }
-            }
-        }
-    }//GEN-LAST:event_formInternalFrameClosing
-
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
         // quando o mouse estiver em cima
         this.jPanel6.setBackground(new Color(192, 221, 147));
@@ -748,8 +717,21 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFecharMouseExited
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
-        // chama o metodo sair
-        this.dispose();
+       // gerar mensagem de salvar antes de sair
+        if ((this.txtCadUsuLogin.getText().isEmpty()) && (this.txtCadUsuNome.getText().isEmpty()) && (this.txtCadUsuSenha.getText().isEmpty()) && (this.txtCadUsuConfirmarSenha.getText().isEmpty())) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                }
+            }
+        }
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimparMouseEntered

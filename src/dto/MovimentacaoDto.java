@@ -12,14 +12,14 @@ package dto;
 public class MovimentacaoDto {
 
     private String tipo;
-    private int codigo;
+    private int codigoID;
     private String descricao;
     private String data;
     private String quantidade;
 
-    public MovimentacaoDto(String tipo, int codigo, String descricao, String data, String quantidade) {
+    public MovimentacaoDto(String tipo, int codigoID, String descricao, String data, String quantidade) {
         this.tipo = tipo;
-        this.codigo = codigo;
+        this.codigoID = codigoID;
         this.descricao = descricao;
         this.data = data; 
         this.quantidade = quantidade;
@@ -37,12 +37,12 @@ public class MovimentacaoDto {
         this.tipo = tipo;
     }
 
-    public int getCodigo() {
-        return codigo;
+    public int getCodigoID() {
+        return codigoID;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public void setCodigoID(int codigoID) {
+        this.codigoID = codigoID;
     }
 
     public String getDescricao() {

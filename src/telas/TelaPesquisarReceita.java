@@ -30,7 +30,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     public int codRecIns = 0;
     public int codIns = 0;
     public static boolean confirmarEscolha;
-    Util frame = new Util();
+    Util util = new Util();
 
     /**
      * Creates new form TelaPesquisarReceita
@@ -42,14 +42,13 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         pesquisarReceita();
         retirarBordas();
     }
-    
-     // metodo para retirar as bordas do JinternalFrame
+
+    // metodo para retirar as bordas do JinternalFrame
     private void retirarBordas() {
         ((BasicInternalFrameUI) this.getUI()).setNorthPane(null); //retirar o painel superior
         this.setBorder(null);//retirar bordas
     }
-    
-    
+
     public void pesquisarReceita() {
         String sql = "select r.codigorec, r.descricao, r.pantone, t.descricao, r.datavencimento "
                 + "from tbreceita as r "
@@ -111,7 +110,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
             while (rs.next()) {
 
                 String comp = rs.getString(1);
-                String cons = rs.getString(2);
+                String cons = this.util.formatadorQuant(rs.getString(2));
 
                 modelo.addRow(new Object[]{comp, cons});
             }
@@ -125,6 +124,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     //seta os campos na tela de cadastro de receita
     public void setarCampos() {
+
         int setar = this.tblPesquisarReceita.getSelectedRow();
         TelaCadReceita.txtCadRecCodigo.setEnabled(false);
         TelaCadReceita.txtCadRecCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
@@ -193,11 +193,6 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
             }
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -308,6 +303,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     private void tblPesquisarReceitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesquisarReceitaMouseClicked
         // seta os campos do formulário através da tabela
         //TelaCadReceita.       
+
         if (evt.getClickCount() > 1) {
             if (this.confirmarEscolha == true) {
                 setarCampos();
@@ -344,24 +340,15 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_cbPesquisarReceitaActionPerformed
 
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        // Chama o metodo para bloquear a movimentação do frame
-        if (this.confirmarEscolha == true) {
-            this.frame.bloquearMovimentacao(TelaCadReceita.framePesReceita, 0, 96);
-        } else {
-            this.frame.bloquearMovimentacao(TelaMovimentacaoEstoque.framePesReceita, 0, 96);
-        }
-    }//GEN-LAST:event_formComponentMoved
-
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
         /// quando o mouse está em cima
-        this.jPanel6.setBackground(new Color(210,226,186));
+        this.jPanel6.setBackground(new Color(210, 226, 186));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnMinimiMouseEntered
 
     private void btnMinimiMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseExited
         // quando o mouse sair de cima
-        this.jPanel6.setBackground(new Color(143,165,110));
+        this.jPanel6.setBackground(new Color(143, 165, 110));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnMinimiMouseExited
 
@@ -382,7 +369,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     private void btnFecharMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseExited
         // quando o mouse sair de cima
-        this.jPanel1.setBackground(new Color(143,165,110));
+        this.jPanel1.setBackground(new Color(143, 165, 110));
         this.btnFechar.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnFecharMouseExited
 
@@ -395,7 +382,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         // passa o foco para o campo de texto 
         this.txtPesquisarReceita.requestFocus();
         // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143,165,110));
+        this.jPanel6.setBackground(new Color(143, 165, 110));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameActivated
 
@@ -403,7 +390,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         // passa o foco para o campo de texto 
         this.txtPesquisarReceita.requestFocus();
         // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143,165,110));
+        this.jPanel6.setBackground(new Color(143, 165, 110));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
 

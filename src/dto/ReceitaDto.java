@@ -11,30 +11,30 @@ package dto;
  */
 public class ReceitaDto {
 
-    private int codigo;
+    private int codigorec;
     private String descricao;
     private String pantone;
-    private int tipo;
-    private int vencimento;
+    private int codigoTipoPasta;
+    private int datavencimento;
 
-    public ReceitaDto(int codigo, String descricao, String pantone, int tipo, int vencimento) {
-        this.codigo = codigo;
+    public ReceitaDto(int codigorec, String descricao, String pantone, int codigoTipoPasta, int datavencimento) {
+        this.codigorec = codigorec;
         this.descricao = descricao;
         this.pantone = pantone;
-        this.tipo = tipo;
-        this.vencimento = vencimento;
+        this.codigoTipoPasta = codigoTipoPasta;
+        this.datavencimento = datavencimento;
     }
     
     public ReceitaDto(){
         
     }
 
-    public int getCodigo() {
-        return codigo;
+    public int getCodigorec() {
+        return codigorec;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public void setCodigorec(int codigorec) {
+        this.codigorec = codigorec;
     }
 
     public String getDescricao() {
@@ -53,19 +53,19 @@ public class ReceitaDto {
         this.pantone = pantone;
     }
 
-    public int getTipo() {
-        return tipo;
+    public int getCodigoTipoPasta() {
+        return codigoTipoPasta;
     }
 
-    public void setTipo(int tipo) {
-        this.tipo = tipo;
+    public void setCodigoTipoPasta(int codigoTipoPasta) {
+        this.codigoTipoPasta = codigoTipoPasta;
     }
 
-    public int getVencimento() {
-        return vencimento;
+    public int getDatavencimento() {
+        return datavencimento;
     }
 
-    public void setVencimento(int vencimento) {
-        this.vencimento = vencimento;
+    public void setDatavencimento(int datavencimento) {
+        this.datavencimento = datavencimento;
     }
 }

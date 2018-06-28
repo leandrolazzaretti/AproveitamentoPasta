@@ -8,10 +8,12 @@ package util;
 import conexao.ModuloConexao;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -107,23 +109,34 @@ public class Util{
 
     }
 
-    public void bloquearMovimentacao(JInternalFrame frame, int x, int y) {
-        try {
-            frame.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentMoved(ComponentEvent evento) {
-                    frame.setLocation(x, y);
-                }
-            });
-
-        } catch (Exception e) {
-        }
-    }
+//    public void bloquearMovimentacao(JInternalFrame frame, int x, int y) {
+//        try {
+//            frame.addComponentListener(new ComponentAdapter() {
+//                @Override
+//                public void componentMoved(ComponentEvent evento) {
+//                    frame.setLocation(x, y);
+//                }
+//            });
+//
+//        } catch (Exception e) {
+//        }
+//    }
 
     public String formatador(double valor) {
 
         DecimalFormat formatador = new DecimalFormat("0.00");
         return formatador.format(valor).replace(",", ".");
+    }
+    
+    public String formatadorQuant(String quantidade){
+        
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        formatter.setMaximumFractionDigits(2);
+        BigDecimal quant = new BigDecimal(this.formatador(Double.parseDouble(quantidade)));
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        String quantFormatado = nf.format(quant);
+        quantFormatado = quantFormatado.replace("R$ ", "");
+        return quantFormatado;
     }
 
 }

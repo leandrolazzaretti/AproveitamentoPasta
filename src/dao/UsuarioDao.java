@@ -33,7 +33,7 @@ public class UsuarioDao {
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setInt(1, usuario.getIduser());
+            pst.setInt(1, usuario.getCodigo());
             pst.setString(2, usuario.getNome());
             pst.setString(3, usuario.getLogin());
             pst.setString(4, HashUtil.stringMD5(usuario.getSenha()));
@@ -120,7 +120,7 @@ public class UsuarioDao {
 
                 UsuarioDto usuario = new UsuarioDto();
 
-                usuario.setIduser(rs.getInt("codigo"));
+                usuario.setCodigo(rs.getInt("codigo"));
                 usuario.setNome(rs.getString("nome"));
                 usuario.setLogin(rs.getString("login"));
                 usuario.setSenha(rs.getString("senha"));

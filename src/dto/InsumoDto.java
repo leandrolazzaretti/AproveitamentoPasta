@@ -13,14 +13,14 @@ public class InsumoDto {
 
     private int codigo;
     private String descricao;
-    private String um;
+    private String UM;
     private String quantidade;
     private String preco;
 
-    public InsumoDto(int codigo, String descricao, String um, String quantidade, String preco) {
+    public InsumoDto(int codigo, String descricao, String UM, String quantidade, String preco) {
         this.codigo = codigo;
         this.descricao = descricao;
-        this.um = um;
+        this.UM = UM;
         this.quantidade = quantidade;
         this.preco = preco;
     }
@@ -45,12 +45,12 @@ public class InsumoDto {
         this.descricao = descricao;
     }
 
-    public String getUm() {
-        return um;
+    public String getUM() {
+        return UM;
     }
 
-    public void setUm(String um) {
-        this.um = um;
+    public void setUM(String UM) {
+        this.UM = UM;
     }
 
     public String getQuantidade() {

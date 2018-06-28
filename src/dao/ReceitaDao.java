@@ -32,11 +32,11 @@ public class ReceitaDao {
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setInt(1, receita.getCodigo());
+            pst.setInt(1, receita.getCodigorec());
             pst.setString(2, receita.getDescricao());
             pst.setString(3, receita.getPantone());
-            pst.setInt(4, receita.getTipo());
-            pst.setInt(5, receita.getVencimento());
+            pst.setInt(4, receita.getCodigoTipoPasta());
+            pst.setInt(5, receita.getDatavencimento());
             //Atualiza a tabela receita
             int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
@@ -60,8 +60,8 @@ public class ReceitaDao {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, receita.getDescricao());
             pst.setString(2, receita.getPantone());
-            pst.setInt(3, receita.getTipo());
-            pst.setInt(4, receita.getVencimento());
+            pst.setInt(3, receita.getCodigoTipoPasta());
+            pst.setInt(4, receita.getDatavencimento());
             pst.setInt(5, codigo);
             //Atualiza a tabela Receita
             int adicionado = pst.executeUpdate();

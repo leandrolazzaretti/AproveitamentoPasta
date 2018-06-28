@@ -22,7 +22,7 @@ import util.Util;
 public class InsumoDao {
 
     Connection conexao = null;
-
+    Util util = new Util();
     public InsumoDao() {
         this.conexao = ModuloConexao.conector();
     }
@@ -36,7 +36,7 @@ public class InsumoDao {
             pst = this.conexao.prepareStatement(sql);
             pst.setInt(1, insumo.getCodigo());
             pst.setString(2, insumo.getDescricao());
-            pst.setString(3, insumo.getUm());
+            pst.setString(3, insumo.getUM());
             pst.setString(4, insumo.getQuantidade().replace(",", "."));
             pst.setString(5, insumo.getPreco());
             //Atualiza a tabela insumos
@@ -55,17 +55,17 @@ public class InsumoDao {
     }
 
     public void atualizarInsumos(InsumoDto insumo, int codigo) {
-        String sql = "update tbinsumos set descricao=?, UM=?, quantidade=?, preco=? where codigo=?";
+        String sql = "update tbinsumos set descricao=?, UM=?, preco=? where codigo=?";
 
         PreparedStatement pst;
 
         try {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, insumo.getDescricao());
-            pst.setString(2, insumo.getUm());
-            pst.setString(3, insumo.getQuantidade().replace(",", "."));
-            pst.setString(4, insumo.getPreco());
-            pst.setInt(5, codigo);
+            pst.setString(2, insumo.getUM());
+           // pst.setString(3, insumo.getQuantidade().replace("R$ ", ""));
+            pst.setString(3, insumo.getPreco());
+            pst.setInt(4, codigo);
             //Atualiza a tabela insumos
             int adicionado = pst.executeUpdate();
             //Linha abaixo serve de apoio
@@ -117,7 +117,7 @@ public class InsumoDao {
                 TelaCadInsumo.txtCadInsCodigo.setEnabled(false);
                 TelaCadInsumo.txtCadInsDes.setText(rs.getString(2));
                 TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
-                TelaCadInsumo.txtCadInsQuant.setText(rs.getString(4));
+                TelaCadInsumo.txtCadInsQuant.setText(this.util.formatadorQuant(rs.getString(4)));
                 TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
 
             } else {

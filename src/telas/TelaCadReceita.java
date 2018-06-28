@@ -74,11 +74,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         ReceitaDto receitaDto = new ReceitaDto();
         ReceitaDao receitaDao = new ReceitaDao();
 
-        receitaDto.setCodigo(Integer.parseInt(this.txtCadRecCodigo.getText()));
+        receitaDto.setCodigorec(Integer.parseInt(this.txtCadRecCodigo.getText()));
         receitaDto.setDescricao(this.txtCadRecDes.getText());
         receitaDto.setPantone(this.txtCadRecPan.getText());
-        receitaDto.setTipo(this.pasta.buscaCodTipoPasta(this.cbCadReceitaTipo.getSelectedItem().toString()));
-        receitaDto.setVencimento(Integer.parseInt(this.txtCadRecVal.getText()));
+        receitaDto.setCodigoTipoPasta(this.pasta.buscaCodTipoPasta(this.cbCadReceitaTipo.getSelectedItem().toString()));
+        receitaDto.setDatavencimento(Integer.parseInt(this.txtCadRecVal.getText()));
 
         if (confirmar == true) {
             receitaDao.adicionarReceita(receitaDto);
@@ -148,7 +148,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     //mascara para o campo Consumo(foramato de moeda)
     private void mascaraConsu() {
-        DecimalFormat dFormat = new DecimalFormat("###.00");
+        DecimalFormat dFormat = new DecimalFormat("##0.00");
         NumberFormatter formatter = new NumberFormatter(dFormat);
 
         formatter.setFormat(dFormat);
@@ -272,7 +272,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameClosing(evt);
             }
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -282,11 +281,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
             }
         });
 
@@ -608,6 +602,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void btnReceitaPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaPesquisarActionPerformed
         // chama a TelaPesquisarReceita
+        limparCampos();
         if (this.framePesReceita == null) {
             this.framePesReceita = new TelaPesquisarReceita();
         } else {
@@ -626,11 +621,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         if (this.framePesInsumo == null) {
             this.framePesInsumo = new TelaPesquisarInsumos();
-            this.util.retirarBordas(framePesqInsumo);
         } else {
             this.framePesInsumo.dispose();
             this.framePesInsumo = new TelaPesquisarInsumos();
-            this.util.retirarBordas(framePesqInsumo);
         }
         this.util.comandoInternal(this.framePesInsumo);
         TelaPesquisarInsumos.confirmarEscolha = true;
@@ -709,6 +702,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         // Chama o metodo atualizar atraves da tecla Enter
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            this.tblCadRecComponentes.removeAll();
+            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
         }
     }//GEN-LAST:event_tblCadRecComponentesKeyPressed
 
@@ -722,36 +717,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCadRecCodigoFocusLost
 
-    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-        this.util.bloquearMovimentacao(TelaPrincipal.frameReceita, 0, 0);
-    }//GEN-LAST:event_formComponentMoved
-
     private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
         // Chama o metodo atualizar enquanto digita
         if (!this.txtCadRecCodigo.getText().equals("")) {
             this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            this.tblCadRecComponentes.removeAll();
+            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
         }
     }//GEN-LAST:event_tblCadRecComponentesKeyReleased
-
-    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
-        // gerar mensagem de salvar antes de sair
-        if ((this.txtCadRecCodigo.getText().isEmpty()) && (this.txtCadRecDes.getText().isEmpty()) && (this.txtCadRecPan.getText().isEmpty()) && (this.txtCadRecVal.getText().isEmpty()) && (this.txtCadRecComponentes.getText().isEmpty()) && (this.txtCadRecConsumo.getText().isEmpty())) {
-            this.setVisible(false);
-            this.dispose();
-        } else {
-            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                confirmaAcao(true);
-            } else {
-                if (result == JOptionPane.NO_OPTION) {
-                    this.setVisible(false);
-                    this.dispose();
-                } else {
-                    this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
-                }
-            }
-        }
-    }//GEN-LAST:event_formInternalFrameClosing
 
     private void txtCadRecCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecCodigoKeyPressed
         // chama o metodo atraves da tecla enter
@@ -801,7 +774,22 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
         // chama o metodo sair
-        this.dispose();
+         // gerar mensagem de salvar antes de sair
+        if ((this.txtCadRecCodigo.getText().isEmpty()) && (this.txtCadRecDes.getText().isEmpty()) && (this.txtCadRecPan.getText().isEmpty()) && (this.txtCadRecVal.getText().isEmpty()) && (this.txtCadRecComponentes.getText().isEmpty()) && (this.txtCadRecConsumo.getText().isEmpty())) {
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                confirmaAcao(true);
+            } else {
+                if (result == JOptionPane.NO_OPTION) {
+                    this.setVisible(false);
+                    this.dispose();
+                } 
+            }
+        }
+       
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnCadRecLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecLimparMouseEntered

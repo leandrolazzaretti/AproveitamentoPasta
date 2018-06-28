@@ -5,25 +5,17 @@
  */
 package telas;
 
-import Report.Relatorio;
+import util.Relatorio;
 import conexao.ModuloConexao;
-import dto.UsuarioDto;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.sql.Connection;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JasperViewer;
 import util.Util;
-import java.util.HashMap;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  *
@@ -37,11 +29,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static JInternalFrame frameMovimentacao;
     public static JInternalFrame frameEstoquePasta;
 
-    private List<UsuarioDto> lista = new ArrayList<UsuarioDto>();
-
-    Util util = new Util();
-    int xMouse;
-    int yMouse;
+    private final Relatorio relatorio = new Relatorio();
+    private final Util util = new Util();
+    private int xMouse;
+    private int yMouse;
 
     Connection conexao = null;
 
@@ -53,82 +44,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         this.conexao = ModuloConexao.conector();
     }
 
-    private void gerarRelatorio(String relatorio) {
-        // Gerando um relatório de clientes
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            //imprimindo relatório
-            try {
-                //Usando a classe JasperPrint para preparar a impressão de um relatório
-                JasperPrint print = JasperFillManager.fillReport("C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/Report/" + relatorio + ".jasper", null, conexao);
-                // a linha abaix exibe o relatório através da classe JasperViewer
-                JasperViewer.viewReport(print, false);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-            }
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        try {
-            //Lista com os parametros para o relátorio
-            HashMap params = new HashMap<>();
-
-            //Passândo parâmetros e convertendo o dados pra ser compativel
-            params.put("datanasci",
-                    new SimpleDateFormat("yyyy-MM-dd").
-                            parse(jTextFieldData.getText()));
-
-            //Invocando a geração do relatório 
-            String file = new Relatorio().gerarRelatorio(params,
-                    "cliente-data-parametro", "pdf");
-
-            //Exibindo o relatório na tela para o usuário
-            this.desktop.getDesktop().open(new File(file));
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-
-//    private void relatorioUsuarioSetar(){
-//        String sql = "select * from tbusuarios";
-//        PreparedStatement pst;
-//        UsuarioDto usuario = new UsuarioDto();
-//        try {
-//            pst = this.conexao.prepareStatement(sql);
-//            ResultSet rs = pst.executeQuery();
-//            while(rs.next()){
-//                usuario.setIduser(rs.getInt(1));
-//                usuario.setNome(rs.getString(2));
-//                usuario.setLogin(rs.getString(3));
-//                usuario.setPerfil(rs.getString(5));
-//             
-//                
-//                this.lista.add(usuario);
-//            }
-//            
-//            pst.close();
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e);
-//        }
-//    }
-//    private void gerarRelatorioUser(){
-//        Relatorio relatorio = new Relatorio();
-//        
-//        try {
-//            relatorio.gerarRelatorio(this.lista);
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e);
-//            System.out.println(e);
-//        }
-//        
-//    }
-//    // metodo para retirar todasd as bordas do JinternalFrame(gambiarra)
-//    private void retirarBordas(JInternalFrame frame) {
-//        ((BasicInternalFrameUI) frame.getUI()).setNorthPane(null); //retirar o painel superior
-//        frame.setBorder(null);//retirar bordas
-//    }
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JSeparator separador, JButton botao) {
         painel.setBackground(new Color(229, 247, 203));
@@ -680,11 +595,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaEstoquePasta
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
-            //this.util.retirarBordas(this.frameEstoquePasta);
+            this.util.retirarBordas(this.frameEstoquePasta);
         } else {
             this.frameEstoquePasta.dispose();
             this.frameEstoquePasta = new TelaEstoquePasta();
-            //this.util.retirarBordas(this.frameEstoquePasta);
+            this.util.retirarBordas(this.frameEstoquePasta);
         }
         this.util.comandoInternal(this.frameEstoquePasta);
     }//GEN-LAST:event_tbnEstPastaActionPerformed
@@ -693,11 +608,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         // chama TelaEstoquePasta
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
-            //this.util.retirarBordas(this.frameEstoquePasta);
+            this.util.retirarBordas(this.frameEstoquePasta);
         } else {
             this.frameEstoquePasta.dispose();
             this.frameEstoquePasta = new TelaEstoquePasta();
-            //this.util.retirarBordas(this.frameEstoquePasta);
+            this.util.retirarBordas(this.frameEstoquePasta);
 
         }
         this.util.comandoInternal(this.frameEstoquePasta);
@@ -718,26 +633,61 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMovEstoqueActionPerformed
 
     private void menRelMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelMovEstActionPerformed
-        // Gerando um relatório de clientes
-        gerarRelatorio("Movimentacao");
+        // Gerando um relatório de Movimentação
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            relatorio.relatorioMovimentacaoSetar();
+            try {
+                this.relatorio.gerarRelatorio();
+            } catch (JRException e) {
+                JOptionPane.showMessageDialog(null, e);
+                System.out.println(e);
+            }
+        }
     }//GEN-LAST:event_menRelMovEstActionPerformed
 
     private void menRelUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelUsuActionPerformed
-        // Gerando um relatório de clientes
-        gerarRelatorio("Usuario");
-//        
-//        relatorioUsuarioSetar();
-//        gerarRelatorioUser();
+        // Gerando um relatório de Usuario
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            relatorio.relatorioUsuarioSetar();
+            try {
+                this.relatorio.gerarRelatorio();
+            } catch (JRException e) {
+                JOptionPane.showMessageDialog(null, e);
+                System.out.println(e);
+            }
+
+        }
     }//GEN-LAST:event_menRelUsuActionPerformed
 
     private void menRelRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelRecActionPerformed
-        // Gerando um relatório de clientes
-        gerarRelatorio("Receita");
+        // Gerando um relatório de Receita
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            relatorio.relatorioReceitaSetar();
+            try {
+                this.relatorio.gerarRelatorio();
+            } catch (JRException e) {
+                JOptionPane.showMessageDialog(null, e);
+                System.out.println(e);
+            }
+        }
     }//GEN-LAST:event_menRelRecActionPerformed
 
     private void menRelInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelInsActionPerformed
         // Gerando um relatório de clientes
-        gerarRelatorio("Insumo");
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            relatorio.relatorioInsumoSetar();
+            try {
+                this.relatorio.gerarRelatorio();
+            } catch (JRException e) {
+                JOptionPane.showMessageDialog(null, e);
+                System.out.println(e);
+            }
+
+        }
     }//GEN-LAST:event_menRelInsActionPerformed
 
     private void btnInsumoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInsumoMouseEntered

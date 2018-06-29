@@ -31,9 +31,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="   Cadastro  "/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menCadastroActionPerformed"/>
-          </Events>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menCadIns">
               <Properties>
@@ -181,9 +178,6 @@
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="ff" green="ff" red="ff" type="rgb"/>
-    </Property>
-    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1100, 620]"/>
     </Property>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>

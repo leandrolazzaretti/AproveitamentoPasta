@@ -127,11 +127,6 @@ public class TelaLogin extends javax.swing.JFrame {
                 jPanel1MousePressed(evt);
             }
         });
-        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jPanel1KeyPressed(evt);
-            }
-        });
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jSeparator1.setForeground(new java.awt.Color(210, 226, 186));
@@ -302,10 +297,6 @@ public class TelaLogin extends javax.swing.JFrame {
         this.jLabel2.setForeground(new Color(255,255,255));
     }//GEN-LAST:event_txtUsuarioFocusGained
 
-
-    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
-
-    }//GEN-LAST:event_jPanel1KeyPressed
 //logar clicando a tecla ENTER
     private void txtSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSenhaKeyPressed
         // chama o metodo logar

@@ -114,6 +114,7 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(143, 165, 110));
+        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(122, 122, 122)));
         setClosable(true);
         setIconifiable(true);
         setTitle("Tabela de Usuários");

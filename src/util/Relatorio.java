@@ -35,7 +35,7 @@ public class Relatorio {
     List<UsuarioDto> listaUsuario = new ArrayList<>();
     List<InsumoDto> listaInsumo = new ArrayList<>();
     List<MovimentacaoDto> listaMovimentacao = new ArrayList<>();
-    List <RelatorioReceitaDto> listaReceita = new ArrayList<>();
+    List<RelatorioReceitaDto> listaReceita = new ArrayList<>();
     List lista;
     String url;
 
@@ -52,8 +52,9 @@ public class Relatorio {
     }
 
     //Seta a lista de usuarios com os dados do banco
-    public void relatorioUsuarioSetar() {
-        String sql = "select codigo, nome, login, perfil from tbusuarios";
+    public void relatorioUsuarioSetar(String codigo, String nome, String login, String perfil) {
+        String vazio = "";
+        String sql = "select codigo, nome, login, perfil from tbusuarios where (codigo ='" + codigo + "' or '" + codigo + "'='" + vazio + "')  and (nome='" + nome + "' or '" + nome + "'='" + vazio + "') and (login = '" + login + "' or '" + login + "' = '" + vazio + "') and (perfil = '" + perfil + "' or '" + perfil + "' = '" + vazio + "')";
         PreparedStatement pst;
         this.url = "/Report/Usuarios.jrxml";
 
@@ -78,8 +79,10 @@ public class Relatorio {
     }
 
     //Seta a lista de insumos com os dados do banco
-    public void relatorioInsumoSetar() {
-        String sql = "select * from tbinsumos";
+    public void relatorioInsumoSetar(String codigo, String insumo, String um, String quant) {
+        String vazio = "";
+        String sql = "select codigo, descricao, UM, quantidade from tbinsumos where (codigo ='" + codigo + "' or '" + codigo + "'='" + vazio + "')  and (descricao ='" + insumo + "' or '" + insumo + "'='" + vazio + "') and (UM = '" + um + "' or '" + um + "' = '" + vazio + "') and (quantidade = '" + quant + "' or '" + quant + "' = '" + vazio + "')";
+        
         PreparedStatement pst;
         this.url = "/Report/Insumos.jrxml";
 
@@ -92,7 +95,6 @@ public class Relatorio {
                 ins.setDescricao(rs.getString(2));
                 ins.setUM(rs.getString(3));
                 ins.setQuantidade(rs.getString(4));
-                ins.setPreco(rs.getString(5));
 
                 this.listaInsumo.add(ins);
             }
@@ -130,7 +132,7 @@ public class Relatorio {
         }
     }
 
-    public void relatorioReceitaSetar() {
+    public void relatorioReceitaSetar(String codigo, String receita, String tipoPasta, String pantone, String vencimento, String insumo) {
         String sql = "select ri.codigoReceita, r.descricao as desc_r, tp.descricao as desc_tp, r.pantone, r.datavencimento, i.descricao as desc_i, i.UM, ri.consumo   from tbReceitaInsumo as ri"
                 + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
@@ -144,8 +146,7 @@ public class Relatorio {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 RelatorioReceitaDto relRec = new RelatorioReceitaDto();
-                
-                
+
                 relRec.setCodigoReceita(rs.getInt(1));
                 relRec.setDescRec(rs.getString(2));
                 relRec.setDescTP(rs.getString(3));

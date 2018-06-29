@@ -10,6 +10,7 @@ import conexao.ModuloConexao;
 import java.awt.Color;
 import java.sql.Connection;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,6 +29,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static JInternalFrame frameReceita;
     public static JInternalFrame frameMovimentacao;
     public static JInternalFrame frameEstoquePasta;
+    public static boolean jDialogUsuario;
+    public static boolean jDialogInsumo;
+    public static boolean jDialogReceita;
+    public static boolean jDialogMovimentacao;
 
     private final Relatorio relatorio = new Relatorio();
     private final Util util = new Util();
@@ -126,7 +131,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setMaximumSize(new java.awt.Dimension(1100, 620));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -369,11 +373,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         menCadastro.setText("   Cadastro  ");
-        menCadastro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menCadastroActionPerformed(evt);
-            }
-        });
 
         menCadIns.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
         menCadIns.setText("Insumo");
@@ -506,10 +505,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         this.util.comandoInternal(this.frameUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
-
-    private void menCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadastroActionPerformed
-
-    }//GEN-LAST:event_menCadastroActionPerformed
 
     private void menCadUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadUsuActionPerformed
         // cahama a TelaCadUsu     
@@ -648,45 +643,26 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menRelUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelUsuActionPerformed
         // Gerando um relatório de Usuario
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            relatorio.relatorioUsuarioSetar();
-            try {
-                this.relatorio.gerarRelatorio();
-            } catch (JRException e) {
-                JOptionPane.showMessageDialog(null, e);
-                System.out.println(e);
-            }
-
+        if (this.jDialogUsuario == false) {
+            (new FiltroRelatorioUsuario(this, false)).setVisible(true);
+            this.jDialogUsuario = true;
         }
     }//GEN-LAST:event_menRelUsuActionPerformed
 
     private void menRelRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelRecActionPerformed
         // Gerando um relatório de Receita
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            relatorio.relatorioReceitaSetar();
-            try {
-                this.relatorio.gerarRelatorio();
-            } catch (JRException e) {
-                JOptionPane.showMessageDialog(null, e);
-                System.out.println(e);
-            }
+        if (this.jDialogReceita == false) {
+            (new FiltroRelatorioReceita(this, false)).setVisible(true);
+            this.jDialogReceita = true;
         }
     }//GEN-LAST:event_menRelRecActionPerformed
 
     private void menRelInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelInsActionPerformed
         // Gerando um relatório de clientes
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            relatorio.relatorioInsumoSetar();
-            try {
-                this.relatorio.gerarRelatorio();
-            } catch (JRException e) {
-                JOptionPane.showMessageDialog(null, e);
-                System.out.println(e);
-            }
 
+        if (this.jDialogInsumo == false) {
+            (new FiltroRelatorioInsumo(this, false)).setVisible(true);
+            this.jDialogInsumo = true;
         }
     }//GEN-LAST:event_menRelInsActionPerformed
 

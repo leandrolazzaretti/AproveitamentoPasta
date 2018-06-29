@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import telas.TelaCadReceita;
 
@@ -26,7 +27,7 @@ public class TipoPastaDao {
     }
 
     //Seta o combobox tipo de pastas com os dados do banco
-    public void setarComboBox() {
+    public void setarComboBox(JComboBox cbox) {
         String sql = "select descricao from tbTipoPasta";
 
         PreparedStatement pst;
@@ -36,7 +37,7 @@ public class TipoPastaDao {
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                TelaCadReceita.cbCadReceitaTipo.addItem(rs.getString(1));
+                cbox.addItem(rs.getString(1));
             }
             pst.close();
 

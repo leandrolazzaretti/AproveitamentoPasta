@@ -147,7 +147,6 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     }
 
     private void setarCampos3(int codigoRec) {
-
     }
 
     /**

@@ -38,7 +38,8 @@ public class Relatorio {
     List<RelatorioReceitaDto> listaReceita = new ArrayList<>();
     List lista;
     String url;
-
+    Util util = new Util();
+    
     public Relatorio() {
         this.conexao = ModuloConexao.conector();
     }
@@ -54,7 +55,11 @@ public class Relatorio {
     //Seta a lista de usuarios com os dados do banco
     public void relatorioUsuarioSetar(String codigo, String nome, String login, String perfil) {
         String vazio = "";
-        String sql = "select codigo, nome, login, perfil from tbusuarios where (codigo ='" + codigo + "' or '" + codigo + "'='" + vazio + "')  and (nome='" + nome + "' or '" + nome + "'='" + vazio + "') and (login = '" + login + "' or '" + login + "' = '" + vazio + "') and (perfil = '" + perfil + "' or '" + perfil + "' = '" + vazio + "')";
+        String sql = "select codigo, nome, login, perfil from tbusuarios where"
+                + " (codigo ='" + codigo + "' or '" + codigo + "'='" + vazio + "')"
+                + " and (nome='" + nome + "' or '" + nome + "'='" + vazio + "') and"
+                + " (login = '" + login + "' or '" + login + "' = '" + vazio + "') and"
+                + " (perfil = '" + perfil + "' or '" + perfil + "' = '" + vazio + "')";
         PreparedStatement pst;
         this.url = "/Report/Usuarios.jrxml";
 
@@ -81,8 +86,11 @@ public class Relatorio {
     //Seta a lista de insumos com os dados do banco
     public void relatorioInsumoSetar(String codigo, String insumo, String um, String quant) {
         String vazio = "";
-        String sql = "select codigo, descricao, UM, quantidade from tbinsumos where (codigo ='" + codigo + "' or '" + codigo + "'='" + vazio + "')  and (descricao ='" + insumo + "' or '" + insumo + "'='" + vazio + "') and (UM = '" + um + "' or '" + um + "' = '" + vazio + "') and (quantidade = '" + quant + "' or '" + quant + "' = '" + vazio + "')";
-        
+        String sql = "select * from tbinsumos where (codigo ='" + codigo + "' or '" + codigo + "'='" + vazio + "')"
+                + " and (descricao ='" + insumo + "' or '" + insumo + "'='" + vazio + "') and"
+                + " (UM = '" + um + "' or '" + um + "' = '" + vazio + "') and"
+                + " (quantidade = '" + quant + "' or '" + quant + "' = '" + vazio + "')";
+
         PreparedStatement pst;
         this.url = "/Report/Insumos.jrxml";
 
@@ -94,7 +102,8 @@ public class Relatorio {
                 ins.setCodigo(rs.getInt(1));
                 ins.setDescricao(rs.getString(2));
                 ins.setUM(rs.getString(3));
-                ins.setQuantidade(rs.getString(4));
+                ins.setQuantidade(this.util.formatadorQuant(rs.getString(4)));
+                ins.setPreco(rs.getString(5));
 
                 this.listaInsumo.add(ins);
             }
@@ -106,8 +115,13 @@ public class Relatorio {
         }
     }
 
-    public void relatorioMovimentacaoSetar() {
-        String sql = "select * from tbMovimentacao";
+    public void relatorioMovimentacaoSetar(String tipo, String codigo, String descricao, String dataDe, String dataAte) {
+        String vazio = "";
+        String sql = "select * from tbMovimentacao where (tipo ='" + tipo + "' or '" + tipo + "'='" + vazio + "')"
+                + " and (codigoID ='" + codigo + "' or '" + codigo + "'='" + vazio + "') and"
+                + " (descricao = '" + descricao + "' or '" + descricao + "' = '" + vazio + "') and"
+                + " ((data >= '" + dataDe + "' and data <= '" + dataAte + "') or"
+                + " ('" + dataDe + "' = '" + vazio + "' and '" + dataAte + "' = '" + vazio + "'))";
         PreparedStatement pst;
         this.url = "/Report/Movimentacao.jrxml";
 
@@ -120,7 +134,7 @@ public class Relatorio {
                 mov.setCodigoID(rs.getInt(2));
                 mov.setDescricao(rs.getString(3));
                 mov.setData(rs.getString(4));
-                mov.setQuantidade(rs.getString(5));
+                mov.setQuantidade(this.util.formatadorQuant(rs.getString(5)));
 
                 this.listaMovimentacao.add(mov);
             }
@@ -133,10 +147,17 @@ public class Relatorio {
     }
 
     public void relatorioReceitaSetar(String codigo, String receita, String tipoPasta, String pantone, String vencimento, String insumo) {
+        String vazio = "";
         String sql = "select ri.codigoReceita, r.descricao as desc_r, tp.descricao as desc_tp, r.pantone, r.datavencimento, i.descricao as desc_i, i.UM, ri.consumo   from tbReceitaInsumo as ri"
                 + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                 + " inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta"
+                + " where (ri.codigoReceita ='" + codigo + "' or '" + codigo + "'='" + vazio + "')"
+                + " and (r.descricao ='" + receita + "' or '" + receita + "'='" + vazio + "') and"
+                + " (tp.descricao = '" + tipoPasta + "' or '" + tipoPasta + "' = '" + vazio + "') and"
+                + " (r.pantone = '" + pantone + "' or '" + pantone + "' = '" + vazio + "') and"
+                + " (r.datavencimento = '" + vencimento + "' or '" + vencimento + "' = '" + vazio + "') and"
+                + " (i.descricao = '" + insumo + "' or '" + insumo + "' = '" + vazio + "')"
                 + " order by ri.codigoReceita;";
         PreparedStatement pst;
         this.url = "/Report/Receitas.jrxml";
@@ -154,7 +175,7 @@ public class Relatorio {
                 relRec.setDataVencimento(rs.getInt(5));
                 relRec.setDescIns(rs.getString(6));
                 relRec.setUM(rs.getString(7));
-                relRec.setConsumo(rs.getDouble(8));
+                relRec.setConsumo(this.util.formatadorQuant(rs.getString(8)));
 
                 this.listaReceita.add(relRec);
             }

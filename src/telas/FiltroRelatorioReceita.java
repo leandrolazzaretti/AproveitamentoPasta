@@ -35,13 +35,15 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
 
     /**
      * Creates new form FiltroRelatorioReceita
+     * @param parent
+     * @param modal
      */
     public FiltroRelatorioReceita(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.rbNao.setSelected(true);
         this.tipoPastaDao.setarComboBox(cbFiltroTipoPasta);
-        cbAtivar();
+        //cbAtivar();
     }
 
     private void emitirRelatorio(boolean confFiltro) {
@@ -82,10 +84,10 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
         }
     }
 
-    private void cbAtivar() {
-        JTextField text = (JTextField) this.cbFiltroTipoPasta.getEditor().getEditorComponent();
-        text.addKeyListener(new ComboKeyHandler(this.cbFiltroTipoPasta));
-    }
+//    private void cbAtivar() {
+//        JTextField text = (JTextField) this.cbFiltroTipoPasta.getEditor().getEditorComponent();
+//        text.addKeyListener(new ComboKeyHandler(this.cbFiltroTipoPasta));
+//    }
 
     private void ativarCampos() {
         this.chCodigo.setEnabled(true);

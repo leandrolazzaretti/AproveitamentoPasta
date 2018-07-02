@@ -10,13 +10,11 @@ import conexao.ModuloConexao;
 import java.awt.Color;
 import java.sql.Connection;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import util.Util;
-import net.sf.jasperreports.engine.JRException;
 
 /**
  *
@@ -629,15 +627,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menRelMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelMovEstActionPerformed
         // Gerando um relatório de Movimentação
-        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a impressão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
-        if (confirma == JOptionPane.YES_OPTION) {
-            relatorio.relatorioMovimentacaoSetar();
-            try {
-                this.relatorio.gerarRelatorio();
-            } catch (JRException e) {
-                JOptionPane.showMessageDialog(null, e);
-                System.out.println(e);
-            }
+        if (this.jDialogMovimentacao == false) {
+            (new FiltroRelatorioMovimentacao(this, false)).setVisible(true);
+            this.jDialogMovimentacao = true;
         }
     }//GEN-LAST:event_menRelMovEstActionPerformed
 

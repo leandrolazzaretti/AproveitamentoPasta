@@ -65,7 +65,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.pasta.setarComboBox(cbCadReceitaTipo);
         this.cbCadReceitaTipo.setSelectedItem(null);
 
-        cbAtivar();
+//      cbAtivar();
     }
 
     private void confirmar(boolean confirmar) {

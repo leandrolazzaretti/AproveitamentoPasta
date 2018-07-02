@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2538bf18-ccef-4287-9ce5-cbfeab89715a">
-	<property name="ireport.zoom" value="1.9487171000000014"/>
-	<property name="ireport.x" value="92"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receita" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7e7a5a59-7f87-45fa-9706-77cdc107106c">
+	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<field name="codigoReceita" class="java.lang.String"/>
 	<field name="descRec" class="java.lang.String"/>
@@ -15,16 +15,16 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="81" splitType="Stretch">
+		<band height="83" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="-10" width="195" height="63" forecolor="#246012" uuid="a3d2c7c9-b739-4d23-a99f-02e56dfb24e6"/>
+				<reportElement x="7" y="-6" width="195" height="63" forecolor="#246012" uuid="05044ade-cc45-47e8-a9bc-820d267810d5"/>
 				<textElement>
 					<font fontName="Calibri Light" size="50"/>
 				</textElement>
 				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="82" y="53" width="113" height="24" uuid="036205be-063f-4598-80f0-d77974c0b736"/>
+				<reportElement x="89" y="57" width="113" height="24" uuid="22f491e0-686e-4b7c-b937-857ed0464941"/>
 				<textElement>
 					<font fontName="Calibri Light" size="18"/>
 				</textElement>
@@ -33,64 +33,64 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="4" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="40" splitType="Stretch">
+		<band height="34" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="555" height="30" uuid="a4e36e8f-0b87-422f-ab46-63c066354b77"/>
+				<reportElement x="0" y="0" width="555" height="30" uuid="b0c44385-afc8-49fa-8e43-fac8590ff81a"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="8" y="5" width="61" height="20" uuid="0f1d39d1-3d98-4fbc-a328-70d0a29f3cd0"/>
+				<reportElement x="3" y="5" width="66" height="20" forecolor="#246012" uuid="392d91fe-ddd7-4529-aa04-0005d599c568"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="69" y="5" width="79" height="20" uuid="a55ac15c-3c30-4ac0-8a86-22dac340dbf6"/>
+				<reportElement x="70" y="5" width="87" height="20" forecolor="#246012" uuid="a93f6854-9336-4e53-b34e-5e546b959f15"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="148" y="5" width="69" height="20" uuid="ce84064f-cd81-4cbe-baa8-7a905d037c5e"/>
+				<reportElement x="157" y="5" width="69" height="20" forecolor="#246012" uuid="b7741d61-978d-4c9d-92e6-76a83aefac63"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tipo Pasta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="217" y="5" width="69" height="20" uuid="7fa44065-984c-4a22-9d0b-76db02f8944c"/>
+				<reportElement x="226" y="5" width="69" height="20" forecolor="#246012" uuid="10cec47b-e02c-4dda-ba02-5218d6d96c0c"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Pantone]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="286" y="5" width="74" height="20" uuid="da8e7be0-1308-4496-bca8-6c1dbf1ef1f6"/>
+				<reportElement x="295" y="5" width="58" height="20" forecolor="#246012" uuid="e4f2b358-b437-45c9-891b-514aa9c9bd4c"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vencimento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="360" y="5" width="87" height="20" uuid="40f00f5f-711a-4102-ac45-70495597a115"/>
+				<reportElement x="353" y="5" width="89" height="20" forecolor="#246012" uuid="60cd5ea3-3491-47e9-b265-85f801ef5034"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Insumo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="447" y="5" width="42" height="20" uuid="9a6c70db-4829-4063-ac45-99093eefc838"/>
+				<reportElement x="446" y="5" width="54" height="20" forecolor="#246012" uuid="6c60a6a2-695f-48b3-9fc6-8b1445e50f31"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[UM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="496" y="5" width="55" height="20" uuid="64ac2868-8df8-4859-81f2-6bb84bff8639"/>
+				<reportElement x="500" y="5" width="53" height="20" forecolor="#246012" uuid="24523dcc-0f4c-44f1-b598-044923bfe9e9"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -101,64 +101,64 @@
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement x="8" y="0" width="61" height="20" uuid="adffeacc-51fd-4786-98ac-990fb3ce8434"/>
+				<reportElement x="7" y="0" width="63" height="20" uuid="16742293-9ca6-4eea-a36b-1e7086cd26a7"/>
 				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="69" y="0" width="79" height="20" uuid="b0058ae9-2f25-40b1-ba57-74ff3f7678dd"/>
+				<reportElement x="69" y="0" width="81" height="20" uuid="5a9906b5-455b-49fa-9ec0-e67691360157"/>
 				<textFieldExpression><![CDATA[$F{descRec}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="148" y="0" width="69" height="20" uuid="56d95cef-884b-4c6b-8014-e571a46764dd"/>
+				<reportElement x="156" y="0" width="69" height="20" uuid="b5a1c6ab-e32f-4e4d-9741-64a131522434"/>
 				<textFieldExpression><![CDATA[$F{descTP}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="217" y="0" width="69" height="20" uuid="046b85d9-a1ec-4bea-815b-cf2ebc769869"/>
+				<reportElement x="225" y="0" width="69" height="20" uuid="07617ed0-81dc-49cd-b349-d77a0ab887d9"/>
 				<textFieldExpression><![CDATA[$F{pantone}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="297" y="0" width="48" height="20" uuid="dc3efe2b-0e64-4812-a818-492f55b44fd3"/>
+				<reportElement x="294" y="0" width="58" height="20" uuid="a2f9b3d2-d972-487e-bc64-4e3b1cb97314"/>
 				<textFieldExpression><![CDATA[$F{dataVencimento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="360" y="0" width="87" height="20" uuid="40b4c897-1e77-46d4-9068-773cac28cff1"/>
+				<reportElement x="351" y="0" width="91" height="20" uuid="58b1834a-7455-4249-a708-7e2f4f2962ff"/>
 				<textFieldExpression><![CDATA[$F{descIns}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="447" y="0" width="42" height="20" uuid="25ba61ee-03c7-4508-ad20-a3e1ba43300c"/>
+				<reportElement x="445" y="0" width="54" height="20" uuid="6b131534-0ebe-4bf8-90ba-2e30291abbb6"/>
 				<textFieldExpression><![CDATA[$F{UM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="496" y="0" width="56" height="20" uuid="c9335a07-6f1e-4ecc-929c-67caac1eda02"/>
+				<reportElement x="499" y="0" width="53" height="20" uuid="6f19e3bd-d611-48ff-a97c-85f121c45cfd"/>
 				<textFieldExpression><![CDATA[$F{consumo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="432" y="3" width="80" height="20" uuid="4725d9c8-24ae-41d7-a062-61aaf925b632"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="517" y="4" width="34" height="20" uuid="780b65fa-1fb9-4369-ae35-5a78942e9ddf"/>
+				<reportElement x="517" y="3" width="34" height="20" uuid="91cdac0d-c405-4270-9857-4887bcf18325"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="8" y="8" width="137" height="20" uuid="dd188e60-dc64-42d4-a35f-e7fecb81f8e6"/>
+				<reportElement x="8" y="7" width="137" height="20" uuid="0cbe2ba5-b5c4-4c2c-b6fc-60e29d2e9e30"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="432" y="4" width="80" height="20" uuid="44b04faf-59ee-40a6-87ad-660cd63adefe"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

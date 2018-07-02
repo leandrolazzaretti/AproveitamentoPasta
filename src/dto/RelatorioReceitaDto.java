@@ -18,13 +18,13 @@ public class RelatorioReceitaDto {
     private int dataVencimento;
     private String descIns;
     private String UM;
-    private double consumo;
+    private String consumo;
 
     public RelatorioReceitaDto() {
 
     }
 
-    public RelatorioReceitaDto(int codigoReceita, String descRec, String descTP, String pantone, int dataVencimento, String descIns, String UM, double consumo) {
+    public RelatorioReceitaDto(int codigoReceita, String descRec, String descTP, String pantone, int dataVencimento, String descIns, String UM, String consumo) {
         this.codigoReceita = codigoReceita;
         this.descRec = descRec;
         this.descTP = descTP;
@@ -91,11 +91,11 @@ public class RelatorioReceitaDto {
         this.UM = UM;
     }
 
-    public double getConsumo() {
+    public String getConsumo() {
         return consumo;
     }
 
-    public void setConsumo(double consumo) {
+    public void setConsumo(String consumo) {
         this.consumo = consumo;
     }
 }

@@ -28,6 +28,8 @@ public class FiltroRelatorioInsumo extends javax.swing.JDialog {
 
     /**
      * Creates new form FiltroRelatorioInsumo
+     * @param parent
+     * @param modal
      */
     public FiltroRelatorioInsumo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

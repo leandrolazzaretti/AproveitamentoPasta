@@ -28,6 +28,8 @@ public class FiltroRelatorioUsuario extends javax.swing.JDialog {
 
     /**
      * Creates new form FiltroRelatorioUsuario
+     * @param parent
+     * @param modal
      */
     public FiltroRelatorioUsuario(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

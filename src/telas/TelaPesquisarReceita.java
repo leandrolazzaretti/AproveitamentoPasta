@@ -29,7 +29,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     private String cbPesquisar = "codigorec";
     public int codRecIns = 0;
     public int codIns = 0;
-    public static boolean confirmarEscolha;
+    public static int confirmarEscolha;
     Util util = new Util();
 
     /**
@@ -137,7 +137,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
     }
 
     //seta os campos na tela de movimentação de estoque
-    private void setarCampos2() {
+    public void setarCampos2(){
         int setar = this.tblPesquisarReceita.getSelectedRow();
         TelaMovimentacaoEstoque.txtCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
         TelaMovimentacaoEstoque.txtDescricao.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 1).toString());
@@ -145,8 +145,14 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
         TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
     }
-
-    private void setarCampos3(int codigoRec) {
+    
+    //seta os campos na tela de Produção Pasta
+    public void setarCampos3(){
+        int setar = this.tblPesquisarReceita.getSelectedRow();
+         TelaEstoquePasta.txtCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
+         TelaEstoquePasta.txtCodigo.setEnabled(false);
+         TelaEstoquePasta.txtQuantidade.setEnabled(true);
+         TelaEstoquePasta.txtQuantidade.requestFocus();
     }
 
     /**
@@ -304,10 +310,15 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         //TelaCadReceita.       
 
         if (evt.getClickCount() > 1) {
-            if (this.confirmarEscolha == true) {
+            if (this.confirmarEscolha == 1) {
                 setarCampos();
             } else {
-                setarCampos2();
+                if (this.confirmarEscolha == 2) {
+                    setarCampos2();
+                    
+                } else {
+                    setarCampos3();
+                }
             }
             this.dispose();
         }

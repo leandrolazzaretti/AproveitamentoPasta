@@ -705,7 +705,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             }
             this.rec.pesquisarReceita();
             this.util.comandoInternal(this.framePesReceita);
-            TelaPesquisarReceita.confirmarEscolha = false;
+            TelaPesquisarReceita.confirmarEscolha = 2;
 
         } else {
             if (this.framePesInsumo == null) {
@@ -770,7 +770,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
-        // chama metodo ao pressionar a tecla Enter ou Tab     
+        // chama metodo ao pressionar a tecla Enter   
 
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (this.cbEstoque.getSelectedItem().equals("Pasta")) {

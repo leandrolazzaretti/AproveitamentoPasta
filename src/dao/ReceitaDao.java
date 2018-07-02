@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import telas.TelaCadReceita;
+import telas.TelaEstoquePasta;
 import telas.TelaMovimentacaoEstoque;
 
 /**
@@ -188,6 +189,29 @@ public class ReceitaDao {
         }
     }
 
+    public void pesquisarProducaoPasta(int codigo) {
+
+        String sql = "select codigorec from tbreceita where codigorec ='" + codigo + "'";
+
+        PreparedStatement pst;
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                TelaEstoquePasta.txtCodigo.setEnabled(false);
+                TelaEstoquePasta.txtQuantidade.setEnabled(true);
+                TelaEstoquePasta.txtQuantidade.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(null, "Código inválido.");
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
     public String buscaCodigo(String descricao) {
         String sql = "select codigorec from tbreceita where descricao = '" + descricao + "'";
         String codigo = null;

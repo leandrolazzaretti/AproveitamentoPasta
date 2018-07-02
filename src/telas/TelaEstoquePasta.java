@@ -5,12 +5,17 @@
  */
 package telas;
 
+import com.sun.glass.events.KeyEvent;
+import dao.ReceitaDao;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import util.SoNumeros;
+import util.Util;
 
 /**
  *
@@ -18,11 +23,24 @@ import javax.swing.JPanel;
  */
 public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
+    public static JInternalFrame framePesReceita;
+    TelaPesquisarReceita rec = new TelaPesquisarReceita();
+    Util util = new Util();
+
     /**
      * Creates new form TelaEstoquePasta
      */
     public TelaEstoquePasta() {
         initComponents();
+        this.txtCodigo.setDocument(new SoNumeros());
+    }
+
+    private void limparCampos() {
+        this.txtCodigo.setText(null);
+        this.txtCodigo.setEnabled(true);
+        this.txtCodigo.requestFocus();
+        this.txtQuantidade.setText(null);
+        this.txtQuantidade.setEnabled(false);
     }
 
     // quando o mouse estiver em cima
@@ -58,6 +76,18 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         btnMinimi = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         btnFechar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtCodigo = new javax.swing.JTextField();
+        btnPesquisar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtQuantidade = new javax.swing.JFormattedTextField();
+        jPanel4 = new javax.swing.JPanel();
+        btnLimpar = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        btnConfirmar = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
 
         setClosable(true);
         setIconifiable(true);
@@ -134,6 +164,108 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(816, 2, 40, 20));
 
+        jLabel1.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel1.setText("Qual pasta pruduzir ?");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 54, -1, 30));
+
+        txtCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 150, -1));
+
+        btnPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
+        btnPesquisar.setToolTipText("Pesquisar");
+        btnPesquisar.setContentAreaFilled(false);
+        btnPesquisar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 30, 30));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel2.setText("Produção de Pasta");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+
+        jLabel3.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel3.setText("Quantidade:");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
+
+        txtQuantidade.setEnabled(false);
+        jPanel1.add(txtQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 130, 130, -1));
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnLimpar.setForeground(new java.awt.Color(79, 79, 79));
+        btnLimpar.setText("Limpar");
+        btnLimpar.setContentAreaFilled(false);
+        btnLimpar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnLimparMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnLimparMouseExited(evt);
+            }
+        });
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 25));
+
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 100, 25));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnConfirmar.setForeground(new java.awt.Color(79, 79, 79));
+        btnConfirmar.setText("Confirmar");
+        btnConfirmar.setContentAreaFilled(false);
+        btnConfirmar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnConfirmarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnConfirmarMouseExited(evt);
+            }
+        });
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmarActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 24));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(134, 180, 100, 25));
+
+        jLabel4.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel4.setText("Código:");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
+
+        jPanel5.setBackground(new java.awt.Color(236, 255, 209));
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 838, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 318, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 840, 320));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -144,7 +276,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         setBounds(0, 0, 860, 560);
@@ -194,7 +326,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 //            } else {
 //                if (result == JOptionPane.NO_OPTION) {
 //                    this.setVisible(false);
-                    this.dispose();
+        this.dispose();
 //                }
 //            }
 //        }
@@ -206,12 +338,81 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
 
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        // chama a tela de pesquisa de resceita
+        if (this.framePesReceita == null) {
+            this.framePesReceita = new TelaPesquisarReceita();
+        } else {
+            this.framePesReceita.dispose();
+            this.framePesReceita = new TelaPesquisarReceita();
+        }
+        this.rec.pesquisarReceita();
+        this.util.comandoInternal(this.framePesReceita);
+        TelaPesquisarReceita.confirmarEscolha = 3;
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
+    private void btnLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimparMouseEntered
+        // quando o mouse estiver em cima
+        alteraCor(this.jPanel4, this.btnLimpar);
+    }//GEN-LAST:event_btnLimparMouseEntered
+
+    private void btnLimparMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimparMouseExited
+        // quando o mouse sair de cima
+        retornaCor(this.jPanel4, this.btnLimpar);
+    }//GEN-LAST:event_btnLimparMouseExited
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        // chama o metodo limpar
+        alteraCorPressionado(this.jPanel4, this.btnLimpar);
+        limparCampos();
+
+    }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnConfirmarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseEntered
+        /// quando o mouse estiver em cima
+        alteraCor(this.jPanel3, this.btnConfirmar);
+    }//GEN-LAST:event_btnConfirmarMouseEntered
+
+    private void btnConfirmarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseExited
+        // quando o mouse sair de cima
+        retornaCor(this.jPanel3, this.btnConfirmar);
+    }//GEN-LAST:event_btnConfirmarMouseExited
+
+    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+        //chama o metodo para dar entrado ou saida em insumo ou pasta
+        alteraCorPressionado(this.jPanel3, this.btnConfirmar);
+        //confirmaAcao(false);
+    }//GEN-LAST:event_btnConfirmarActionPerformed
+
+    private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
+        // chama metodo ao pressionar a tecla Enter  
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+            if (!this.txtCodigo.getText().equals("")) {
+                ReceitaDao pesq = new ReceitaDao();
+                pesq.pesquisarProducaoPasta(Integer.parseInt(this.txtCodigo.getText()));
+            } 
+        }
+    }//GEN-LAST:event_txtCodigoKeyPressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConfirmar;
     private javax.swing.JButton btnFechar;
+    private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnMinimi;
+    private javax.swing.JButton btnPesquisar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    public static javax.swing.JTextField txtCodigo;
+    public static javax.swing.JFormattedTextField txtQuantidade;
     // End of variables declaration//GEN-END:variables
 }

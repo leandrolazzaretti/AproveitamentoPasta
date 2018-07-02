@@ -337,7 +337,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(79, 79, 79));
         jLabel6.setText("Cadastro de Receita");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
         jPanel1.setBackground(new java.awt.Color(229, 247, 203));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(188, 188, 188)));
@@ -609,7 +609,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
         this.rec.pesquisarReceita();
         this.util.comandoInternal(this.framePesReceita);
-        TelaPesquisarReceita.confirmarEscolha = true;
+        TelaPesquisarReceita.confirmarEscolha = 1;
 
 
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed

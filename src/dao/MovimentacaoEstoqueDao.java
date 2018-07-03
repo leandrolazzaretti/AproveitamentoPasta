@@ -11,6 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import telas.TelaEstoquePasta;
+import util.Util;
 
 /**
  *
@@ -19,6 +22,7 @@ import javax.swing.JOptionPane;
 public class MovimentacaoEstoqueDao {
 
     Connection conexao = null;
+    Util util = new Util();
 
     public MovimentacaoEstoqueDao() {
         this.conexao = ModuloConexao.conector();
@@ -108,6 +112,78 @@ public class MovimentacaoEstoqueDao {
         return soma;
     }
 
+//    
+//        for () {
+//        x += array[i] + ","
+//    }
+    public String buscarInsumos(int codigo) {
+        String sql = "select ri.codigoInsumo from tbReceitaInsumo as ri"
+                + " where ri.codigoReceita = '" + codigo + "'";
+
+        PreparedStatement pst;
+        //List<Integer> lista = new ArrayList<>();
+        String insumos = null;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                insumos += rs.getString(1) + ",";
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        String modificada = insumos.substring(0, insumos.length() - 1);
+        modificada = modificada.replace("null", "");
+        return modificada;
+    }
+
+    public void producaoPasta(String insumos) {
+        String sql = "select distinct tb.receita, r.descricao, ep.quantidade"
+                + " from"
+                + "(SELECT codigoReceita as receita"
+                + "  FROM tbReceitaInsumo"
+                + "  where codigoInsumo in(" + insumos + ")"
+                + ")"
+                + " as tb"
+                + " inner join tbEstoquePasta as ep on ep.codigoReceita = tb.receita"
+                + " inner join tbreceita as r on r.codigorec =  tb.receita"
+                + " where receita not in (SELECT codigoReceita"
+                + "  FROM tbReceitaInsumo"
+                + "  where codigoReceita = tb.receita"
+                + "  and codigoInsumo not in(" + insumos + ")"
+                + ")"
+                + " order by ep.data";
+
+        PreparedStatement pst;
+
+        DefaultTableModel modelo = (DefaultTableModel) TelaEstoquePasta.tblProducaoPasta.getModel();
+        modelo.setNumRows(0);
+
+        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(0).setPreferredWidth(40);
+        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(1).setPreferredWidth(40);
+        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(2).setPreferredWidth(40);
+        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(3).setPreferredWidth(40);
+        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(4).setPreferredWidth(40);
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt(3) != 0) {
+                    modelo.addRow(new Object[]{
+                        rs.getInt(1),
+                        rs.getString(2),
+                        this.util.formatadorQuant(rs.getString(3))
+                    });
+                }
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
     // busca o codigo da tabela de receita através da descrição
     public int buscaCodigoReceita(String descricao) {
         String sql = "select codigorec from tbreceita where descricao =?";
@@ -147,7 +223,7 @@ public class MovimentacaoEstoqueDao {
     }
 
     public String dataVencimento(String data, int validade) {
-        String sql = "SELECT date('"+data+"','"+validade+" day')";
+        String sql = "SELECT date('" + data + "','" + validade + " day')";
         String retorno = null;
         PreparedStatement pst;
         try {
@@ -160,7 +236,8 @@ public class MovimentacaoEstoqueDao {
         }
         return retorno;
     }
-    public String dataAtual(){
+
+    public String dataAtual() {
         String sql = "SELECT date('now')";
         String data = null;
         PreparedStatement pst;
@@ -174,13 +251,13 @@ public class MovimentacaoEstoqueDao {
         }
         return data;
     }
-    
-    public boolean dataComparar(String dataAtual, String dataVencimento){
+
+    public boolean dataComparar(String dataAtual, String dataVencimento) {
         int data1 = Integer.parseInt(dataAtual.replace("-", ""));
         int data2 = Integer.parseInt(dataVencimento.replace("-", ""));
         return data2 <= data1;
     }
-    
+
     public String inverterData(String data) {
         String[] dataInvertida = data.split("-");
         return dataInvertida[2] + "-" + dataInvertida[1] + "-" + dataInvertida[0];

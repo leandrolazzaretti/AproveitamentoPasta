@@ -22,14 +22,16 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
     int xMouse;
     int yMouse;
 
+    private String tipo = "";
     private String estoque = "";
     private String desc = "";
     private String cod = "";
     private String dataDe = "";
     private String dataAte = "";
-    
+
     /**
      * Creates new form FiltroRelatorioMovimentacao
+     *
      * @param parent
      * @param modal
      */
@@ -39,15 +41,14 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         this.rbNao.setSelected(true);
     }
 
-    
     private void emitirRelatorio(boolean confFiltro) {
         Relatorio relatorio = new Relatorio();
 
         if (confFiltro == true) {
             verificaFiltro();
-            relatorio.relatorioMovimentacaoSetar(this.estoque, this.cod, this.desc, this.dataDe, this.dataAte);
+            relatorio.relatorioMovimentacaoSetar(this.tipo, this.estoque, this.cod, this.desc, this.dataDe, this.dataAte);
         } else {
-            relatorio.relatorioMovimentacaoSetar("", "", "", "", "");
+            relatorio.relatorioMovimentacaoSetar("!=", "", "", "", "", "");
         }
         try {
             relatorio.gerarRelatorio();
@@ -56,10 +57,18 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
             System.out.println(e);
         }
     }
-    
-     private void verificaFiltro() {
+
+    private void verificaFiltro() {
+
+        if (this.chtipo.isSelected()) {
+            if (this.cbFiltroTipo.getSelectedItem().equals("Entrada")) {
+                this.tipo = ">";
+            } else {
+                this.tipo = "<";
+            }
+        }
         if (this.chEstoque.isSelected()) {
-            this.estoque = this.cbFiltroTipo.getSelectedItem().toString();
+            this.estoque = this.cbFiltroEstoque.getSelectedItem().toString();
         }
         if (this.chCodigo.isSelected()) {
             this.cod = this.txtFiltroCodigo.getText();
@@ -74,7 +83,6 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         }
     }
 
-     
     private void ativarCampos() {
         this.chtipo.setEnabled(true);
         this.chEstoque.setEnabled(true);
@@ -90,7 +98,6 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         this.chDescricao.setEnabled(false);
         this.chData.setEnabled(false);
 
-        
         this.cbFiltroTipo.setEnabled(false);
         this.cbFiltroEstoque.setEnabled(false);
         this.txtFiltroCodigo.setEnabled(false);
@@ -98,7 +105,7 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         this.txtDataDe.setEnabled(false);
         this.txtDataAte.setEnabled(false);
     }
-    
+
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(192, 221, 147));
@@ -117,6 +124,7 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         painel.setBackground(new Color(172, 198, 132));
         botao.setForeground(new Color(66, 66, 66));
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

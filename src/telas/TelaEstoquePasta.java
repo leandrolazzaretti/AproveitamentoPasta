@@ -6,14 +6,19 @@
 package telas;
 
 import com.sun.glass.events.KeyEvent;
+import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
 import util.Util;
 
@@ -33,14 +38,26 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     public TelaEstoquePasta() {
         initComponents();
         this.txtCodigo.setDocument(new SoNumeros());
+        this.txtQuantidade.setDocument(new SoNumeros());
+        mascaraInsumo();
     }
 
     private void limparCampos() {
         this.txtCodigo.setText(null);
         this.txtCodigo.setEnabled(true);
         this.txtCodigo.requestFocus();
-        this.txtQuantidade.setText(null);
+        this.txtQuantidade.setValue(null);
         this.txtQuantidade.setEnabled(false);
+    }
+
+    private void mascaraInsumo() {
+        DecimalFormat dFormat2 = new DecimalFormat("##,##0.00");
+        NumberFormatter formatter2 = new NumberFormatter(dFormat2);
+
+        formatter2.setFormat(dFormat2);
+        formatter2.setAllowsInvalid(false);
+
+        this.txtQuantidade.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
     // quando o mouse estiver em cima
@@ -88,6 +105,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         btnConfirmar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblProducaoPasta = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -95,6 +115,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         setToolTipText("");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -251,20 +272,48 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
 
         jPanel5.setBackground(new java.awt.Color(236, 255, 209));
-        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(155, 155, 155)));
+
+        tblProducaoPasta.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Código ", "Descrição", "Quantidade em Estoque", "Quanto usar ?"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblProducaoPasta);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 838, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 318, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 840, 320));
+
+        jLabel5.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel5.setText("Kg");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 134, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -316,26 +365,15 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
 //        // gerar mensagem de salvar antes de sair
-//        if (this.txtCodigo.getText().isEmpty()) {
-//            this.setVisible(false);
-//            this.dispose();
-//        } else {
-//            int result = JOptionPane.showConfirmDialog(null, "Deseja salvar antes de sair ?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
-//            if (result == JOptionPane.YES_OPTION) {
-//                confirmaAcao(true);
-//            } else {
-//                if (result == JOptionPane.NO_OPTION) {
-//                    this.setVisible(false);
         this.dispose();
-//                }
-//            }
 //        }
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        // quando o mouse sair de cima
+        // quando a tela sair do minimizar
         this.jPanel6.setBackground(new Color(229, 247, 203));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
+        this.txtCodigo.requestFocus();
     }//GEN-LAST:event_formInternalFrameDeiconified
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
@@ -365,7 +403,6 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         // chama o metodo limpar
         alteraCorPressionado(this.jPanel4, this.btnLimpar);
         limparCampos();
-
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnConfirmarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseEntered
@@ -381,6 +418,14 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         //chama o metodo para dar entrado ou saida em insumo ou pasta
         alteraCorPressionado(this.jPanel3, this.btnConfirmar);
+        if (!this.txtQuantidade.getText().equals("")) {
+            MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+            movDao.producaoPasta(movDao.buscarInsumos(Integer.parseInt(this.txtCodigo.getText())));
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
+        }
+
         //confirmaAcao(false);
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
@@ -391,9 +436,14 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             if (!this.txtCodigo.getText().equals("")) {
                 ReceitaDao pesq = new ReceitaDao();
                 pesq.pesquisarProducaoPasta(Integer.parseInt(this.txtCodigo.getText()));
-            } 
+            }
         }
     }//GEN-LAST:event_txtCodigoKeyPressed
+
+    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
+        // quando abrir a tela o campo de código recebe o foco
+        this.txtCodigo.requestFocus();
+    }//GEN-LAST:event_formInternalFrameActivated
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -406,12 +456,15 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    public static javax.swing.JTable tblProducaoPasta;
     public static javax.swing.JTextField txtCodigo;
     public static javax.swing.JFormattedTextField txtQuantidade;
     // End of variables declaration//GEN-END:variables

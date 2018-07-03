@@ -13,14 +13,16 @@ public class MovimentacaoEstoqueDto {
 
     private int ID;
     private int codigoReceita;
+    private String descricao;
     private String UM;
     private double quantidade;
     private String data;
     private String dataVencimento;
 
-    public MovimentacaoEstoqueDto(int ID, int codigoReceita, String UM, double quantidade, String data, String dataVencimento) {
+    public MovimentacaoEstoqueDto(int ID, int codigoReceita,String descricao, String UM, double quantidade, String data, String dataVencimento) {
         this.ID = ID;
         this.codigoReceita = codigoReceita;
+        this.descricao = descricao;
         this.UM = UM;
         this.quantidade = quantidade;
         this.data = data;
@@ -77,5 +79,13 @@ public class MovimentacaoEstoqueDto {
 
     public void setDataVencimento(String dataVencimento) {
         this.dataVencimento = dataVencimento;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 }

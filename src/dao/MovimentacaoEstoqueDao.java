@@ -112,11 +112,34 @@ public class MovimentacaoEstoqueDao {
         return soma;
     }
 
-//    
-//        for () {
-//        x += array[i] + ","
-//    }
-    public String buscarInsumos(int codigo) {
+    private void buscarInsumos(DefaultTableModel modelo, int codigo) {
+        String sql = "select i.codigo, i.descricao, i.quantidade from tbReceitaInsumo as ri"
+                + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
+                + " where ri.codigoReceita = '" + codigo + "'";
+        
+        PreparedStatement pst;
+        String pastaInsumo = "insumo";
+        
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            
+            while(rs.next()){
+                modelo.addRow(new Object[]{
+                    pastaInsumo,
+                    rs.getInt(1),
+                    rs.getString(2),
+                    this.util.formatadorQuant(rs.getString(3))
+                });
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
+    public String buscaCodigoInsumos(int codigo) {
         String sql = "select ri.codigoInsumo from tbReceitaInsumo as ri"
                 + " where ri.codigoReceita = '" + codigo + "'";
 
@@ -156,15 +179,9 @@ public class MovimentacaoEstoqueDao {
                 + " order by ep.data";
 
         PreparedStatement pst;
-
+        String pastaInsumo = "Pasta";
         DefaultTableModel modelo = (DefaultTableModel) TelaEstoquePasta.tblProducaoPasta.getModel();
         modelo.setNumRows(0);
-
-        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(0).setPreferredWidth(40);
-        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(1).setPreferredWidth(40);
-        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(2).setPreferredWidth(40);
-        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(3).setPreferredWidth(40);
-        TelaEstoquePasta.tblProducaoPasta.getColumnModel().getColumn(4).setPreferredWidth(40);
 
         try {
             pst = this.conexao.prepareStatement(sql);
@@ -172,12 +189,14 @@ public class MovimentacaoEstoqueDao {
             while (rs.next()) {
                 if (rs.getInt(3) != 0) {
                     modelo.addRow(new Object[]{
+                        pastaInsumo,
                         rs.getInt(1),
                         rs.getString(2),
                         this.util.formatadorQuant(rs.getString(3))
                     });
                 }
             }
+            buscarInsumos(modelo, Integer.parseInt(TelaEstoquePasta.txtCodigo.getText()));
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

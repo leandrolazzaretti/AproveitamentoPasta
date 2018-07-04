@@ -31,6 +31,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     public static JInternalFrame framePesReceita;
     TelaPesquisarReceita rec = new TelaPesquisarReceita();
     Util util = new Util();
+    public static boolean jDialogSobre;
 
     /**
      * Creates new form TelaEstoquePasta
@@ -274,16 +275,17 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel5.setBackground(new java.awt.Color(236, 255, 209));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(155, 155, 155)));
 
+        tblProducaoPasta.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblProducaoPasta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Código ", "Descrição", "Quantidade em Estoque", "Quanto usar ?"
+                "Tipo", "Código ", "Descrição", "Quantidade em Estoque", "Quanto usar ?", "Equivale à (%)"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -305,11 +307,11 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 840, 320));
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 840, 310));
 
         jLabel5.setForeground(new java.awt.Color(79, 79, 79));
         jLabel5.setText("Kg");
@@ -420,7 +422,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         if (!this.txtQuantidade.getText().equals("")) {
             MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-            movDao.producaoPasta(movDao.buscarInsumos(Integer.parseInt(this.txtCodigo.getText())));
+            movDao.producaoPasta(movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())));
 
         } else {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");

@@ -6,6 +6,7 @@
 package telas;
 
 import com.sun.glass.events.KeyEvent;
+import dao.InsumoDao;
 import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
 import java.awt.Color;
@@ -281,11 +282,11 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Tipo", "Código ", "Descrição", "Quantidade em Estoque", "Quanto usar ?", "Equivale à (%)"
+                "Tipo", "Código ", "Descrição", "UM", "Quantidade em Estoque", "Quanto usar ?", "Equivale à (%)"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

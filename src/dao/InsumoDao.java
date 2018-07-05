@@ -258,7 +258,7 @@ public class InsumoDao {
             pst = conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                resultado = conversaoUMInsumos(rs.getString(1), rs.getDouble(2));
+                resultado = conversaoUMInsumos(rs.getString(1), rs.getDouble(2), Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",", ".")));
 
                 saidaInsumo2(rs.getInt(3), resultado);
             }
@@ -271,9 +271,9 @@ public class InsumoDao {
     }
 
     //Converte a UM dos insumos para kg, e calcula a quantida de cada insumo para cada Kg da minha pasta
-    private double conversaoUMInsumos(String UM, double consumo) {
-        double nes = Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",", "."));
-        double total = nes * (consumo / 100);
+    public double conversaoUMInsumos(String UM, double consumo, double quantidade) {
+        
+        double total = quantidade * (consumo / 100);
 
         if (UM.equals("g")) {
             total = total * 1000;

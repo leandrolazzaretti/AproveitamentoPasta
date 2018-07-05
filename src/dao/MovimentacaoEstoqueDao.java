@@ -138,8 +138,8 @@ public class MovimentacaoEstoqueDao {
                 recInsDto.setCodigoInsumo(rs.getInt(1));
                 recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(",", "."))));
                 this.pastaProduzir.add(recInsDto);
-                System.out.println(this.pastaProduzir.get(contador).getCodigoInsumo());
-                System.out.println(this.pastaProduzir.get(contador).getConsumo());
+//                System.out.println(this.pastaProduzir.get(contador).getCodigoInsumo());
+//                System.out.println(this.pastaProduzir.get(contador).getConsumo());
                 contador++;
 //                System.out.println(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(",", "."))));
                 modelo.addRow(new Object[]{
@@ -230,27 +230,27 @@ public class MovimentacaoEstoqueDao {
         int codigo;
         int contador = 0;
         int id = 0;
-        for (int ind = 0; TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 0).toString().equals(confirma); ind++) { 
-            id++;
+        for (int ind = 0; TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 0).toString().equals(confirma); ind++) {
+
             codigo = (int) TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 1);
             String sql = "select ri.consumo, i.UM, i.codigo from tbReceitaInsumo as ri"
                     + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                     + " where ri.codigoReceita = '" + codigo + "'";
             PreparedStatement pst;
-            
+
             try {
                 pst = this.conexao.prepareStatement(sql);
                 ResultSet rs = pst.executeQuery();
 
                 while (rs.next()) {
                     ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
-                    recInsDto.setCodigoReceita(id);
+                    recInsDto.setId(id);
                     recInsDto.setCodigoInsumo(rs.getInt(3));
                     recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 4).toString().replace(",", "."))));
                     this.pastaEstoque.add(recInsDto);
-                    System.out.println(this.pastaEstoque.get(contador).getCodigoReceita());
-                    System.out.println(this.pastaEstoque.get(contador).getCodigoInsumo());
-                    System.out.println(this.pastaEstoque.get(contador).getConsumo());
+//                    System.out.println(this.pastaEstoque.get(contador).getId());
+//                    System.out.println(this.pastaEstoque.get(contador).getCodigoInsumo());
+//                    System.out.println(this.pastaEstoque.get(contador).getConsumo());
                     contador++;
 //                    System.out.println(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 4).toString().replace(",", "."))));
                 }
@@ -260,45 +260,59 @@ public class MovimentacaoEstoqueDao {
                 JOptionPane.showMessageDialog(null, e);
                 System.out.println(e);
             }
+            id++;
+        }
+        subtrairInsumos(this.pastaEstoque.get(this.pastaEstoque.size() - 1).getId());
+    }
+
+    //subtrai os insumos da pasta a produzir
+    private void subtrairInsumos(int idTot) {
+        double usoKg, porcentoAtual = 100, porcentoTemp;
+        int idTemp, idTemp2 = 0, id = 0;
+        for (int i = 0; i <= idTot; i = i) {
+            idTemp = id;
+            idTemp2 = idTemp;
+            for (int i2 = 0; i2 < this.pastaProduzir.size(); i2++) {
+                try {
+                    for (int i3 = 0; i == this.pastaEstoque.get(idTemp).getId(); i3++) {
+                        if (this.pastaProduzir.get(i2).getCodigoInsumo() == this.pastaEstoque.get(idTemp).getCodigoInsumo()) {
+                            System.out.println(regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(idTemp).getConsumo()));
+                            System.out.println("");
+                            porcentoTemp =  regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(idTemp).getConsumo());
+                            
+                        }
+                        //regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(id).getConsumo());
+
+                        idTemp++;
+                        id = idTemp;
+                    }
+
+                } catch (Exception e) {
+                    System.out.println(e);
+                    break;
+                }
+                idTemp = idTemp2;
+            }
+            i++;
         }
     }
-    
-    private void subtrairInsumos(){
-        double usoKg;
-        double porcentoAtual;
-        double porcentoTemp;
-        for(int p = 0; p < this.pastaProduzir.size(); p++) {
-            for(int e = 0; e < this.pastaEstoque.size(); e++){
-                if ((this.pastaProduzir.get(p).getCodigoInsumo() == this.pastaEstoque.get(e).getCodigoInsumo()&&(this.pastaEstoque.get(e).getConsumo()<= this.pastaProduzir.get(p).getConsumo()))) {
-                   
-                }
-                
-            }
 
-            this.pastaProduzir.get(p).getConsumo();
-            
-            
-            this.pastaEstoque.get(p).getConsumo();
-        } 
-    }
-    
     //retorna o valor em porcentagem 
-    private double regraDeTres1(double produzir, double estoque){
+    private double regraDeTres1(double produzir, double estoque) {
         double retorno = 0;
-        retorno = (produzir*100)/estoque;
-        
-        return retorno;
-    }
-    
-    //calcula a porcentagem em da porcentagem desejada
-    private double regraDeTres2(double porcentoAtual, double porcentoTem){
-        double retorno = 0;
-        retorno = (porcentoAtual*porcentoTem)/100;
-        
+        retorno = (produzir * 100) / estoque;
+
         return retorno;
     }
 
-    
+    //calcula a porcentagem em da porcentagem desejada
+    private double regraDeTres2(double porcentoAtual, double porcentoTem) {
+        double retorno = 0;
+        retorno = (porcentoAtual * porcentoTem) / 100;
+
+        return retorno;
+    }
+
     // busca o codigo da tabela de receita através da descrição
     public int buscaCodigoReceita(String descricao) {
         String sql = "select codigorec from tbreceita where descricao =?";

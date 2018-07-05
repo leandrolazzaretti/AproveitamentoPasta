@@ -10,11 +10,13 @@ package dto;
  * @author Leandro
  */
 public class ReceitaInsumoDto {
+    private int id;
     private int codigoReceita;
     private int codigoInsumo;
     private double consumo;
     
-    public ReceitaInsumoDto(int codigoReceita,  int codigoInsumo, double consumo){
+    public ReceitaInsumoDto(int id, int codigoReceita,  int codigoInsumo, double consumo){
+        this.id = id;
         this.codigoReceita = codigoReceita;
         this.codigoInsumo = codigoInsumo;
         this.consumo = consumo;
@@ -46,6 +48,14 @@ public class ReceitaInsumoDto {
 
     public void setConsumo(double consumo) {
         this.consumo = consumo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     

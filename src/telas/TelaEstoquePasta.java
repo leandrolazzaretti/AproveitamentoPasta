@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 import util.SoNumeros;
@@ -50,6 +51,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtCodigo.requestFocus();
         this.txtQuantidade.setValue(null);
         this.txtQuantidade.setEnabled(false);
+        ((DefaultTableModel) this.tblProducaoPasta.getModel()).setRowCount(0);
     }
 
     private void mascaraInsumo() {

@@ -23,6 +23,7 @@ public class InsumoDao {
 
     Connection conexao = null;
     Util util = new Util();
+
     public InsumoDao() {
         this.conexao = ModuloConexao.conector();
     }
@@ -63,7 +64,7 @@ public class InsumoDao {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, insumo.getDescricao());
             pst.setString(2, insumo.getUM());
-           // pst.setString(3, insumo.getQuantidade().replace("R$ ", ""));
+            // pst.setString(3, insumo.getQuantidade().replace("R$ ", ""));
             pst.setString(3, insumo.getPreco());
             pst.setInt(4, codigo);
             //Atualiza a tabela insumos
@@ -118,7 +119,7 @@ public class InsumoDao {
                 TelaCadInsumo.txtCadInsDes.setText(rs.getString(2));
                 TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
                 TelaCadInsumo.txtCadInsQuant.setText(this.util.formatadorQuant(rs.getString(4)));
-                TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
+                TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace("R", "").replace("$", "").replace(" ", ""));
 
             } else {
             }
@@ -146,10 +147,8 @@ public class InsumoDao {
                 TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
                 TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
                 TelaMovimentacaoEstoque.txtEstUM.setText(rs.getString(2));
-                if (TelaMovimentacaoEstoque.cbTipo.getSelectedItem().equals("Saída")) {
-                    MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-                    TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
-                }
+                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+                TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
 
             } else {
                 JOptionPane.showMessageDialog(null, "Código inválido.");
@@ -272,7 +271,7 @@ public class InsumoDao {
 
     //Converte a UM dos insumos para kg, e calcula a quantida de cada insumo para cada Kg da minha pasta
     public double conversaoUMInsumos(String UM, double consumo, double quantidade) {
-        
+
         double total = quantidade * (consumo / 100);
 
         if (UM.equals("g")) {

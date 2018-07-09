@@ -98,14 +98,14 @@ public class ReceitaDao {
         }
     }
 
-    public void pesquisarReceita(int codigo) {
+    public boolean pesquisarReceita(int codigo) {
         String sql = "select r.descricao, r.pantone, t.descricao, r.datavencimento "
                 + "from tbreceita as r "
                 + "inner join tbTipoPasta as t on r.codigoTipoPasta = t.codigo "
                 + "where r.codigorec = '" + codigo + "'";
 
         PreparedStatement pst;
-
+        boolean retorno = true;
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -116,12 +116,14 @@ public class ReceitaDao {
                 TelaCadReceita.cbCadReceitaTipo.setSelectedItem(rs.getString(3));
                 TelaCadReceita.txtCadRecVal.setText(rs.getString(4));
             } else {
+                retorno = false;
             }
 
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+        return retorno;
     }
 
     //confirma se o codigo da receita já existe
@@ -157,6 +159,22 @@ public class ReceitaDao {
         }
         return total <= 0;
     }
+    
+    public boolean confirmaTipoPasta(String tipoPasta){
+        String sql = "select count (descricao) as total from tbTipoPasta where descricao = '"+tipoPasta+"'";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <= 0;
+    }
 
     public void pesquisarReceitaMovi(int codigo) {
 
@@ -174,11 +192,10 @@ public class ReceitaDao {
                 TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
                 TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
                 TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
-                if (TelaMovimentacaoEstoque.cbTipo.getSelectedItem().equals("Saída")) {
-                    MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
                 TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
                     
-                }
+                
             } else {
                 JOptionPane.showMessageDialog(null, "Código inválido.");
             }

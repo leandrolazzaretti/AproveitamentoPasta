@@ -132,8 +132,10 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaCadReceita.txtCadRecPan.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 2).toString());
         TelaCadReceita.cbCadReceitaTipo.setSelectedItem(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
+        TelaCadReceita.txtCadRecDes.requestFocus();
         this.codRecIns = Integer.parseInt(TelaCadReceita.txtCadRecCodigo.getText());
         setarTbComponentes(this.codRecIns);
+        
     }
 
     //seta os campos na tela de movimentação de estoque
@@ -144,6 +146,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
         TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
         TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+        TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
     }
     
     //seta os campos na tela de Produção Pasta

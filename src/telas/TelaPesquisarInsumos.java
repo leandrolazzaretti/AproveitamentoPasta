@@ -113,7 +113,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     //seta os campos do formulário com o coteúdo da tabela
     private void setarCamposTbReceita() {
         int setar = this.tblCadInsumos.getSelectedRow();
-        TelaCadReceita.txtCadRecComponentes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
+        TelaCadReceita.txtCadRecComponentesDesc.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
     }
 
     /**

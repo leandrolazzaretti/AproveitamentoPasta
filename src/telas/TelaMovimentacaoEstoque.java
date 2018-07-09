@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+import util.MascaraMoeda;
 import util.Util;
 import util.SoNumeros;
 
@@ -57,8 +58,8 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.conexao = ModuloConexao.conector();
         this.txtCodigo.setDocument(new SoNumeros());
         this.txtEstData.setDocument(new SoNumeros());
-        this.txtEstQuantidade.setDocument(new SoNumeros());
-        mascaraInsumo();
+        this.txtEstQuantidade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        this.txtEstQuantidade.setDocument(new MascaraMoeda());
         ativarTblPasta();
     }
 
@@ -258,7 +259,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     }
                 } else {
                     //this.txtEstData.setText(inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
-                    
+
                     this.insumoDao.saidaInsumo(Double.parseDouble(this.txtEstQuantidade.getText().replace(",", ".")), this.insumoDao.buscaCodigoInsumo(this.txtDescricao.getText()));
                     movimentacao(false, "Insumo");
                     limparCampos();
@@ -292,16 +293,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private void alteraCorPressionado(JPanel painel, JButton botao) {
         painel.setBackground(new Color(172, 198, 132));
         botao.setForeground(new Color(66, 66, 66));
-    }
-
-    private void mascaraInsumo() {
-        DecimalFormat dFormat2 = new DecimalFormat("##,##0.00");
-        NumberFormatter formatter2 = new NumberFormatter(dFormat2);
-
-        formatter2.setFormat(dFormat2);
-        formatter2.setAllowsInvalid(false);
-
-        this.txtEstQuantidade.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
     /**
@@ -452,6 +443,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         }
         txtEstData.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtEstData.setEnabled(false);
+        txtEstData.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtEstDataKeyPressed(evt);
+            }
+        });
         jPanel2.add(txtEstData, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 200, 170, -1));
 
         jPanel5.setBackground(new java.awt.Color(229, 247, 203));
@@ -607,7 +603,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         });
         jPanel3.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 24));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(132, 210, 100, 25));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 100, 25));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -631,9 +627,14 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         });
         jPanel4.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 25));
 
-        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 100, 25));
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(134, 210, 100, 25));
 
         txtEstQuantidade.setEnabled(false);
+        txtEstQuantidade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtEstQuantidadeKeyPressed(evt);
+            }
+        });
         jPanel2.add(txtEstQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 150, 170, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -667,7 +668,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         //chama o metodo para dar entrado ou saida em insumo ou pasta
-        alteraCorPressionado(this.jPanel3, this.btnConfirmar);
+        //alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         confirmaAcao(false);
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
@@ -761,7 +762,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // chama o metodo limpar
-        alteraCorPressionado(this.jPanel4, this.btnLimpar);
+        //alteraCorPressionado(this.jPanel4, this.btnLimpar);
         limparCampos();
         this.txtDescricao.setText(null);
         if (this.cbEstoque.getSelectedItem().equals("Insumo")) {
@@ -869,6 +870,20 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.jPanel6.setBackground(new Color(229, 247, 203));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
+
+    private void txtEstQuantidadeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEstQuantidadeKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.txtEstData.requestFocus();
+        }
+    }//GEN-LAST:event_txtEstQuantidadeKeyPressed
+
+    private void txtEstDataKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEstDataKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            confirmaAcao(false);
+        }
+    }//GEN-LAST:event_txtEstDataKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfirmar;

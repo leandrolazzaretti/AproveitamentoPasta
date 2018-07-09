@@ -6,8 +6,6 @@
 package util;
 
 import conexao.ModuloConexao;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

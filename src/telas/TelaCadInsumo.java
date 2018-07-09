@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,8 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
+import util.MascaraMoeda;
 import util.SoNumeros;
 import util.Util;
 
@@ -46,9 +44,9 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         this.txtCadInsCodigo.setDocument(new SoNumeros());
-        this.txtCadInsPreco.setDocument(new SoNumeros());
+        this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
+        this.txtCadInsPreco.setDocument(new MascaraMoeda()); 
         this.txtCadInsQuant.setDocument(new SoNumeros());
-        mascaraInsumo();
         limparCampos();
     }
 
@@ -62,15 +60,16 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         insumoDto.setDescricao(this.txtCadInsDes.getText());
         insumoDto.setUM(this.cbCadInsUm.getSelectedItem().toString());
 
-        BigDecimal valor = new BigDecimal(this.txtCadInsPreco.getText().replace(",", "."));
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        //BigDecimal valor = new BigDecimal(this.txtCadInsPreco.getText().replace(",", "."));
+        //NumberFormat nf = NumberFormat.getCurrencyInstance();
         //String QuantFormatado = nf.format(quant);
-        String ValorFormatado = nf.format(valor);
+        //String ValorFormatado = nf.format(valor);
         
         //QuantFormatado = QuantFormatado.replace("R$ ", "");
 
         insumoDto.setQuantidade(this.txtCadInsQuant.getText());
-        insumoDto.setPreco(ValorFormatado);
+        insumoDto.setPreco(this.txtCadInsPreco.getText().replace(",", "."));
+        //insumoDto.setPreco(ValorFormatado);
 
         if (confirmar == true) {
             insumoDao.adicionarInsumos(insumoDto);
@@ -86,7 +85,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsDes.setText(null);
         this.cbCadInsUm.setSelectedItem("kg");
         this.txtCadInsQuant.setText("0");
-        this.txtCadInsPreco.setValue(null);
+        this.txtCadInsPreco.setText("");
 
     }
 
@@ -123,17 +122,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
-    //mascara para o campo preço/ quantidade(foramato de moeda)
-    private void mascaraInsumo() {
-        DecimalFormat dFormat2 = new DecimalFormat("#,##0.00");
-        NumberFormatter formatter2 = new NumberFormatter(dFormat2);
-
-        formatter2.setFormat(dFormat2);
-        formatter2.setAllowsInvalid(false);
-
-        //this.txtCadInsQuant.setFormatterFactory(new DefaultFormatterFactory(formatter2));
-        this.txtCadInsPreco.setFormatterFactory(new DefaultFormatterFactory(formatter2));
-    }
 
     private void confirmaAcao(boolean conf) {
         // chama o metodo adicionar
@@ -269,12 +257,24 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         jPanel1.add(btnFechar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 40, 20));
 
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 2, 40, 20));
+
+        txtCadInsPreco.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadInsPrecoKeyPressed(evt);
+            }
+        });
         jPanel2.add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 290, 270, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(79, 79, 79));
         jLabel6.setText("Cadastro de Insumos");
         jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, -1, -1));
+
+        txtCadInsDes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadInsDesKeyPressed(evt);
+            }
+        });
         jPanel2.add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, 270, -1));
 
         txtCadInsQuant.setEnabled(false);
@@ -349,7 +349,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         });
         jPanel3.add(btnCadInsAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(142, 360, 80, 25));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 360, 80, 25));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -373,7 +373,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         });
         jPanel4.add(btnCadInsLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 360, 80, 25));
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 360, 80, 25));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -397,7 +397,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         });
         jPanel5.add(btnCadInsDeletar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(224, 360, 80, 25));
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(228, 360, 80, 25));
 
         jPanel6.setBackground(new java.awt.Color(229, 247, 203));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -443,14 +443,14 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private void btnCadInsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsAdicionarActionPerformed
         //chama o metodo adicionar/salvar
         // altera a cor quando pressionado
-        alteraCorPressionado(this.jPanel3, this.btnCadInsAdicionar);
+        //alteraCorPressionado(this.jPanel3, this.btnCadInsAdicionar);
         confirmaAcao(false);
     }//GEN-LAST:event_btnCadInsAdicionarActionPerformed
 
     private void btnCadInsDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsDeletarActionPerformed
         // chama o metodo deletar
         // altera a cor quando pressionado
-        alteraCorPressionado(this.jPanel5, this.btnCadInsDeletar);
+        //alteraCorPressionado(this.jPanel5, this.btnCadInsDeletar);
         if (this.txtCadInsCodigo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione um insumo válido.");
         } else {
@@ -469,9 +469,9 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private void btnCadInsLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsLimparActionPerformed
         // chama o metodo limpar    
         // altera a cor quando pressionado
-        alteraCorPressionado(this.jPanel4, this.btnCadInsLimpar);
+        //alteraCorPressionado(this.jPanel4, this.btnCadInsLimpar);
         limparCampos();
-
+        this.txtCadInsCodigo.requestFocus();
     }//GEN-LAST:event_btnCadInsLimparActionPerformed
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Chama a TelePesquisarInsumos
@@ -508,6 +508,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 InsumoDao pesq = new InsumoDao();
                 pesq.pesquisarInsumos(Integer.parseInt(this.txtCadInsCodigo.getText()));
             }
+            this.txtCadInsDes.requestFocus();
         }
     }//GEN-LAST:event_txtCadInsCodigoKeyPressed
 
@@ -525,7 +526,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
         // gerar mensagem de salvar antes de sair
-        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && (this.txtCadInsPreco.getText().isEmpty()) && (this.txtCadInsQuant.getText().equals("0"))) {
+        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && ((this.txtCadInsPreco.getText().equals("0,00"))||(this.txtCadInsPreco.getText().equals(""))) && (this.txtCadInsQuant.getText().equals("0"))) {
             this.setVisible(false);
             this.dispose();
         } else {
@@ -603,6 +604,20 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.jPanel6.setBackground(new Color(229, 247, 203));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
+
+    private void txtCadInsDesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadInsDesKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.cbCadInsUm.requestFocus();
+        }
+    }//GEN-LAST:event_txtCadInsDesKeyPressed
+
+    private void txtCadInsPrecoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadInsPrecoKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            confirmaAcao(false);
+        }
+    }//GEN-LAST:event_txtCadInsPrecoKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

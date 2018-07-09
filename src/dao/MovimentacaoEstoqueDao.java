@@ -16,6 +16,7 @@ import telas.TelaEstoquePasta;
 import util.Util;
 import dao.InsumoDao;
 import dto.ReceitaInsumoDto;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class MovimentacaoEstoqueDao {
     Util util = new Util();
     List<ReceitaInsumoDto> pastaProduzir = new ArrayList<>();
     List<ReceitaInsumoDto> pastaEstoque = new ArrayList<>();
-    List<ReceitaInsumoDto> pastaTemp = new ArrayList<>();
+    List<ReceitaInsumoDto> pastasTemp = new ArrayList<>();
 
     public MovimentacaoEstoqueDao() {
         this.conexao = ModuloConexao.conector();
@@ -246,7 +247,7 @@ public class MovimentacaoEstoqueDao {
                     ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                     recInsDto.setId(id);
                     recInsDto.setCodigoInsumo(rs.getInt(3));
-                    recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 4).toString().replace(",", "."))));
+                    recInsDto.setConsumo(formatador2(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 4).toString().replace(",", ".")))));
                     this.pastaEstoque.add(recInsDto);
 //                    System.out.println(this.pastaEstoque.get(contador).getId());
 //                    System.out.println(this.pastaEstoque.get(contador).getCodigoInsumo());
@@ -267,34 +268,84 @@ public class MovimentacaoEstoqueDao {
 
     //subtrai os insumos da pasta a produzir
     private void subtrairInsumos(int idTot) {
-        double usoKg, porcentoAtual = 100, porcentoTemp;
+        double usoKg, porcentoAtual = 100, porcentoTemp, quantidade;
         int idTemp, idTemp2 = 0, id = 0;
         for (int i = 0; i <= idTot; i = i) {
             idTemp = id;
             idTemp2 = idTemp;
+            //entra nos insumos da pasta que desejo produzir
             for (int i2 = 0; i2 < this.pastaProduzir.size(); i2++) {
                 try {
+                    //entra nos insumos das pastas que estão em estoque
                     for (int i3 = 0; i == this.pastaEstoque.get(idTemp).getId(); i3++) {
+                        //System.out.println(this.pastaProduzir.get(i3).getConsumo());
+
+                        //verifica se o insumo é copativel, e qual a % maxima permitida
                         if (this.pastaProduzir.get(i2).getCodigoInsumo() == this.pastaEstoque.get(idTemp).getCodigoInsumo()) {
-                            System.out.println(regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(idTemp).getConsumo()));
-                            System.out.println("");
-                            porcentoTemp =  regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(idTemp).getConsumo());
-                            
+                            //System.out.println(regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(idTemp).getConsumo()));
+                            //System.out.println("");
+                            ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
+                            recInsDto.setCodigoInsumo(this.pastaEstoque.get(idTemp).getCodigoInsumo());
+                            recInsDto.setConsumo(this.pastaEstoque.get(idTemp).getConsumo());
+                            this.pastasTemp.add(recInsDto);
+                            porcentoTemp = formatador3(regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(idTemp).getConsumo()));
+                            if (porcentoTemp <= porcentoAtual) {
+                                porcentoAtual = porcentoTemp;
+                            }
                         }
                         //regraDeTres1(this.pastaProduzir.get(i2).getConsumo(), this.pastaEstoque.get(id).getConsumo());
 
                         idTemp++;
                         id = idTemp;
                     }
-
                 } catch (Exception e) {
                     System.out.println(e);
                     break;
                 }
                 idTemp = idTemp2;
             }
+            System.out.println("\n\n");
+            System.out.println("% " + porcentoAtual);
+            //Subtrai direto do array pastaProduzir através do array pastaTemp
+            for (int i4 = 0; i4 < this.pastaProduzir.size(); i4++) {
+                for (int i5 = 0; i5 < this.pastasTemp.size(); i5++) {
+                    if (this.pastaProduzir.get(i4).getCodigoInsumo() == this.pastaEstoque.get(i5).getCodigoInsumo()) {
+                        
+                        this.pastaProduzir.get(i4).setConsumo(this.pastaProduzir.get(i4).getConsumo() - formatador3(regraDeTres2(porcentoAtual, this.pastasTemp.get(i5).getConsumo())));
+                        //quantidade = this.past
+                        System.out.println(this.pastaProduzir.get(i4).getConsumo());
+                        System.out.println("\n\n");
+                    }
+                }
+            }
+            for(int i6 = 0; i6< this.pastaEstoque.size(); i6++){
+                if(this.pastaEstoque.get(i6).getConsumo() == 0){
+                    this.pastaEstoque.remove(i6);
+                }
+            }
+            System.out.println(this.pastaProduzir.get(0).getConsumo());
+            this.pastasTemp.clear();
+            porcentoAtual = 100;
             i++;
         }
+    }
+
+    //formata os valores para 2 casas decimais
+    private double formatador2(double valor) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
+    }
+
+    //formata os valores para 3 casas decimais
+    private double formatador3(double valor) {
+        DecimalFormat df = new DecimalFormat("#.000");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
     }
 
     //retorna o valor em porcentagem 
@@ -305,10 +356,10 @@ public class MovimentacaoEstoqueDao {
         return retorno;
     }
 
-    //calcula a porcentagem em da porcentagem desejada
-    private double regraDeTres2(double porcentoAtual, double porcentoTem) {
+    //calcula a quantidade da % desejada
+    private double regraDeTres2(double porcentoAtual, double quantidadePro) {
         double retorno = 0;
-        retorno = (porcentoAtual * porcentoTem) / 100;
+        retorno = (quantidadePro * porcentoAtual) / 100;
 
         return retorno;
     }

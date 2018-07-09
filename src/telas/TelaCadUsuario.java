@@ -5,6 +5,7 @@
  */
 package telas;
 
+import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -319,10 +320,27 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         jLabel4.setForeground(new java.awt.Color(79, 79, 79));
         jLabel4.setText(" Perfil:");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, -1, -1));
+
+        txtCadUsuNome.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadUsuNomeKeyPressed(evt);
+            }
+        });
         jPanel1.add(txtCadUsuNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 130, 213, -1));
+
+        txtCadUsuLogin.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadUsuLoginKeyPressed(evt);
+            }
+        });
         jPanel1.add(txtCadUsuLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 213, -1));
 
         cbCadUsuPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Usuário" }));
+        cbCadUsuPerfil.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbCadUsuPerfilKeyPressed(evt);
+            }
+        });
         jPanel1.add(cbCadUsuPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 250, 213, -1));
 
         jLabel5.setForeground(new java.awt.Color(79, 79, 79));
@@ -349,7 +367,19 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         jLabel7.setForeground(new java.awt.Color(79, 79, 79));
         jLabel7.setText("Confirmar Senha:");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 221, -1, -1));
+
+        txtCadUsuSenha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadUsuSenhaKeyPressed(evt);
+            }
+        });
         jPanel1.add(txtCadUsuSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 190, 213, -1));
+
+        txtCadUsuConfirmarSenha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadUsuConfirmarSenhaKeyPressed(evt);
+            }
+        });
         jPanel1.add(txtCadUsuConfirmarSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 220, 213, -1));
 
         jPanel6.setBackground(new java.awt.Color(229, 247, 203));
@@ -425,7 +455,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         jPanel2.add(btnExc, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(204, 320, 80, 25));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(208, 320, 80, 25));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -450,7 +480,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         jPanel4.add(btnAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(122, 320, 80, 25));
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 80, 25));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -475,7 +505,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         });
         jPanel5.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 25));
 
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 80, 25));
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(124, 320, 80, 25));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -661,13 +691,13 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // chama o metodo limpar
-        alteraCorPressionado(this.jPanel5, this.btnLimpar);
+        //alteraCorPressionado(this.jPanel5, this.btnLimpar);
         limparCampos();
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnExcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcActionPerformed
         // chamad o metodo deletar
-        alteraCorPressionado(this.jPanel2, this.btnExc);
+        //alteraCorPressionado(this.jPanel2, this.btnExc);
         if ((this.txtCadUsuId.getText().isEmpty())) {
             JOptionPane.showMessageDialog(null, "Código inválido.");
         } else {
@@ -679,7 +709,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
     private void btnAdiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdiActionPerformed
         //chama o metodo adicionar / salvar
-        alteraCorPressionado(this.jPanel4, this.btnAdi);
+        //alteraCorPressionado(this.jPanel4, this.btnAdi);
         confirmaAcao(false);
     }//GEN-LAST:event_btnAdiActionPerformed
 
@@ -717,7 +747,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFecharMouseExited
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
-       // gerar mensagem de salvar antes de sair
+        // gerar mensagem de salvar antes de sair
         if ((this.txtCadUsuLogin.getText().isEmpty()) && (this.txtCadUsuNome.getText().isEmpty()) && (this.txtCadUsuSenha.getText().isEmpty()) && (this.txtCadUsuConfirmarSenha.getText().isEmpty())) {
             this.setVisible(false);
             this.dispose();
@@ -780,7 +810,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAnteriorMouseEntered
 
     private void btnAnteriorMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAnteriorMouseExited
-         // quando o mouse sair de cima     
+        // quando o mouse sair de cima     
         retornaCor(this.jPanel10, this.btnAnterior);
     }//GEN-LAST:event_btnAnteriorMouseExited
 
@@ -816,6 +846,41 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         this.jPanel6.setBackground(new Color(229, 247, 203));
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
+
+    private void txtCadUsuNomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadUsuNomeKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.txtCadUsuLogin.requestFocus();
+        }
+    }//GEN-LAST:event_txtCadUsuNomeKeyPressed
+
+    private void txtCadUsuLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadUsuLoginKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.txtCadUsuSenha.requestFocus();
+        }
+    }//GEN-LAST:event_txtCadUsuLoginKeyPressed
+
+    private void txtCadUsuSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadUsuSenhaKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.txtCadUsuConfirmarSenha.requestFocus();
+        }
+    }//GEN-LAST:event_txtCadUsuSenhaKeyPressed
+
+    private void txtCadUsuConfirmarSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadUsuConfirmarSenhaKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.cbCadUsuPerfil.requestFocus();
+        }
+    }//GEN-LAST:event_txtCadUsuConfirmarSenhaKeyPressed
+
+    private void cbCadUsuPerfilKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbCadUsuPerfilKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            confirmaAcao(false);
+        }
+    }//GEN-LAST:event_cbCadUsuPerfilKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

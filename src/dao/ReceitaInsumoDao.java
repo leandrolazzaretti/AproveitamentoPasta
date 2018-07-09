@@ -185,4 +185,24 @@ public class ReceitaInsumoDao {
         }
         return retorno;
     }
+    
+    public boolean confirmaCodigo(int codigo){
+        String sql = "select codigorec from tbreceita where codigorec = '"+codigo+"'";
+        PreparedStatement pst;
+        boolean retorno = false;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                retorno = true;
+            }else{
+                retorno = false;
+            }
+            
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return retorno;
+    }
 }

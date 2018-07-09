@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+import util.MascaraMoeda;
 import util.SoNumeros;
 import util.Util;
 
@@ -41,8 +42,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     public TelaEstoquePasta() {
         initComponents();
         this.txtCodigo.setDocument(new SoNumeros());
-        this.txtQuantidade.setDocument(new SoNumeros());
-        mascaraInsumo();
+        this.txtQuantidade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        this.txtQuantidade.setDocument(new MascaraMoeda());
     }
 
     private void limparCampos() {
@@ -52,16 +53,6 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtQuantidade.setValue(null);
         this.txtQuantidade.setEnabled(false);
         ((DefaultTableModel) this.tblProducaoPasta.getModel()).setRowCount(0);
-    }
-
-    private void mascaraInsumo() {
-        DecimalFormat dFormat2 = new DecimalFormat("##,##0.00");
-        NumberFormatter formatter2 = new NumberFormatter(dFormat2);
-
-        formatter2.setFormat(dFormat2);
-        formatter2.setAllowsInvalid(false);
-
-        this.txtQuantidade.setFormatterFactory(new DefaultFormatterFactory(formatter2));
     }
 
     // quando o mouse estiver em cima
@@ -221,6 +212,11 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
 
         txtQuantidade.setEnabled(false);
+        txtQuantidade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtQuantidadeKeyPressed(evt);
+            }
+        });
         jPanel1.add(txtQuantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 130, 130, -1));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -245,7 +241,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jPanel4.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 25));
 
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 100, 25));
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(134, 180, 100, 25));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -269,7 +265,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jPanel3.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 24));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(134, 180, 100, 25));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 100, 25));
 
         jLabel4.setForeground(new java.awt.Color(79, 79, 79));
         jLabel4.setText("Código:");
@@ -406,7 +402,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // chama o metodo limpar
-        alteraCorPressionado(this.jPanel4, this.btnLimpar);
+        //alteraCorPressionado(this.jPanel4, this.btnLimpar);
         limparCampos();
     }//GEN-LAST:event_btnLimparActionPerformed
 
@@ -422,7 +418,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         //chama o metodo para dar entrado ou saida em insumo ou pasta
-        alteraCorPressionado(this.jPanel3, this.btnConfirmar);
+        //alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         if (!this.txtQuantidade.getText().equals("")) {
             MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
             movDao.producaoPasta(movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())));
@@ -449,6 +445,19 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         // quando abrir a tela o campo de código recebe o foco
         this.txtCodigo.requestFocus();
     }//GEN-LAST:event_formInternalFrameActivated
+
+    private void txtQuantidadeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!this.txtQuantidade.getText().equals("")) {
+                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+                movDao.producaoPasta(movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())));
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
+            }
+        }
+    }//GEN-LAST:event_txtQuantidadeKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

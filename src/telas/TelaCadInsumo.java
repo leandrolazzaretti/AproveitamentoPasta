@@ -46,6 +46,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsCodigo.setDocument(new SoNumeros());
         this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
         this.txtCadInsPreco.setDocument(new MascaraMoeda()); 
+        //this.txtCadInsPreco.setDocument(new SoNumeros()); 
         this.txtCadInsQuant.setDocument(new SoNumeros());
         limparCampos();
     }
@@ -85,8 +86,9 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsDes.setText(null);
         this.cbCadInsUm.setSelectedItem("kg");
         this.txtCadInsQuant.setText("0");
-        this.txtCadInsPreco.setText("");
-
+        this.txtCadInsPreco.setText(null);
+        this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
+        this.txtCadInsPreco.setDocument(new MascaraMoeda()); 
     }
 
     //confirma se o codigo já existe

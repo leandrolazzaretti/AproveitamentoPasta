@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import util.MascaraMoeda;
 import util.Util;
 
 /**
@@ -92,7 +93,8 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.txtCadInsDes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
         TelaCadInsumo.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
         TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString());
-        TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace(".", ",").replace("R", "").replace("$", "").replace(" ", ""));
+        TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace("R", "").replace("$", "").replace(" ", ""));
+        TelaCadInsumo.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
     }
 
     //seta o campo da descrição na tela de movimentação de estoque
@@ -113,7 +115,10 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     //seta os campos do formulário com o coteúdo da tabela
     private void setarCamposTbReceita() {
         int setar = this.tblCadInsumos.getSelectedRow();
+        TelaCadReceita.txtCadRecComponentesCodigo.setText(this.tblCadInsumos.getModel().getValueAt(setar, 0).toString());
         TelaCadReceita.txtCadRecComponentesDesc.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
+        TelaCadReceita.txtCadRecConsumo.requestFocus();
+        
     }
 
     /**
@@ -180,7 +185,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
                 txtPesquisarInsumosKeyReleased(evt);
             }
         });
-        getContentPane().add(txtPesquisarInsumos, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 216, -1));
+        getContentPane().add(txtPesquisarInsumos, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 70, 216, -1));
 
         tblCadInsumos.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblCadInsumos.setModel(new javax.swing.table.DefaultTableModel(
@@ -206,7 +211,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblCadInsumos);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 840, 230));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 840, 190));
 
         jPanel6.setBackground(new java.awt.Color(143, 165, 110));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -263,7 +268,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         jLabel1.setText("Tabela de Insumos");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 140, -1));
 
-        setBounds(0, 89, 860, 367);
+        setBounds(0, 89, 858, 312);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblCadInsumosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadInsumosMouseClicked

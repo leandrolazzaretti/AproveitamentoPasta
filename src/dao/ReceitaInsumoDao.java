@@ -25,7 +25,7 @@ public class ReceitaInsumoDao {
     }
 
     //Adiciona componente
-    public void adicionarComponentes(int codReceita, String componente, String consumo) {
+    public void adicionarComponentes(int codReceita, int codigo, String consumo) {
 
         String sql = "insert into tbReceitaInsumo(codigoReceita,codigoInsumo,consumo)values(?,?,?)";
 
@@ -35,10 +35,10 @@ public class ReceitaInsumoDao {
             pst = this.conexao.prepareStatement(sql);
 
             int rec = codReceita;
-            int ins = codIns(componente);
+            
             String cons = consumo;
             pst.setInt(1, rec);
-            pst.setInt(2, ins);
+            pst.setInt(2, codigo);
             pst.setString(3, cons);
 
             int adicionado = pst.executeUpdate();
@@ -65,14 +65,14 @@ public class ReceitaInsumoDao {
             pst = this.conexao.prepareStatement(sql);
 
             int linha = TelaCadReceita.tblCadRecComponentes.getSelectedRow();
-            String descIns = (String) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 0);
-            String cons = (String) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 1);
+            String cons = (String) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 2);
+            int codg = (int) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 0);
+            //int ins = Integer.parseInt(codg);
             int rec = codReceita;
-            int ins = codIns(descIns);
 
             pst.setString(1, cons.replace(",", "."));
             pst.setInt(2, rec);
-            pst.setInt(3, ins);
+            pst.setInt(3, codg);
 
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
@@ -96,7 +96,7 @@ public class ReceitaInsumoDao {
         PreparedStatement pst;
 
         int setar = TelaCadReceita.tblCadRecComponentes.getSelectedRow();
-        int ins = codIns(TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(setar, 0).toString());
+        int ins = Integer.parseInt(TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(setar, 0).toString());
         //System.out.println(ins);
         try {
             pst = conexao.prepareStatement(sql);
@@ -128,16 +128,16 @@ public class ReceitaInsumoDao {
     }
 
     // verifica se existe algum insumo duplicado na tabela de componentes
-    public boolean verificaInsumo(int codReceita, String componente) {
+    public boolean verificaInsumo(int codReceita, int codigo) {
         String sql = "select count (codigoReceita) as total from tbReceitaInsumo where codigoReceita =? and codigoInsumo =?";
-        int codInsumo = codIns(componente);
+        
         int total = 0;
         PreparedStatement pst;
 
         try {
             pst = conexao.prepareStatement(sql);
             pst.setInt(1, codReceita);
-            pst.setInt(2, codInsumo);
+            pst.setInt(2, codigo);
             ResultSet rs = pst.executeQuery();
             total = Integer.parseInt(rs.getString(1));
             //System.out.println(total);
@@ -165,7 +165,26 @@ public class ReceitaInsumoDao {
         return total <= 0;
 
     }
+    
+    //confirma se o insumo existe através do codigo
+    
+    public boolean confirmaInsumoCodigo(String codigo) {
+        String sql = "select count (codigo) as total from tbinsumos where codigo ='" + codigo + "';";
+        int total = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            total = Integer.parseInt(rs.getString(1));
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return total <= 0;
 
+    }
+    
+    
     //seleciona o codigo do insumo atraves da descrição do mesmo
     public int codIns(String descIns) {
         String sql = "select i.codigo from tbinsumos as i where descricao ='" + descIns + "'";
@@ -185,6 +204,27 @@ public class ReceitaInsumoDao {
         }
         return retorno;
     }
+    //seleciona o descricao do insumo atraves da codigo do mesmo
+    public String codIns(int codIns) {
+        String sql = "select i.descricao from tbinsumos as i where codigo ='" + codIns + "'";
+        String retorno = null;
+
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                retorno = rs.getString(1);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return retorno;
+    }
+    
+    
     
     public boolean confirmaCodigo(int codigo){
         String sql = "select codigorec from tbreceita where codigorec = '"+codigo+"'";

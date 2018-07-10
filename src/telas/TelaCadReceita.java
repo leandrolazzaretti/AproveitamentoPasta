@@ -57,8 +57,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public TelaCadReceita() {
         initComponents();
         this.conexao = ModuloConexao.conector();
-        this.txtCadRecConsumo.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
-        this.txtCadRecConsumo.setDocument(new MascaraMoeda()); 
+        this.txtCadRecConsumo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        this.txtCadRecConsumo.setDocument(new MascaraMoeda());
         this.txtCadRecCodigo.setDocument(new SoNumeros());
         this.txtCadRecVal.setDocument(new SoNumeros());
         this.tblCadRecComponentes.getColumnModel().getColumn(1).setPreferredWidth(20);
@@ -72,7 +72,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     //Abilitar campos area da tabela
     public void abilitarTabela() {
-        this.txtCadRecComponentesDesc.setEnabled(true);
+        this.txtCadRecComponentesCodigo.setEnabled(true);
+        this.txtCadRecComponentesCodigo.requestFocus();
         this.txtCadRecConsumo.setEnabled(true);
         this.btnInsumoPesquisar.setEnabled(true);
         this.btnAddConsumo.setEnabled(true);
@@ -81,6 +82,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     //Desabilitar campos area da tabela
     public void desabilitarTabela() {
+        this.txtCadRecComponentesCodigo.setEnabled(false);
         this.txtCadRecComponentesDesc.setEnabled(false);
         this.txtCadRecConsumo.setEnabled(false);
         this.btnInsumoPesquisar.setEnabled(false);
@@ -113,8 +115,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecDes.setText(null);
         this.txtCadRecPan.setText(null);
         this.txtCadRecVal.setText(null);
+        this.txtCadRecComponentesCodigo.setText(null);
         this.txtCadRecComponentesDesc.setText(null);
-        this.txtCadRecConsumo.setValue(null);
+        this.txtCadRecConsumo.setText(null);
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
         this.cbCadReceitaTipo.setSelectedItem(null);
         desabilitarTabela();
@@ -124,11 +127,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     //evento para setar tblCadRecComponentes
     private void setarTabela() {
 
+        String codg = this.txtCadRecComponentesCodigo.getText().trim();
         String comp = this.txtCadRecComponentesDesc.getText().trim();
         String cons = this.txtCadRecConsumo.getText().trim();
 
         DefaultTableModel val = (DefaultTableModel) this.tblCadRecComponentes.getModel();
-        val.addRow(new String[]{comp, cons});
+        val.addRow(new String[]{codg, comp, cons});
     }
 
     //evento para remover tblCadRecComponentes/ chama o metodo deletar componente
@@ -176,7 +180,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 //
 //        this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
 //    }
-
     private void confirmaAcao(boolean conf) {
         // chama o metodo adicionar / ou Atualizar       
         boolean total;
@@ -203,6 +206,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                         JOptionPane.showMessageDialog(null, "Tipo de Pasta não existe.");
                     } else {
                         confirmar(true);
+                        this.txtCadRecComponentesCodigo.requestFocus();
                     }
                 }
             }
@@ -271,6 +275,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         btnInsumoPesquisar = new javax.swing.JButton();
         btnAddConsumo = new javax.swing.JButton();
         txtCadRecConsumo = new javax.swing.JFormattedTextField();
+        txtCadRecComponentesCodigo = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
         cbCadReceitaTipo = new javax.swing.JComboBox<>();
         tbnCadRecTipo = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -321,11 +327,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel2.setText("Pantone:");
         jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 80, -1, -1));
 
-        txtCadRecDes.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtCadRecDesFocusGained(evt);
-            }
-        });
         txtCadRecDes.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCadRecDesKeyPressed(evt);
@@ -397,11 +398,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Componentes", "Consumo %"
+                "Código", "Componentes", "Consumo %"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true
+                false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -422,12 +423,12 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         jLabel8.setForeground(new java.awt.Color(79, 79, 79));
         jLabel8.setText("Componentes:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
-        jPanel1.add(txtCadRecComponentesDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 260, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, -1, -1));
+        jPanel1.add(txtCadRecComponentesDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 240, -1));
 
         jLabel7.setForeground(new java.awt.Color(79, 79, 79));
         jLabel7.setText("Consumo por kg:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 10, -1, -1));
 
         btnInsumoPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
         btnInsumoPesquisar.setToolTipText("Pesquisar");
@@ -449,8 +450,25 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 btnAddConsumoActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAddConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(412, 38, 30, -1));
-        jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 110, -1));
+        jPanel1.add(btnAddConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 38, 30, -1));
+
+        txtCadRecConsumo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadRecConsumoKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 40, 110, -1));
+
+        txtCadRecComponentesCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCadRecComponentesCodigoKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtCadRecComponentesCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 240, -1));
+
+        jLabel9.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel9.setText("Código Insumo:");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 820, 360));
 
@@ -682,11 +700,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void btnAddConsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddConsumoActionPerformed
         // chama metodo para setar a tabela
         boolean total;
-        if ((this.txtCadRecComponentesDesc.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
+        if ((this.txtCadRecComponentesCodigo.getText().isEmpty()) || (this.txtCadRecComponentesDesc.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         } else {
             // chamaa o metodo para verificar se o insumo é válido
-            total = recInsDao.confirmaInsumo(this.txtCadRecComponentesDesc.getText());
+            total = recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
             if (total == true) {
                 JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
             } else {
@@ -694,12 +712,13 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
 
                 } else {
-                    total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), this.txtCadRecComponentesDesc.getText());
+                    total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
                     if (total == false) {
                         JOptionPane.showMessageDialog(null, "Componente já existe.");
                     } else {
-                        recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), this.txtCadRecComponentesDesc.getText(), this.txtCadRecConsumo.getText().replace(",", "."));
+                        recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."));
                         setarTabela();
+                        this.txtCadRecComponentesCodigo.setText(null);
                         this.txtCadRecComponentesDesc.setText(null);
                         this.txtCadRecConsumo.setValue(null);
                     }
@@ -786,9 +805,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 if (pesq.pesquisarReceita(Integer.parseInt(this.txtCadRecCodigo.getText())) == true) {
                     abilitarTabela();
                     pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+                } else {
+                    this.txtCadRecDes.requestFocus();
                 }
             }
-            this.txtCadRecDes.requestFocus();
         }
 
     }//GEN-LAST:event_txtCadRecCodigoKeyPressed
@@ -889,15 +909,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameDeiconified
 
-    private void txtCadRecDesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadRecDesFocusGained
-        //quando receber o foco
-        if (!this.txtCadRecCodigo.getText().equals("")) {
-            if (this.recDao.confirmaCodigo(this.txtCadRecCodigo.getText()) == false) {
-                abilitarTabela();
-            }
-        }
-    }//GEN-LAST:event_txtCadRecDesFocusGained
-
     private void txtCadRecDesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecDesKeyPressed
         // quando ENTER é pressionado
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -919,6 +930,47 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtCadRecValKeyPressed
 
+    private void txtCadRecComponentesCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecComponentesCodigoKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+            this.txtCadRecConsumo.requestFocus();
+        }
+    }//GEN-LAST:event_txtCadRecComponentesCodigoKeyPressed
+
+    private void txtCadRecConsumoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecConsumoKeyPressed
+        // quando ENTER é pressionado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // chama metodo para setar a tabela
+            boolean total;
+            if ((this.txtCadRecComponentesCodigo.getText().isEmpty()) || (this.txtCadRecComponentesDesc.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
+            } else {
+                //chamaa o metodo para verificar se o insumo é válido
+                total = recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
+                if (total == true) {
+                    JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
+                } else {
+                    if (this.txtCadRecCodigo.getText().equals("")) {
+                        JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
+
+                    } else {
+                        total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
+                        if (total == false) {
+                            JOptionPane.showMessageDialog(null, "Componente já existe.");
+                        } else {
+                            recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."));
+                            setarTabela();
+                            this.txtCadRecComponentesCodigo.setText(null);
+                            this.txtCadRecComponentesDesc.setText(null);
+                            this.txtCadRecConsumo.setValue(null);
+                        }
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_txtCadRecConsumoKeyPressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddConsumo;
@@ -939,6 +991,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -950,6 +1003,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tblCadRecComponentes;
     private javax.swing.JButton tbnCadRecTipo;
     public static javax.swing.JTextField txtCadRecCodigo;
+    public static javax.swing.JTextField txtCadRecComponentesCodigo;
     public static javax.swing.JTextField txtCadRecComponentesDesc;
     public static javax.swing.JFormattedTextField txtCadRecConsumo;
     public static javax.swing.JTextField txtCadRecDes;

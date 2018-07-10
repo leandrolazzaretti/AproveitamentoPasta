@@ -90,7 +90,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     //seta a tabela tblCadRecComponentes com os dados do banco
     public void setarTbComponentes(int codigoRec) {
-        String sql = "select i.descricao, ri.consumo from tbreceita as r "
+        String sql = "select ri.codigoInsumo , i.descricao, ri.consumo from tbreceita as r "
                 + "inner join tbReceitaInsumo as ri on ri.codigoReceita = r.codigorec "
                 + "inner join tbinsumos as i on i.codigo = ri.codigoInsumo "
                 + "where r.codigorec ='" + codigoRec + "'";
@@ -100,8 +100,9 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         DefaultTableModel modelo = (DefaultTableModel) TelaCadReceita.tblCadRecComponentes.getModel();
         modelo.setNumRows(0);
 
-        this.tblPesquisarReceita.getColumnModel().getColumn(0).setPreferredWidth(80);
-        this.tblPesquisarReceita.getColumnModel().getColumn(1).setPreferredWidth(40);
+        this.tblPesquisarReceita.getColumnModel().getColumn(0).setPreferredWidth(40);
+        this.tblPesquisarReceita.getColumnModel().getColumn(1).setPreferredWidth(80);
+        this.tblPesquisarReceita.getColumnModel().getColumn(2).setPreferredWidth(40);
 
         try {
             pst = this.conexao.prepareStatement(sql);
@@ -109,10 +110,11 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
             //Preencher a tabela usando a bibliotéca rs2xml.jar            
             while (rs.next()) {
 
-                String comp = rs.getString(1);
-                String cons = this.util.formatadorQuant(rs.getString(2));
+                int codg = rs.getInt(1);
+                String comp = rs.getString(2);
+                String cons = this.util.formatadorQuant(rs.getString(3));
 
-                modelo.addRow(new Object[]{comp, cons});
+                modelo.addRow(new Object[]{codg, comp, cons});
             }
 
             pst.close();
@@ -215,7 +217,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 txtPesquisarReceitaKeyReleased(evt);
             }
         });
-        getContentPane().add(txtPesquisarReceita, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 216, -1));
+        getContentPane().add(txtPesquisarReceita, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 70, 216, -1));
 
         tblPesquisarReceita.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblPesquisarReceita.setModel(new javax.swing.table.DefaultTableModel(
@@ -241,7 +243,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblPesquisarReceita);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 838, 227));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 838, 190));
 
         cbPesquisarReceita.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Descrição", "Pantone", "Tipo", "Validade" }));
         cbPesquisarReceita.addActionListener(new java.awt.event.ActionListener() {
@@ -302,10 +304,11 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(816, 2, 40, 20));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(79, 79, 79));
         jLabel1.setText("Tabela de Receitas");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 130, -1));
 
-        setBounds(0, 96, 860, 367);
+        setBounds(0, 89, 858, 316);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblPesquisarReceitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesquisarReceitaMouseClicked

@@ -149,7 +149,7 @@ public class ReceitaInsumoDao {
         return total <= 0;
     }
 
-    //confirma se o insumo existe
+    //confirma se o insumo existe através da descrição
     public boolean confirmaInsumo(String insumo) {
         String sql = "select count (descricao) as total from tbinsumos where descricao ='" + insumo + "';";
         int total = 0;

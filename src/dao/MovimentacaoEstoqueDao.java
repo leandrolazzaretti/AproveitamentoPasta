@@ -14,11 +14,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import telas.TelaEstoquePasta;
 import util.Util;
-import dao.InsumoDao;
 import dto.ReceitaInsumoDto;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JTable;
 
 /**
  *
@@ -120,7 +120,7 @@ public class MovimentacaoEstoqueDao {
         return soma;
     }
 
-    private void buscarInsumos(DefaultTableModel modelo, int codigo) {
+    private void buscarInsumos(DefaultTableModel modelo, int codigo, boolean confirmaOpc) {
         String sql = "select i.codigo, i.descricao, i.quantidade, i.UM, ri.consumo from tbReceitaInsumo as ri"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                 + " where ri.codigoReceita = '" + codigo + "'";
@@ -143,14 +143,17 @@ public class MovimentacaoEstoqueDao {
 //                System.out.println(this.pastaProduzir.get(contador).getConsumo());
                 contador++;
 //                System.out.println(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(",", "."))));
-                modelo.addRow(new Object[]{
-                    pastaInsumo,
-                    rs.getInt(1),
-                    rs.getString(2),
-                    rs.getString(4),
-                    this.util.formatadorQuant(rs.getString(3))
-                });
+                if (confirmaOpc == true) {
+                    modelo.addRow(new Object[]{
+                        pastaInsumo,
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(4),
+                        this.util.formatadorQuant(rs.getString(3))
+                    });
+                }
             }
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -180,7 +183,7 @@ public class MovimentacaoEstoqueDao {
         return modificada;
     }
 
-    public void producaoPasta(String insumos) {
+    public void producaoPasta(JTable tabela, String insumos, boolean confirmaOpc, int codigo) {
         String sql = "select distinct tb.receita, r.descricao, ep.quantidade"
                 + " from"
                 + "(SELECT codigoReceita as receita"
@@ -199,14 +202,16 @@ public class MovimentacaoEstoqueDao {
 
         PreparedStatement pst;
         String pastaInsumo = "Pasta";
-        DefaultTableModel modelo = (DefaultTableModel) TelaEstoquePasta.tblProducaoPasta.getModel();
+        DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
         modelo.setNumRows(0);
 
+        pastaEstoque(modelo, codigo);
+        
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                if (rs.getInt(3) != 0) {
+                if ((rs.getInt(3) != 0)&&(rs.getInt(1) != codigo)) {
                     modelo.addRow(new Object[]{
                         pastaInsumo,
                         rs.getInt(1),
@@ -216,24 +221,27 @@ public class MovimentacaoEstoqueDao {
                     });
                 }
             }
-
-            buscarInsumos(modelo, Integer.parseInt(TelaEstoquePasta.txtCodigo.getText()));
-            quantoUsar();
+            buscarInsumos(modelo, codigo, confirmaOpc);
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
 
-    private void quantoUsar() {
+    public void quantoUsarOpc1(JTable tabela){
+        
+    }
+    
+    
+    public void quantoUsar(JTable tabela) {
         String confirma = "Pasta";
         InsumoDao insDao = new InsumoDao();
         int codigo;
         int contador = 0;
         int id = 0;
-        for (int ind = 0; TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 0).toString().equals(confirma); ind++) {
+        for (int ind = 0; (ind < tabela.getRowCount()) && (tabela.getModel().getValueAt(ind, 0).toString().equals(confirma)); ind++) {
 
-            codigo = (int) TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 1);
+            codigo = (int) tabela.getModel().getValueAt(ind, 1);
             String sql = "select ri.consumo, i.UM, i.codigo from tbReceitaInsumo as ri"
                     + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                     + " where ri.codigoReceita = '" + codigo + "'";
@@ -247,7 +255,7 @@ public class MovimentacaoEstoqueDao {
                     ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                     recInsDto.setId(id);
                     recInsDto.setCodigoInsumo(rs.getInt(3));
-                    recInsDto.setConsumo(formatador2(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(TelaEstoquePasta.tblProducaoPasta.getModel().getValueAt(ind, 4).toString().replace(",", ".")))));
+                    recInsDto.setConsumo(formatador2(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(tabela.getModel().getValueAt(ind, 4).toString().replace(",", ".")))));
                     this.pastaEstoque.add(recInsDto);
 //                    System.out.println(this.pastaEstoque.get(contador).getId());
 //                    System.out.println(this.pastaEstoque.get(contador).getCodigoInsumo());
@@ -277,7 +285,8 @@ public class MovimentacaoEstoqueDao {
             for (int i2 = 0; i2 < this.pastaProduzir.size(); i2++) {
                 try {
                     //entra nos insumos das pastas que estão em estoque
-                    for (int i3 = 0; i == this.pastaEstoque.get(idTemp).getId(); i3++) {
+
+                    for (int i3 = 0; (idTemp <= this.pastaEstoque.size()) && (i == this.pastaEstoque.get(idTemp).getId()); i3++) {
                         //System.out.println(this.pastaProduzir.get(i3).getConsumo());
 
                         //verifica se o insumo é copativel, e qual a % maxima permitida
@@ -310,7 +319,7 @@ public class MovimentacaoEstoqueDao {
             for (int i4 = 0; i4 < this.pastaProduzir.size(); i4++) {
                 for (int i5 = 0; i5 < this.pastasTemp.size(); i5++) {
                     if (this.pastaProduzir.get(i4).getCodigoInsumo() == this.pastaEstoque.get(i5).getCodigoInsumo()) {
-                        
+
                         this.pastaProduzir.get(i4).setConsumo(this.pastaProduzir.get(i4).getConsumo() - formatador3(regraDeTres2(porcentoAtual, this.pastasTemp.get(i5).getConsumo())));
                         //quantidade = this.past
                         System.out.println(this.pastaProduzir.get(i4).getConsumo());
@@ -318,8 +327,8 @@ public class MovimentacaoEstoqueDao {
                     }
                 }
             }
-            for(int i6 = 0; i6< this.pastaEstoque.size(); i6++){
-                if(this.pastaEstoque.get(i6).getConsumo() == 0){
+            for (int i6 = 0; i6 < this.pastaEstoque.size(); i6++) {
+                if (this.pastaEstoque.get(i6).getConsumo() == 0) {
                     this.pastaEstoque.remove(i6);
                 }
             }
@@ -327,6 +336,37 @@ public class MovimentacaoEstoqueDao {
             this.pastasTemp.clear();
             porcentoAtual = 100;
             i++;
+        }
+    }
+
+    //retorna apenas as pastas do estoque que são iguais
+    public void pastaEstoque(DefaultTableModel modelo, int codigo) {
+        String sql = "select ep.codigoReceita, r.descricao, ep.quantidade from tbEstoquePasta as ep"
+                + " inner join tbreceita as r on r.codigorec = ep.codigoReceita"
+                + " where ep.codigoReceita = '" + codigo + "'"
+                + " order by ep.dataVencimento, ep.quantidade desc";
+        
+        PreparedStatement pst;
+        String pastaInsumo = "Pasta";
+        
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                if (rs.getInt(3) != 0) {
+                    modelo.addRow(new Object[]{
+                        pastaInsumo,
+                        rs.getString(1),
+                        rs.getString(2),
+                        "kg",
+                        this.util.formatadorQuant(rs.getString(3))
+                    });
+                }
+            }
+            
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
 

@@ -136,6 +136,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtDescricao.setText(null);
         this.txtEstQuantidade.setDocument(new MascaraMoeda());
         this.txtEstData.setValue(null);
+        this.txtCodigo.requestFocus();
     }
 
     // verifica se todos os campos estão setados
@@ -535,10 +536,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             ativarInsumo();
         } else {
             ativarTblPasta();
-            if (this.cbTipo.getSelectedItem().equals("Saída")) {
-                this.btnMovEstPesquisar.setEnabled(false);
-                this.btnMovEstPesquisar.setVisible(false);
-            }
         }
     }//GEN-LAST:event_cbEstoqueActionPerformed
 
@@ -611,10 +608,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 if (!this.txtCodigo.getText().equals("")) {
                     ReceitaDao pesq = new ReceitaDao();
                     pesq.pesquisarReceitaMovi(Integer.parseInt(this.txtCodigo.getText()));
+                    this.txtEstUM.setText("kg");
                 }
             } else {
                 if (!this.txtCodigo.getText().equals("")) {
-                    insumoDao.pesquisarInsumos2(Integer.parseInt(this.txtCodigo.getText()));
+                    this.insumoDao.pesquisarInsumos2(Integer.parseInt(this.txtCodigo.getText()));
                 }
 
             }

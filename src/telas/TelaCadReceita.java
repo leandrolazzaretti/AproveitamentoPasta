@@ -343,7 +343,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, -1, -1));
 
         jLabel5.setForeground(new java.awt.Color(79, 79, 79));
-        jLabel5.setText("Validade (dia):");
+        jLabel5.setText("Validade em dias:");
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 80, -1, -1));
 
         txtCadRecVal.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -933,8 +933,13 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void txtCadRecComponentesCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecComponentesCodigoKeyPressed
         // quando ENTER é pressionado
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-
-            this.txtCadRecConsumo.requestFocus();
+            if (this.recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText()) == true) {
+                JOptionPane.showMessageDialog(null, "Insumo não existe.");
+                this.txtCadRecComponentesDesc.setText(null);
+            } else {
+                this.txtCadRecComponentesDesc.setText(this.recInsDao.codIns(Integer.parseInt(this.txtCadRecComponentesCodigo.getText())));
+                this.txtCadRecConsumo.requestFocus();
+            }
         }
     }//GEN-LAST:event_txtCadRecComponentesCodigoKeyPressed
 

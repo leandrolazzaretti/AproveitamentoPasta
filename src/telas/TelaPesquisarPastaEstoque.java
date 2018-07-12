@@ -75,7 +75,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
                 modelo.addRow(new Object[]{
                     rs.getInt(1),
                     rs.getString(2),
-                    this.util.formatadorQuant(rs.getString(3)),
+                    this.util.formatadorQuant(rs.getDouble(3)),
                     rs.getString(4),
                     inverterData(rs.getString(5)).replace("-", "/"),
                     inverterData(rs.getString(6)).replace("-", "/")

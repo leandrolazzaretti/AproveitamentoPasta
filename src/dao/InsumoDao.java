@@ -118,7 +118,7 @@ public class InsumoDao {
                 TelaCadInsumo.txtCadInsCodigo.setEnabled(false);
                 TelaCadInsumo.txtCadInsDes.setText(rs.getString(2));
                 TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
-                TelaCadInsumo.txtCadInsQuant.setText(this.util.formatadorQuant(rs.getString(4)));
+                TelaCadInsumo.txtCadInsQuant.setText(this.util.formatadorQuant(rs.getDouble(4)));
                 TelaCadInsumo.txtCadInsPreco.setValue("");
                 TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace("R", "").replace("$", "").replace(" ", ""));
 

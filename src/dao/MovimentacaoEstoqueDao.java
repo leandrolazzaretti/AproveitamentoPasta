@@ -137,7 +137,7 @@ public class MovimentacaoEstoqueDao {
 
                 ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                 recInsDto.setCodigoInsumo(rs.getInt(1));
-                recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(",", "."))));
+                recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))));
                 this.pastaProduzir.add(recInsDto);
 //                System.out.println(this.pastaProduzir.get(contador).getCodigoInsumo());
 //                System.out.println(this.pastaProduzir.get(contador).getConsumo());
@@ -149,7 +149,7 @@ public class MovimentacaoEstoqueDao {
                         rs.getInt(1),
                         rs.getString(2),
                         rs.getString(4),
-                        this.util.formatadorQuant(rs.getString(3))
+                        this.util.formatadorQuant(rs.getDouble(3))
                     });
                 }
             }
@@ -184,40 +184,76 @@ public class MovimentacaoEstoqueDao {
     }
 
     public void producaoPasta(JTable tabela, String insumos, boolean confirmaOpc, int codigo) {
-        String sql = "select distinct tb.receita, r.descricao, ep.quantidade"
-                + " from"
-                + "(SELECT codigoReceita as receita"
-                + "  FROM tbReceitaInsumo"
-                + "  where codigoInsumo in(" + insumos + ")"
-                + ")"
-                + " as tb"
+//        String sql = "select distinct tb.receita, r.descricao, ep.quantidade, ep.ID"
+//                + " from"
+//                + " (SELECT codigoReceita as receita"
+//                + "  FROM tbReceitaInsumo"
+//                + "  where codigoInsumo in(" + insumos + ")"
+//                + " )"
+//                + " as tb"
+//                + " inner join tbEstoquePasta as ep on ep.codigoReceita = tb.receita"
+//                + " inner join tbreceita as r on r.codigorec =  tb.receita"
+//                + " where receita not in (SELECT codigoReceita"
+//                + "  FROM tbReceitaInsumo"
+//                + "  where codigoReceita = tb.receita"
+//                + "  and codigoInsumo not in(" + insumos + ")"
+//                + ")"
+//                + " order by ep.dataVencimento, ep.data";
+
+        String sql = " select tb0.codigo, tb0.descricao, tb0.quantidade, tb0.vencimento, tb0.ID"
+                + " from ("
+                + "    select ep.codigoReceita as codigo, r.descricao as descricao, ep.quantidade quantidade,ep.dataVencimento as vencimento, ep.ID as ID"
+                + "    from tbEstoquePasta as ep"
+                + "    inner join tbreceita as r on r.codigorec = ep.codigoReceita"
+                + "    where ep.codigoReceita =  " + codigo + ""
+                + "    ORDER BY vencimento"
+                + " ) as tb0"
+                + " union all"
+                + " select tb1.codigo, tb1.descricao, tb1.quantidade, tb1.vencimento, tb1.ID"
+                + " from ("
+                + " select distinct tb.receita as codigo, r.descricao as descricao, ep.quantidade as quantidade, ep.dataVencimento as vencimento, ep.ID as ID"
+                + " from ("
+                + "    SELECT codigoReceita as receita"
+                + "    FROM tbReceitaInsumo"
+                + " where codigoInsumo in(" + insumos + ")"
+                + " ) as tb"
                 + " inner join tbEstoquePasta as ep on ep.codigoReceita = tb.receita"
                 + " inner join tbreceita as r on r.codigorec =  tb.receita"
-                + " where receita not in (SELECT codigoReceita"
-                + "  FROM tbReceitaInsumo"
-                + "  where codigoReceita = tb.receita"
-                + "  and codigoInsumo not in(" + insumos + ")"
-                + ")"
-                + " order by ep.dataVencimento, ep.data";
+                + " where receita not in  ("
+                + "    SELECT codigoReceita"
+                + "    FROM tbReceitaInsumo"
+                + "    where codigoReceita = tb.receita"
+                + "    and codigoInsumo not in(" + insumos + ")"
+                + " )\n"
+                + " and receita not in ("
+                + "    select codigoReceita"
+                + "    from tbReceitaInsumo"
+                + "    where codigoReceita = tb.receita"
+                + "    and codigoReceita = (" + codigo + ")"
+                + " )"
+                + " order by vencimento"
+                + " ) as tb1"
+                + ";";
 
         PreparedStatement pst;
-        String pastaInsumo = "Pasta";
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
         modelo.setNumRows(0);
 
-        pastaEstoque(modelo, codigo);
-        
+        //pastaEstoque(modelo, codigo);
+
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                if ((rs.getInt(3) != 0)&&(rs.getInt(1) != codigo)) {
+                if ((rs.getInt(3) != 0)) {
                     modelo.addRow(new Object[]{
-                        pastaInsumo,
+                        rs.getInt(5),
                         rs.getInt(1),
                         rs.getString(2),
-                        "kg",
-                        this.util.formatadorQuant(rs.getString(3))
+                        this.util.formatadorQuant(rs.getDouble(3)),
+                        null,
+                        null,
+                        inverterData(rs.getString(4)).replace("-", "/")
                     });
                 }
             }
@@ -228,18 +264,37 @@ public class MovimentacaoEstoqueDao {
         }
     }
 
-    public void quantoUsarOpc1(JTable tabela){
-        
+    public boolean quantoUsarOpc1(JTable tabela) {
+        double v1, v2, v3, v4, V5;
+        v4 = Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."));
+        System.out.println(v4);
+        V5 = v4;
+        for (int i = 0; (v4 > 0) && (i < tabela.getRowCount()); i++) {
+            v1 = v4;
+            String valor = tabela.getModel().getValueAt(i, 4).toString().replace(",", ".");
+            v2 = Double.parseDouble(valor);
+            v3 = v1 - v2;
+            if (v3 <= 0) {
+                v4 = v3;
+                tabela.getModel().setValueAt(this.util.formatadorQuant(v3 + v2), i, 5);
+                tabela.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(v3 + v2, V5)) + "%", i, 6);
+                break;
+            } else {
+                tabela.getModel().setValueAt(this.util.formatadorQuant(v2), i, 5);
+                tabela.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(v2, V5)) + "%", i, 6);
+                v4 = v3;
+            }
+        }
+        return v4 <= 0;
     }
-    
-    
-    public void quantoUsar(JTable tabela) {
-        String confirma = "Pasta";
+
+    public void quantoUsarOpc2(JTable tabela) {
+        String confirma = "Insumo";
         InsumoDao insDao = new InsumoDao();
         int codigo;
         int contador = 0;
         int id = 0;
-        for (int ind = 0; (ind < tabela.getRowCount()) && (tabela.getModel().getValueAt(ind, 0).toString().equals(confirma)); ind++) {
+        for (int ind = 0; (ind < tabela.getRowCount()) && (!tabela.getModel().getValueAt(ind, 0).toString().equals(confirma)); ind++) {
 
             codigo = (int) tabela.getModel().getValueAt(ind, 1);
             String sql = "select ri.consumo, i.UM, i.codigo from tbReceitaInsumo as ri"
@@ -341,29 +396,28 @@ public class MovimentacaoEstoqueDao {
 
     //retorna apenas as pastas do estoque que são iguais
     public void pastaEstoque(DefaultTableModel modelo, int codigo) {
-        String sql = "select ep.codigoReceita, r.descricao, ep.quantidade from tbEstoquePasta as ep"
+        String sql = "select ep.codigoReceita, r.descricao, ep.quantidade, ep.ID from tbEstoquePasta as ep"
                 + " inner join tbreceita as r on r.codigorec = ep.codigoReceita"
                 + " where ep.codigoReceita = '" + codigo + "'"
                 + " order by ep.dataVencimento, ep.quantidade desc";
-        
+
         PreparedStatement pst;
-        String pastaInsumo = "Pasta";
-        
+
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 if (rs.getInt(3) != 0) {
                     modelo.addRow(new Object[]{
-                        pastaInsumo,
+                        rs.getInt(4),
                         rs.getString(1),
                         rs.getString(2),
                         "kg",
-                        this.util.formatadorQuant(rs.getString(3))
+                        this.util.formatadorQuant(rs.getDouble(3))
                     });
                 }
             }
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

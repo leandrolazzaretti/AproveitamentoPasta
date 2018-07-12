@@ -75,7 +75,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
-                    this.util.formatadorQuant(rs.getString(4)),
+                    this.util.formatadorQuant(rs.getDouble(4)),
                     rs.getString(5)});
             }
 

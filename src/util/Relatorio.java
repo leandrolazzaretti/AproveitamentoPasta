@@ -102,7 +102,7 @@ public class Relatorio {
                 ins.setCodigo(rs.getInt(1));
                 ins.setDescricao(rs.getString(2));
                 ins.setUM(rs.getString(3));
-                ins.setQuantidade(this.util.formatadorQuant(rs.getString(4)));
+                ins.setQuantidade(this.util.formatadorQuant(rs.getDouble(4)));
                 ins.setPreco(rs.getString(5));
 
                 this.listaInsumo.add(ins);
@@ -136,7 +136,7 @@ public class Relatorio {
                 mov.setCodigoID(rs.getInt(2));
                 mov.setDescricao(rs.getString(3));
                 mov.setData(rs.getString(4));
-                mov.setQuantidade(this.util.formatadorQuant(rs.getString(5)));
+                mov.setQuantidade(this.util.formatadorQuant(rs.getDouble(5)));
 
                 this.listaMovimentacao.add(mov);
             }
@@ -177,7 +177,7 @@ public class Relatorio {
                 relRec.setDataVencimento(rs.getInt(5));
                 relRec.setDescIns(rs.getString(6));
                 relRec.setUM(rs.getString(7));
-                relRec.setConsumo(this.util.formatadorQuant(rs.getString(8)));
+                relRec.setConsumo(this.util.formatadorQuant(rs.getDouble(8)));
 
                 this.listaReceita.add(relRec);
             }

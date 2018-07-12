@@ -138,11 +138,11 @@ public class Util {
         return formatador.format(valor).replace(",", ".");
     }
 
-    public String formatadorQuant(String quantidade) {
+    public String formatadorQuant(Double quantidade) {
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         formatter.setMaximumFractionDigits(2);
-        BigDecimal quant = new BigDecimal(this.formatador(Double.parseDouble(quantidade)));
+        BigDecimal quant = new BigDecimal(this.formatador(quantidade));
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         String quantFormatado = nf.format(quant);
         quantFormatado = quantFormatado.replace("R$ ", "");

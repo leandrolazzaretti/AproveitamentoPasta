@@ -457,15 +457,20 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         if (!this.txtQuantidade.getText().equals("") && (!this.txtCodigo.getText().equals(""))) {
             MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
             movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
-           boolean confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1);
-                if( confirma == false){
-                    this.tblProducaoPastaOp1.setEnabled(false);
-                    this.tblProducaoPastaOp1.setVisible(false);
-                } else{
-                    this.tblProducaoPastaOp1.setEnabled(true);
-                    this.tblProducaoPastaOp1.setVisible(true);
-                }
-//            movDao.quantoUsarOpc2(this.tblProducaoPastaOp1);
+            double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
+            this.tblProducaoPastaOp1.setEnabled(true);
+            this.tblProducaoPastaOp1.setVisible(true);
+            if (confirma[4] > 0) {
+                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
+            }
+//            if (confirma[4] > 0) {
+//                this.tblProducaoPastaOp1.setEnabled(false);
+//                this.tblProducaoPastaOp1.setVisible(false);
+//            } else {
+//                this.tblProducaoPastaOp1.setEnabled(true);
+//                this.tblProducaoPastaOp1.setVisible(true);
+//            }
+//            movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
         } else {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         }
@@ -496,15 +501,21 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             if (!this.txtQuantidade.getText().equals("")) {
                 MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
                 movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
-                boolean confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1);
-                if( confirma == false){
-                    this.tblProducaoPastaOp1.setEnabled(false);
-                    this.tblProducaoPastaOp1.setVisible(false);
-                } else{
-                    this.tblProducaoPastaOp1.setEnabled(true);
-                    this.tblProducaoPastaOp1.setVisible(true);
+                double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
+                this.tblProducaoPastaOp1.setEnabled(true);
+                this.tblProducaoPastaOp1.setVisible(true);
+                if (confirma[4] > 0) {
+                    movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
                 }
-//                movDao.quantoUsarOpc2(this.tblProducaoPastaOp1);
+
+//                if (confirma[4] > 0) {
+//                    this.tblProducaoPastaOp1.setEnabled(false);
+//                    this.tblProducaoPastaOp1.setVisible(false);
+//                } else {
+//                    this.tblProducaoPastaOp1.setEnabled(true);
+//                    this.tblProducaoPastaOp1.setVisible(true);
+//                }
+//                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
             } else {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
             }

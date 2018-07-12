@@ -120,12 +120,15 @@ public class MovimentacaoEstoqueDao {
         return soma;
     }
 
-    private void buscarInsumos(DefaultTableModel modelo, int codigo, boolean confirmaOpc) {
+    private void buscarInsumos(JTable tabela, int codigo, boolean confirmaOpc, double v) {
         String sql = "select i.codigo, i.descricao, i.quantidade, i.UM, ri.consumo from tbReceitaInsumo as ri"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                 + " where ri.codigoReceita = '" + codigo + "'";
 
         PreparedStatement pst;
+//        DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+//        modelo.setNumRows(0);
+
         String pastaInsumo = "insumo";
         InsumoDao insDao = new InsumoDao();
         int contador = 0;
@@ -137,21 +140,21 @@ public class MovimentacaoEstoqueDao {
 
                 ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                 recInsDto.setCodigoInsumo(rs.getInt(1));
-                recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))));
+                recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), v));
                 this.pastaProduzir.add(recInsDto);
 //                System.out.println(this.pastaProduzir.get(contador).getCodigoInsumo());
 //                System.out.println(this.pastaProduzir.get(contador).getConsumo());
                 contador++;
 //                System.out.println(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), Double.parseDouble(telas.TelaEstoquePasta.txtQuantidade.getText().replace(",", "."))));
-                if (confirmaOpc == true) {
-                    modelo.addRow(new Object[]{
-                        pastaInsumo,
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(4),
-                        this.util.formatadorQuant(rs.getDouble(3))
-                    });
-                }
+//                if (confirmaOpc == true) {
+//                    modelo.addRow(new Object[]{
+//                        pastaInsumo,
+//                        rs.getInt(1),
+//                        rs.getString(2),
+//                        rs.getString(4),
+//                        this.util.formatadorQuant(rs.getDouble(3))
+//                    });
+//                }
             }
 
             pst.close();
@@ -240,7 +243,6 @@ public class MovimentacaoEstoqueDao {
         modelo.setNumRows(0);
 
         //pastaEstoque(modelo, codigo);
-
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -257,44 +259,50 @@ public class MovimentacaoEstoqueDao {
                     });
                 }
             }
-            buscarInsumos(modelo, codigo, confirmaOpc);
+            //buscarInsumos(modelo, codigo, confirmaOpc);
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
 
-    public boolean quantoUsarOpc1(JTable tabela) {
-        double v1, v2, v3, v4, V5;
-        v4 = Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."));
-        System.out.println(v4);
-        V5 = v4;
-        for (int i = 0; (v4 > 0) && (i < tabela.getRowCount()); i++) {
-            v1 = v4;
-            String valor = tabela.getModel().getValueAt(i, 4).toString().replace(",", ".");
-            v2 = Double.parseDouble(valor);
-            v3 = v1 - v2;
-            if (v3 <= 0) {
-                v4 = v3;
-                tabela.getModel().setValueAt(this.util.formatadorQuant(v3 + v2), i, 5);
-                tabela.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(v3 + v2, V5)) + "%", i, 6);
+    public double[] quantoUsarOpc1(JTable tabela, int codigo, boolean confirmaOpc) {
+        //double v1, v2, v3, v4, V5;
+        double[] v = new double[7];
+        int in = 0;
+        v[4] = Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."));
+        System.out.println(v[4]);
+        v[5] = v[4];
+        String conf = tabela.getModel().getValueAt(in, 1).toString();
+        for (int i = 0; (codigo == Integer.parseInt(conf)) && (v[4] > 0) && (i < tabela.getRowCount()); i++) {
+            v[6] = i;
+            in++;
+            v[0] = in;
+            conf = tabela.getModel().getValueAt(in, 1).toString();
+            v[1] = v[4];
+            String valor = tabela.getModel().getValueAt(i, 3).toString().replace(",", ".");
+            v[2] = Double.parseDouble(valor);
+            v[3] = v[1] - v[2];
+            if (v[3] <= 0) {
+                v[4] = v[3];
+                tabela.getModel().setValueAt(this.util.formatadorQuant(v[3] + v[2]), i, 4);
+                tabela.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(v[3] + v[2], v[5])) + "%", i, 5);
                 break;
             } else {
-                tabela.getModel().setValueAt(this.util.formatadorQuant(v2), i, 5);
-                tabela.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(v2, V5)) + "%", i, 6);
-                v4 = v3;
+                tabela.getModel().setValueAt(this.util.formatadorQuant(v[2]), i, 4);
+                tabela.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(v[2], v[5])) + "%", i, 5);
+                v[4] = v[3];
             }
         }
-        return v4 <= 0;
+        System.out.println(v[4]);
+        buscarInsumos(tabela, codigo, confirmaOpc, v[4]);
+        return v;
     }
 
-    public void quantoUsarOpc2(JTable tabela) {
-        String confirma = "Insumo";
+    public void quantoUsarOpc1_2(JTable tabela, double[] in) {
         InsumoDao insDao = new InsumoDao();
-        int codigo;
-        int contador = 0;
-        int id = 0;
-        for (int ind = 0; (ind < tabela.getRowCount()) && (!tabela.getModel().getValueAt(ind, 0).toString().equals(confirma)); ind++) {
+        int codigo, contador = 0, id = 0;
+        for (int ind = (int) in[0]; ind < tabela.getRowCount(); ind++) {
 
             codigo = (int) tabela.getModel().getValueAt(ind, 1);
             String sql = "select ri.consumo, i.UM, i.codigo from tbReceitaInsumo as ri"
@@ -310,7 +318,7 @@ public class MovimentacaoEstoqueDao {
                     ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                     recInsDto.setId(id);
                     recInsDto.setCodigoInsumo(rs.getInt(3));
-                    recInsDto.setConsumo(formatador2(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(tabela.getModel().getValueAt(ind, 4).toString().replace(",", ".")))));
+                    recInsDto.setConsumo(formatador2(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(tabela.getModel().getValueAt(ind, 3).toString().replace(",", ".")))));
                     this.pastaEstoque.add(recInsDto);
 //                    System.out.println(this.pastaEstoque.get(contador).getId());
 //                    System.out.println(this.pastaEstoque.get(contador).getCodigoInsumo());
@@ -326,14 +334,14 @@ public class MovimentacaoEstoqueDao {
             }
             id++;
         }
-        subtrairInsumos(this.pastaEstoque.get(this.pastaEstoque.size() - 1).getId());
+        subtrairInsumos(this.pastaEstoque.get(this.pastaEstoque.size() - 1).getId(), (int) in[6]);
     }
 
     //subtrai os insumos da pasta a produzir
-    private void subtrairInsumos(int idTot) {
-        double usoKg, porcentoAtual = 100, porcentoTemp, quantidade;
+    private void subtrairInsumos(int idTot, int ind) {
+        double usoKg, porcentoAtual = 100, porcentoTemp, quantidade, usadoDaPastaEstoque = 0, porcentoDaPasta;
         int idTemp, idTemp2 = 0, id = 0;
-        for (int i = 0; i <= idTot; i = i) {
+        for (int i = ind + 1; i <= idTot; i = i) {
             idTemp = id;
             idTemp2 = idTemp;
             //entra nos insumos da pasta que desejo produzir
@@ -373,15 +381,20 @@ public class MovimentacaoEstoqueDao {
             //Subtrai direto do array pastaProduzir através do array pastaTemp
             for (int i4 = 0; i4 < this.pastaProduzir.size(); i4++) {
                 for (int i5 = 0; i5 < this.pastasTemp.size(); i5++) {
+                    //verifica se os insumos são compatíveis
                     if (this.pastaProduzir.get(i4).getCodigoInsumo() == this.pastaEstoque.get(i5).getCodigoInsumo()) {
-
-                        this.pastaProduzir.get(i4).setConsumo(this.pastaProduzir.get(i4).getConsumo() - formatador3(regraDeTres2(porcentoAtual, this.pastasTemp.get(i5).getConsumo())));
+                        System.out.println(this.pastaProduzir.get(i4).getConsumo());
+                        //faz a subtração do insumo que queremos produzir pelo insumo da pasta em estoque
+                        porcentoDaPasta = formatador3(regraDeTres2(porcentoAtual, this.pastasTemp.get(i5).getConsumo()));
+                        usadoDaPastaEstoque += porcentoDaPasta;
+                        this.pastaProduzir.get(i4).setConsumo(this.pastaProduzir.get(i4).getConsumo() - porcentoDaPasta);
                         //quantidade = this.past
                         System.out.println(this.pastaProduzir.get(i4).getConsumo());
                         System.out.println("\n\n");
                     }
                 }
             }
+            TelaEstoquePasta.tblProducaoPastaOp1.getModel().setValueAt(usadoDaPastaEstoque, i, 4);
             for (int i6 = 0; i6 < this.pastaEstoque.size(); i6++) {
                 if (this.pastaEstoque.get(i6).getConsumo() == 0) {
                     this.pastaEstoque.remove(i6);

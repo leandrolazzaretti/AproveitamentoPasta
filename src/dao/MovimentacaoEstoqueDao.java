@@ -140,7 +140,7 @@ public class MovimentacaoEstoqueDao {
 
                 ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                 recInsDto.setCodigoInsumo(rs.getInt(1));
-                recInsDto.setConsumo(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), v));
+                recInsDto.setConsumo(formatador3(insDao.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), v)));
                 this.pastaProduzir.add(recInsDto);
 //                System.out.println(this.pastaProduzir.get(contador).getCodigoInsumo());
 //                System.out.println(this.pastaProduzir.get(contador).getConsumo());
@@ -302,8 +302,8 @@ public class MovimentacaoEstoqueDao {
     public void quantoUsarOpc1_2(JTable tabela, double[] in) {
         InsumoDao insDao = new InsumoDao();
         int codigo, contador = 0, id = 0;
-        for (int ind = (int) in[0]; ind < tabela.getRowCount(); ind++) {
-
+        for (int ind = 0; ind < tabela.getRowCount(); ind++) {
+            //(int) in[0]
             codigo = (int) tabela.getModel().getValueAt(ind, 1);
             String sql = "select ri.consumo, i.UM, i.codigo from tbReceitaInsumo as ri"
                     + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
@@ -318,7 +318,7 @@ public class MovimentacaoEstoqueDao {
                     ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
                     recInsDto.setId(id);
                     recInsDto.setCodigoInsumo(rs.getInt(3));
-                    recInsDto.setConsumo(formatador2(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(tabela.getModel().getValueAt(ind, 3).toString().replace(",", ".")))));
+                    recInsDto.setConsumo(formatador3(insDao.conversaoUMInsumos(rs.getString(2), rs.getDouble(1), Double.parseDouble(tabela.getModel().getValueAt(ind, 3).toString().replace(",", ".")))));
                     this.pastaEstoque.add(recInsDto);
 //                    System.out.println(this.pastaEstoque.get(contador).getId());
 //                    System.out.println(this.pastaEstoque.get(contador).getCodigoInsumo());
@@ -341,7 +341,17 @@ public class MovimentacaoEstoqueDao {
     private void subtrairInsumos(int idTot, int ind) {
         double usoKg, porcentoAtual = 100, porcentoTemp, quantidade, usadoDaPastaEstoque = 0, porcentoDaPasta;
         int idTemp, idTemp2 = 0, id = 0;
-        for (int i = ind + 1; i <= idTot; i = i) {
+
+        for (int ii = 0; ii < this.pastaEstoque.size(); ii++) {
+            System.out.println(this.pastaEstoque.get(ii).getId() + " " + this.pastaEstoque.get(ii).getCodigoInsumo()+" "+ this.pastaEstoque.get(ii).getConsumo());
+            if (ind + 1 == this.pastaEstoque.get(ii).getId()) {
+                id = ii;
+                break;
+            }
+        }
+
+        for (int i = ind + 1;(this.pastaProduzir.size() != 0) && (i <= idTot); i = i) {
+
             idTemp = id;
             idTemp2 = idTemp;
             //entra nos insumos da pasta que desejo produzir
@@ -391,20 +401,29 @@ public class MovimentacaoEstoqueDao {
                         //quantidade = this.past
                         System.out.println(this.pastaProduzir.get(i4).getConsumo());
                         System.out.println("\n\n");
+                        break;
                     }
                 }
             }
-            TelaEstoquePasta.tblProducaoPastaOp1.getModel().setValueAt(usadoDaPastaEstoque, i, 4);
-            for (int i6 = 0; i6 < this.pastaEstoque.size(); i6++) {
-                if (this.pastaEstoque.get(i6).getConsumo() == 0) {
-                    this.pastaEstoque.remove(i6);
-                }
-            }
-            System.out.println(this.pastaProduzir.get(0).getConsumo());
+            TelaEstoquePasta.tblProducaoPastaOp1.getModel().setValueAt(this.util.formatadorQuant(usadoDaPastaEstoque), i, 4);
+            TelaEstoquePasta.tblProducaoPastaOp1.getModel().setValueAt(this.util.formatadorQuant(regraDeTres1(usadoDaPastaEstoque, Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(",", ".")))) + "%", i, 5);
+            verificarArray(this.pastaProduzir);
+            
             this.pastasTemp.clear();
             porcentoAtual = 100;
             i++;
         }
+    }
+    
+    private void verificarArray(List<ReceitaInsumoDto> produzir){
+        for(int i = 0; i < produzir.size(); i++){
+            if(produzir.get(i).getConsumo() <= 0.001){
+                produzir.remove(i);
+                i--;
+            }
+        }
+        this.pastaProduzir = produzir;
+        System.out.println(this.pastaProduzir.size());
     }
 
     //retorna apenas as pastas do estoque que são iguais

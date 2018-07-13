@@ -6,6 +6,7 @@
 package telas;
 
 import com.sun.glass.events.KeyEvent;
+import dao.EstoquePastaDao;
 import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
 import java.awt.Color;
@@ -30,6 +31,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     public static JInternalFrame framePesReceita;
     TelaPesquisarReceita rec = new TelaPesquisarReceita();
     Util util = new Util();
+    EstoquePastaDao estPas = new EstoquePastaDao();
     public static boolean jDialogSobre;
 
     /**
@@ -455,22 +457,30 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         //chama o metodo para dar entrado ou saida em insumo ou pasta
         //alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         if (!this.txtQuantidade.getText().equals("") && (!this.txtCodigo.getText().equals(""))) {
-            MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-            movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
-            double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
+            int codigo = Integer.parseInt(this.txtCodigo.getText());
+            double quantidade = Double.parseDouble(this.txtQuantidade.getText());
+
+            this.estPas.pastaCompativel(this.estPas.buscaCodigoInsumos(codigo), codigo);
+            this.estPas.buscarInsumos(codigo, quantidade, true);
+
             this.tblProducaoPastaOp1.setEnabled(true);
             this.tblProducaoPastaOp1.setVisible(true);
-            if (confirma[4] > 0) {
-                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
-            }
+//            MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+//            movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
+//            double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
+//            this.tblProducaoPastaOp1.setEnabled(true);
+//            this.tblProducaoPastaOp1.setVisible(true);
 //            if (confirma[4] > 0) {
-//                this.tblProducaoPastaOp1.setEnabled(false);
-//                this.tblProducaoPastaOp1.setVisible(false);
-//            } else {
-//                this.tblProducaoPastaOp1.setEnabled(true);
-//                this.tblProducaoPastaOp1.setVisible(true);
+//                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
 //            }
-//            movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
+////            if (confirma[4] > 0) {
+////                this.tblProducaoPastaOp1.setEnabled(false);
+////                this.tblProducaoPastaOp1.setVisible(false);
+////            } else {
+////                this.tblProducaoPastaOp1.setEnabled(true);
+////                this.tblProducaoPastaOp1.setVisible(true);
+////            }
+////            movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
         } else {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         }
@@ -499,23 +509,32 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         // quando ENTER é pressionado
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!this.txtQuantidade.getText().equals("")) {
-                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-                movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
-                double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
+                int codigo = Integer.parseInt(this.txtCodigo.getText());
+                double quantidade = Double.parseDouble(this.txtQuantidade.getText());
+
+                this.estPas.pastaCompativel(this.estPas.buscaCodigoInsumos(codigo), codigo);
+                this.estPas.buscarInsumos(codigo, quantidade, true);
+
                 this.tblProducaoPastaOp1.setEnabled(true);
                 this.tblProducaoPastaOp1.setVisible(true);
-                if (confirma[4] > 0) {
-                    movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
-                }
 
+//                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+//                movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
+//                double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
+//                this.tblProducaoPastaOp1.setEnabled(true);
+//                this.tblProducaoPastaOp1.setVisible(true);
 //                if (confirma[4] > 0) {
-//                    this.tblProducaoPastaOp1.setEnabled(false);
-//                    this.tblProducaoPastaOp1.setVisible(false);
-//                } else {
-//                    this.tblProducaoPastaOp1.setEnabled(true);
-//                    this.tblProducaoPastaOp1.setVisible(true);
+//                    movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
 //                }
-//                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
+//
+////                if (confirma[4] > 0) {
+////                    this.tblProducaoPastaOp1.setEnabled(false);
+////                    this.tblProducaoPastaOp1.setVisible(false);
+////                } else {
+////                    this.tblProducaoPastaOp1.setEnabled(true);
+////                    this.tblProducaoPastaOp1.setVisible(true);
+////                }
+////                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
             } else {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
             }

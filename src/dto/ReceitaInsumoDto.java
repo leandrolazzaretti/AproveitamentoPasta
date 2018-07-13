@@ -14,12 +14,14 @@ public class ReceitaInsumoDto {
     private int codigoReceita;
     private int codigoInsumo;
     private double consumo;
+    private String um;
     
-    public ReceitaInsumoDto(int id, int codigoReceita,  int codigoInsumo, double consumo){
+    public ReceitaInsumoDto(int id, int codigoReceita,  int codigoInsumo, double consumo, String um){
         this.id = id;
         this.codigoReceita = codigoReceita;
         this.codigoInsumo = codigoInsumo;
         this.consumo = consumo;
+        this.um = um;
     }
     
     public ReceitaInsumoDto(){
@@ -56,6 +58,14 @@ public class ReceitaInsumoDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUm() {
+        return um;
+    }
+
+    public void setUm(String um) {
+        this.um = um;
     }
     
     

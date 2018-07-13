@@ -149,4 +149,93 @@ public class Util {
         return quantFormatado;
     }
 
+    //formata os valores para 2 casas decimais
+    public double formatador2(double valor) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
+    }
+
+    //formata os valores para 3 casas decimais
+    public double formatador3(double valor) {
+        DecimalFormat df = new DecimalFormat("#.000");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
+    }
+
+    //retorna o valor em porcentagem 
+    public double regraDeTres1(double produzir, double estoque) {
+        double retorno = 0;
+        retorno = (produzir * 100) / estoque;
+
+        return retorno;
+    }
+
+    //calcula a quantidade da % desejada
+    public double regraDeTres2(double porcentoAtual, double quantidadePro) {
+        double retorno = 0;
+        retorno = (quantidadePro * porcentoAtual) / 100;
+
+        return retorno;
+    }
+
+    public boolean dataComparar(String dataAtual, String dataVencimento) {
+        int data1 = Integer.parseInt(dataAtual.replace("-", ""));
+        int data2 = Integer.parseInt(dataVencimento.replace("-", ""));
+        return data2 <= data1;
+    }
+
+    public String inverterData(String data) {
+        String[] dataInvertida = data.split("-");
+        return dataInvertida[2] + "-" + dataInvertida[1] + "-" + dataInvertida[0];
+    }
+
+    public String dataVencimento(String data, int validade) {
+        String sql = "SELECT date('" + data + "','" + validade + " day')";
+        String retorno = null;
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            retorno = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return retorno;
+    }
+
+    public String dataAtual() {
+        String sql = "SELECT date('now')";
+        String data = null;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            data = rs.getString(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return data;
+    }
+
+    //Converte a UM dos insumos para kg, e calcula a quantida de cada insumo para cada Kg da minha pasta
+    public double conversaoUMInsumos(String UM, double consumo, double quantidade) {
+
+        double total = quantidade * (consumo / 100);
+
+        if (UM.equals("g")) {
+            total = total * 1000;
+        }
+        if (UM.equals("mg")) {
+            total = total * 1000000;
+        }
+
+        return total;
+    }
 }

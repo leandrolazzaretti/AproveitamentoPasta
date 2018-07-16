@@ -458,10 +458,12 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         //alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         if (!this.txtQuantidade.getText().equals("") && (!this.txtCodigo.getText().equals(""))) {
             int codigo = Integer.parseInt(this.txtCodigo.getText());
-            double quantidade = Double.parseDouble(this.txtQuantidade.getText());
+            double quantidade = Double.parseDouble(this.txtQuantidade.getText().replace(",", "."));
 
             this.estPas.pastaCompativel(this.estPas.buscaCodigoInsumos(codigo), codigo);
             this.estPas.buscarInsumos(codigo, quantidade, true);
+            this.estPas.subtrairInsumos(codigo);
+            this.estPas.setarTabela(tblProducaoPastaOp1);
 
             this.tblProducaoPastaOp1.setEnabled(true);
             this.tblProducaoPastaOp1.setVisible(true);
@@ -510,10 +512,12 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!this.txtQuantidade.getText().equals("")) {
                 int codigo = Integer.parseInt(this.txtCodigo.getText());
-                double quantidade = Double.parseDouble(this.txtQuantidade.getText());
+                double quantidade = Double.parseDouble(this.txtQuantidade.getText().replace(",", "."));
 
                 this.estPas.pastaCompativel(this.estPas.buscaCodigoInsumos(codigo), codigo);
                 this.estPas.buscarInsumos(codigo, quantidade, true);
+                this.estPas.subtrairInsumos(codigo);
+                this.estPas.setarTabela(tblProducaoPastaOp1);
 
                 this.tblProducaoPastaOp1.setEnabled(true);
                 this.tblProducaoPastaOp1.setVisible(true);

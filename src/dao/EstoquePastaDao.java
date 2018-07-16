@@ -17,6 +17,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import telas.TelaEstoquePasta;
 import util.Util;
 
 /**
@@ -33,6 +34,9 @@ public class EstoquePastaDao {
     private List<EstoquePastaDto> listFinal = new ArrayList<>();
     private List<ReceitaInsumoDto> pastaProduzir = new ArrayList<>();
     private List<ReceitaInsumoDto> pastaEstoque = new ArrayList<>();
+
+    private String insumosDeletados;
+    private double quantidade;
 
     public EstoquePastaDao() {
         this.conexao = ModuloConexao.conector();
@@ -54,12 +58,28 @@ public class EstoquePastaDao {
                 while (rs.next()) {
                     setaPastaProduzir(rs, quantidade);
                 }
+
+                for (int i = 0; i < this.pastaProduzir.size(); i++) {
+                    System.out.println(this.pastaProduzir.get(i).getId());
+                    System.out.println(this.pastaProduzir.get(i).getCodigoReceita());
+                    System.out.println(this.pastaProduzir.get(i).getCodigoInsumo());
+                    System.out.println(this.pastaProduzir.get(i).getUm());
+                    System.out.println(this.pastaProduzir.get(i).getConsumo());
+                }
             } else {
                 while (rs.next()) {
                     setaPastaEstoque(rs, quantidade);
                 }
 
+                for (int i = 0; i < this.pastaEstoque.size(); i++) {
+                    System.out.println(this.pastaEstoque.get(i).getId());
+                    System.out.println(this.pastaEstoque.get(i).getCodigoReceita());
+                    System.out.println(this.pastaEstoque.get(i).getCodigoInsumo());
+                    System.out.println(this.pastaEstoque.get(i).getUm());
+                    System.out.println(this.pastaEstoque.get(i).getConsumo());
+                }
             }
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -151,27 +171,96 @@ public class EstoquePastaDao {
      * ele ira chamar o metodo para eliminar o insumo, e fará uma nova pesquiza
      * setando o listTemp com as novas pastas compatíveis
      */
-    public void subtrairInsumos() {
+    public void subtrairInsumos(int codigo) {
+        double porcentoAtual = 100, porcentoTemp = 0, usadoDaPastaEstoque = 0;
+        int iS = 0;
+        //entra dentro dos insumos das listaTemporária, e verifica se ainda existe insumos dentro da  pastaProduzir
         for (int i = 0; (this.pastaProduzir.size() != 0) && (i < this.listTemp.size()); i++) {
-                buscarInsumos(this.listTemp.get(i).getCodigo(), this.listTemp.get(i).getEstoque(), false);
-            for(int in = 0; in < this.pastaProduzir.size(); in++){
-                for(int ind = 0; ind < this.pastaEstoque.size(); ind++){
+            //chama método para setar lista pastaEstoque com os insumos da pasta que esta na listaTemporária
+            buscarInsumos(this.listTemp.get(i).getCodigo(), this.listTemp.get(i).getEstoque(), false);
+            //entra dentro da lista pastaProduzir, para verificar compatibilidade dos insumos
+            for (int in = 0; in < this.pastaProduzir.size(); in++) {
+                //entra dentro da pastaProduzir para varrer os insumos para verificar a compatibilidade
+                for (int ind = 0; ind < this.pastaEstoque.size(); ind++) {
+                    //verifica compatibilidade dos insumos através do código dos insumos
                     if (this.pastaProduzir.get(in).getCodigoInsumo() == this.pastaEstoque.get(ind).getCodigoInsumo()) {
-                        
+                        //verifica a % que pode ser usada em determinado insumo
+                        porcentoTemp = this.util.formatador3(this.util.regraDeTres1(this.pastaProduzir.get(in).getConsumo(), this.pastaEstoque.get(ind).getConsumo()));
+                        //se a porcentagem temporária for maior que a Atual então é realizado a troca
+                        if (porcentoTemp <= porcentoAtual) {
+                            porcentoAtual = porcentoTemp;
+                        }
+                        break;
                     }
                 }
-                
             }
-            
-            if (verificarArray(pastaProduzir) == true) {
+            //chama o metodo que fará a real subtração dos insumos
+            usadoDaPastaEstoque = subtrairPelaPorcentagem(porcentoAtual);
+            setaListFinal(usadoDaPastaEstoque, iS, i);
+            iS++;
+            //chama o metodo para verificar se o insumo é menor ou igual a "0"
+            if (verificarArray(this.pastaProduzir) == true) {
+                this.listTemp.clear();
+                pastaCompativel(this.insumosDeletados, codigo);
+                buscarInsumos(codigo, this.quantidade, true);
                 i = 0;
             }
         }
     }
 
+    //subtrai os insumos baseados na porcentagem maxima permitida da determinada pasta do estoque
+    private double subtrairPelaPorcentagem(double porcentoAtual) {
+        double porcentoDaPasta = 0, usadoDaPastaEstoque = 0;
+        //Subtrai direto do array pastaProduzir
+        for (int inde = 0; inde < this.pastaProduzir.size(); inde++) {
+            for (int index = 0; index < this.pastaEstoque.size(); index++) {
+                //verifica se os insumos são compatíveis
+                if (this.pastaProduzir.get(inde).getCodigoInsumo() == this.pastaEstoque.get(index).getCodigoInsumo()) {
+                    //faz a subtração do insumo que queremos produzir pelo insumo da pasta em estoque
+                    double teste = this.pastaProduzir.get(index).getConsumo();
+                    porcentoDaPasta = this.util.formatador3(this.util.regraDeTres2(porcentoAtual, teste));
+                    usadoDaPastaEstoque += porcentoDaPasta;
+                    this.pastaProduzir.get(inde).setConsumo(this.pastaProduzir.get(inde).getConsumo() - porcentoDaPasta);
+                    break;
+                }
+            }
+        }
+        return usadoDaPastaEstoque;
+    }
+
+    // seta a listfinal com os dados da pasta do estoque que foi usada 
+    private void setaListFinal(double usadoDaPastaEstoque, int iF, int iT) {
+
+        this.listTemp.get(iT).setUsar(this.util.formatador3(usadoDaPastaEstoque));
+        this.listTemp.get(iT).setEquivalencia(this.util.formatador3(this.util.regraDeTres1(usadoDaPastaEstoque, Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(",", ".")))));
+        this.listFinal.add(this.listTemp.get(iT));
+    }
+
+    //seta a tabela que vem por parâmetro
+    public void setarTabela(JTable tabela) {
+        DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+        modelo.setNumRows(0);
+
+        for (int i = 0; i < this.listFinal.size(); i++) {
+            modelo.addRow(new Object[]{
+                this.listFinal.get(i).getId(),
+                this.listFinal.get(i).getCodigo(),
+                this.listFinal.get(i).getDescricao(),
+                this.listFinal.get(i).getEstoque(),
+                this.listFinal.get(i).getUsar(),
+                this.listFinal.get(i).getEquivalencia(),
+                this.listFinal.get(i).getVencimento()
+            });
+        }
+    }
+
+    //se quantidade do insumo for menor  ou igual a "0", ele retira o insumo da lista
     private boolean verificarArray(List<ReceitaInsumoDto> produzir) {
         boolean retorno = false;
         for (int i = 0; i < produzir.size(); i++) {
+            //variavel recebe a soma do restante dos insumos, gerando assim o peso restante da pasta
+            this.quantidade += this.util.formatador3(produzir.get(i).getConsumo());
+            //verifica se é = "0", se for verdadeiro o insumo será eliminado da lista
             if (produzir.get(i).getConsumo() <= 0.001) {
                 produzir.remove(i);
                 retorno = true;
@@ -179,7 +268,19 @@ public class EstoquePastaDao {
             }
         }
         this.pastaProduzir = produzir;
+        setarUrlInsu();
         return retorno;
+    }
+
+    //cria uma nova URL com com os códigos dos insumos que ainda não foram zerados
+    private void setarUrlInsu() {
+        String insu = null;
+        for (int i = 0; (!this.pastaProduzir.isEmpty()) && (i < this.pastaProduzir.size()); i++) {
+            insu += this.pastaProduzir.get(i).getCodigoInsumo() + ",";
+        }
+        if (insu != null) {
+            this.insumosDeletados = insu.substring(0, insu.length() - 1);
+        }
     }
 
     //busca os códigos dos insumos contidos na Receita que deseja produzir, e retorna em forma de uma String(URL)

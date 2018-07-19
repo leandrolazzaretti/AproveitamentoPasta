@@ -141,7 +141,7 @@ public class Util {
     public String formatadorQuant(Double quantidade) {
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        formatter.setMaximumFractionDigits(2);
+        formatter.setMaximumFractionDigits(3);
         BigDecimal quant = new BigDecimal(this.formatador(quantidade));
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         String quantFormatado = nf.format(quant);

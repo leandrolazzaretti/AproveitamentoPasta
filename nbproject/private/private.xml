@@ -5,10 +5,11 @@
         <group>
             <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/telas/TelaEstoquePasta.java</file>
             <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dto/EstoquePastaDto.java</file>
+            <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dao/EstoquePastaFinalDao.java</file>
             <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/util/Util.java</file>
+            <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dto/ReceitaInsumoDto.java</file>
             <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dao/MovimentacaoEstoqueDao.java</file>
-            <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dao/InsumoDao.java</file>
-            <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dao/ReceitaInsumoDao.java</file>
+            <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/telas/TelaLogin.java</file>
             <file>file:/C:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/src/dao/EstoquePastaDao.java</file>
         </group>
     </open-files>

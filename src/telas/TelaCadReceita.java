@@ -121,6 +121,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
         this.cbCadReceitaTipo.setSelectedItem(null);
         desabilitarTabela();
+        this.txtCadRecCodigo.requestFocus();
 
     }
 

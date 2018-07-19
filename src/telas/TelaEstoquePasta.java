@@ -100,12 +100,12 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         btnConfirmar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblProducaoPastaOp2 = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProducaoPastaOp1 = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblProducaoPastaOp2 = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -278,26 +278,6 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel5.setBackground(new java.awt.Color(236, 255, 209));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(155, 155, 155)));
 
-        tblProducaoPastaOp2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        tblProducaoPastaOp2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "Código", "Descrição", "Estoque ", "Usar", "Equivale à (%)", "Vencimento"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblProducaoPastaOp2.setPreferredSize(new java.awt.Dimension(520, 0));
-        jScrollPane2.setViewportView(tblProducaoPastaOp2);
-
         tblProducaoPastaOp1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblProducaoPastaOp1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -321,20 +301,39 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
         jLabel7.setText("Segunda opção - Utilizando Pastas mais Insumos:");
 
+        tblProducaoPastaOp2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        tblProducaoPastaOp2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Código", "Descrição", "Estoque", "Usar", "Equivale à % ", "Vencimento"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tblProducaoPastaOp2);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addGap(170, 170, 170)
                 .addComponent(jLabel7)
                 .addContainerGap(180, Short.MAX_VALUE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -343,10 +342,10 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 858, 330));
@@ -468,10 +467,13 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
             this.estPasFinal.buscarInsumos(codigo, quantidade, true);
             this.estPasFinal.subtrairInsumos(codigo);
-            this.estPasFinal.setarTabela(tblProducaoPastaOp1);
+            this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
+            this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
 
             this.tblProducaoPastaOp1.setEnabled(true);
             this.tblProducaoPastaOp1.setVisible(true);
+            this.tblProducaoPastaOp2.setEnabled(true);
+            this.tblProducaoPastaOp2.setVisible(true);
 //            MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
 //            movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
 //            double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
@@ -525,10 +527,13 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
                 this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
                 this.estPasFinal.buscarInsumos(codigo, quantidade, true);
                 this.estPasFinal.subtrairInsumos(codigo);
-                this.estPasFinal.setarTabela(tblProducaoPastaOp1);
+                this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
+                this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
 
                 this.tblProducaoPastaOp1.setEnabled(true);
                 this.tblProducaoPastaOp1.setVisible(true);
+                this.tblProducaoPastaOp2.setEnabled(true);
+                this.tblProducaoPastaOp2.setVisible(true);
 
 //                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
 //                movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
@@ -574,9 +579,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    public static javax.swing.JTable tblProducaoPastaOp1;
-    public static javax.swing.JTable tblProducaoPastaOp2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable tblProducaoPastaOp1;
+    private javax.swing.JTable tblProducaoPastaOp2;
     public static javax.swing.JTextField txtCodigo;
     public static javax.swing.JFormattedTextField txtQuantidade;
     // End of variables declaration//GEN-END:variables

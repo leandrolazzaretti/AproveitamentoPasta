@@ -8,7 +8,6 @@ package telas;
 import com.sun.glass.events.KeyEvent;
 import dao.EstoquePastaDao;
 import dao.EstoquePastaFinalDao;
-import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
@@ -44,6 +43,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtCodigo.setDocument(new SoNumeros());
         this.txtQuantidade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         this.txtQuantidade.setDocument(new MascaraMoeda());
+        alterarCorEnable(this.btnProduzirOp1);
+        alterarCorEnable(this.btnProduzirOp2);
     }
 
     private void limparCampos() {
@@ -52,7 +53,30 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtCodigo.requestFocus();
         this.txtQuantidade.setDocument(new MascaraMoeda());
         this.txtQuantidade.setEnabled(false);
+        this.lblCustoProducao.setText("0,00");
+        this.btnProduzirOp1.setEnabled(false);
+        this.btnProduzirOp2.setEnabled(false);
+        alterarCorEnable(this.btnProduzirOp1);
+        alterarCorEnable(this.btnProduzirOp2);
         ((DefaultTableModel) this.tblProducaoPastaOp1.getModel()).setRowCount(0);
+        ((DefaultTableModel) this.tblProducaoPastaOp2.getModel()).setRowCount(0);
+    }
+
+    private void fecharFramPesq() {
+        if (this.framePesReceita != null) {
+            this.framePesReceita.dispose();
+        }
+    }
+
+    private void retornarCoresBtn() {
+        retornaCor(this.jPanel8, this.btnProduzirOp1);
+        retornaCor(this.jPanel7, this.btnProduzirOp2);
+        
+    }
+
+    //retorna a cor para padrão enabled
+    private void alterarCorEnable(JButton botao) {
+        botao.setForeground(new Color(201,201,201));
     }
 
     // quando o mouse estiver em cima
@@ -100,12 +124,18 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         btnConfirmar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblProducaoPastaOp1 = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblProducaoPastaOp2 = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblProducaoPastaOp1 = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        lblCustoProducao = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        btnProduzirOp1 = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        btnProduzirOp2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -278,25 +308,6 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel5.setBackground(new java.awt.Color(236, 255, 209));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(155, 155, 155)));
 
-        tblProducaoPastaOp1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        tblProducaoPastaOp1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "Código ", "Descrição", "Estoque", "Usar ", "Equivale à (%)", "Vencimento"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tblProducaoPastaOp1);
-
         jLabel6.setText("Primeira opção - Utilizando apenas Pastas do estoque:");
 
         jLabel7.setText("Segunda opção - Utilizando Pastas mais Insumos:");
@@ -320,6 +331,78 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jScrollPane3.setViewportView(tblProducaoPastaOp2);
 
+        tblProducaoPastaOp1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        tblProducaoPastaOp1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Código ", "Descrição", "Estoque", "Usar ", "Equivale à (%)", "Vencimento"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblProducaoPastaOp1);
+
+        jLabel8.setText("Custo de produção: R$ ");
+
+        lblCustoProducao.setForeground(new java.awt.Color(255, 0, 0));
+        lblCustoProducao.setText("0,00");
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnProduzirOp1.setText("Produzir");
+        btnProduzirOp1.setToolTipText("Produzir");
+        btnProduzirOp1.setContentAreaFilled(false);
+        btnProduzirOp1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProduzirOp1.setEnabled(false);
+        btnProduzirOp1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnProduzirOp1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnProduzirOp1MouseExited(evt);
+            }
+        });
+        btnProduzirOp1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProduzirOp1ActionPerformed(evt);
+            }
+        });
+        jPanel8.add(btnProduzirOp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnProduzirOp2.setText("Produzir");
+        btnProduzirOp2.setToolTipText("Produzir");
+        btnProduzirOp2.setContentAreaFilled(false);
+        btnProduzirOp2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProduzirOp2.setEnabled(false);
+        btnProduzirOp2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnProduzirOp2MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnProduzirOp2MouseExited(evt);
+            }
+        });
+        btnProduzirOp2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProduzirOp2ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(btnProduzirOp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -327,11 +410,22 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addGap(170, 170, 170)
-                .addComponent(jLabel7)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addGap(80, 80, 80)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCustoProducao)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
@@ -339,12 +433,22 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(lblCustoProducao))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
 
@@ -388,6 +492,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fecharFramPesq();
     }//GEN-LAST:event_btnMinimiActionPerformed
 
     private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
@@ -403,9 +508,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFecharMouseExited
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
-//        // gerar mensagem de salvar antes de sair
+        // gerar mensagem de salvar antes de sair
         this.dispose();
-//        }
+        fecharFramPesq();
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
@@ -458,38 +563,25 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         //chama o metodo para dar entrado ou saida em insumo ou pasta
         //alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         if (!this.txtQuantidade.getText().equals("") && (!this.txtCodigo.getText().equals(""))) {
-            int codigo = Integer.parseInt(this.txtCodigo.getText());
-            double quantidade = Double.parseDouble(this.txtQuantidade.getText().replace(".", "").replace(",", "."));
+            if ((!this.txtQuantidade.getText().equals("0,00"))) {
 
-            this.tblProducaoPastaOp1.removeAll();
-            this.tblProducaoPastaOp2.removeAll();
-            this.estPasFinal.limparVariaveis();
-            this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
-            this.estPasFinal.buscarInsumos(codigo, quantidade, true);
-            this.estPasFinal.subtrairInsumos(codigo);
-            this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
-            this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
+                int codigo = Integer.parseInt(this.txtCodigo.getText());
+                double quantidade = Double.parseDouble(this.txtQuantidade.getText().replace(".", "").replace(",", "."));
 
-            this.tblProducaoPastaOp1.setEnabled(true);
-            this.tblProducaoPastaOp1.setVisible(true);
-            this.tblProducaoPastaOp2.setEnabled(true);
-            this.tblProducaoPastaOp2.setVisible(true);
-//            MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-//            movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
-//            double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
-//            this.tblProducaoPastaOp1.setEnabled(true);
-//            this.tblProducaoPastaOp1.setVisible(true);
-//            if (confirma[4] > 0) {
-//                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
-//            }
-////            if (confirma[4] > 0) {
-////                this.tblProducaoPastaOp1.setEnabled(false);
-////                this.tblProducaoPastaOp1.setVisible(false);
-////            } else {
-////                this.tblProducaoPastaOp1.setEnabled(true);
-////                this.tblProducaoPastaOp1.setVisible(true);
-////            }
-////            movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
+                this.tblProducaoPastaOp1.removeAll();
+                this.tblProducaoPastaOp2.removeAll();
+                this.estPasFinal.limparVariaveis();
+                this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
+                this.estPasFinal.buscarInsumos(codigo, quantidade, true);
+                this.estPasFinal.subtrairInsumos(codigo);
+                retornarCoresBtn();
+                this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
+                this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
+
+            } else {
+                this.tblProducaoPastaOp1.removeAll();
+                this.tblProducaoPastaOp2.removeAll();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         }
@@ -518,45 +610,78 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         // quando ENTER é pressionado
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (!this.txtQuantidade.getText().equals("")) {
-                int codigo = Integer.parseInt(this.txtCodigo.getText());
-                double quantidade = Double.parseDouble(this.txtQuantidade.getText().replace(".", "").replace(",", "."));
+                if ((!this.txtQuantidade.getText().equals("0,00"))) {
 
-                this.tblProducaoPastaOp1.removeAll();
-                this.tblProducaoPastaOp2.removeAll();
-                this.estPasFinal.limparVariaveis();
-                this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
-                this.estPasFinal.buscarInsumos(codigo, quantidade, true);
-                this.estPasFinal.subtrairInsumos(codigo);
-                this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
-                this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
+                    int codigo = Integer.parseInt(this.txtCodigo.getText());
+                    double quantidade = Double.parseDouble(this.txtQuantidade.getText().replace(".", "").replace(",", "."));
 
-                this.tblProducaoPastaOp1.setEnabled(true);
-                this.tblProducaoPastaOp1.setVisible(true);
-                this.tblProducaoPastaOp2.setEnabled(true);
-                this.tblProducaoPastaOp2.setVisible(true);
+                    this.tblProducaoPastaOp1.removeAll();
+                    this.tblProducaoPastaOp2.removeAll();
+                    this.estPasFinal.limparVariaveis();
+                    this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
+                    this.estPasFinal.buscarInsumos(codigo, quantidade, true);
+                    this.estPasFinal.subtrairInsumos(codigo);
+                    retornarCoresBtn();
+                    this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
+                    this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
 
-//                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-//                movDao.producaoPasta(this.tblProducaoPastaOp1, movDao.buscaCodigoInsumos(Integer.parseInt(this.txtCodigo.getText())), false, Integer.parseInt(this.txtCodigo.getText()));
-//                double[] confirma = movDao.quantoUsarOpc1(this.tblProducaoPastaOp1, Integer.parseInt(this.txtCodigo.getText()), false);
-//                this.tblProducaoPastaOp1.setEnabled(true);
-//                this.tblProducaoPastaOp1.setVisible(true);
-//                if (confirma[4] > 0) {
-//                    movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1, confirma);
-//                }
-//
-////                if (confirma[4] > 0) {
-////                    this.tblProducaoPastaOp1.setEnabled(false);
-////                    this.tblProducaoPastaOp1.setVisible(false);
-////                } else {
-////                    this.tblProducaoPastaOp1.setEnabled(true);
-////                    this.tblProducaoPastaOp1.setVisible(true);
-////                }
-////                movDao.quantoUsarOpc1_2(this.tblProducaoPastaOp1);
+                } else {
+                    this.tblProducaoPastaOp1.removeAll();
+                    this.tblProducaoPastaOp2.removeAll();
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
             }
         }
     }//GEN-LAST:event_txtQuantidadeKeyPressed
+
+    private void btnProduzirOp1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp1MouseEntered
+        // quando o mouse estiver em cima
+        if (this.btnProduzirOp1.isEnabled()) {
+            alteraCor(this.jPanel8, this.btnProduzirOp1);
+        }
+    }//GEN-LAST:event_btnProduzirOp1MouseEntered
+
+    private void btnProduzirOp1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp1MouseExited
+        // quando o mouse sair de cima
+        if (this.btnProduzirOp1.isEnabled()) {
+            retornaCor(this.jPanel8, this.btnProduzirOp1);
+        }
+    }//GEN-LAST:event_btnProduzirOp1MouseExited
+
+    private void btnProduzirOp2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp2MouseEntered
+        // quando o mouse estiver em cima
+        if (this.btnProduzirOp2.isEnabled()) {
+            alteraCor(this.jPanel7, this.btnProduzirOp2);
+        }
+    }//GEN-LAST:event_btnProduzirOp2MouseEntered
+
+    private void btnProduzirOp2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp2MouseExited
+        // quando o mouse sair de cima
+        if (this.btnProduzirOp2.isEnabled()) {
+            retornaCor(this.jPanel7, this.btnProduzirOp2);
+        }
+    }//GEN-LAST:event_btnProduzirOp2MouseExited
+
+    private void btnProduzirOp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProduzirOp1ActionPerformed
+        // chama os metodos para fazer a produção da pasta, tendo como base a primeira opção de produção
+        if (this.estPasFinal.produzirOpc1() == true) {
+            JOptionPane.showMessageDialog(null, "Produção da pasta realizada com sucesso.");
+            limparCampos();
+        }else{
+            JOptionPane.showMessageDialog(null, "Erro na produção!");
+        }
+    }//GEN-LAST:event_btnProduzirOp1ActionPerformed
+
+    private void btnProduzirOp2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProduzirOp2ActionPerformed
+        // chama os metodos para fazer a produção da pasta, tendo como base a segunda opção de produção
+        if (this.estPasFinal.produzirOpc2() == true) {
+            JOptionPane.showMessageDialog(null, "Produção da pasta realizada com sucesso.");
+            limparCampos();
+        }else{
+            JOptionPane.showMessageDialog(null, "Erro na produção!");
+        }
+    }//GEN-LAST:event_btnProduzirOp2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -565,6 +690,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnMinimi;
     private javax.swing.JButton btnPesquisar;
+    public static javax.swing.JButton btnProduzirOp1;
+    public static javax.swing.JButton btnProduzirOp2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -572,16 +699,20 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable tblProducaoPastaOp1;
-    private javax.swing.JTable tblProducaoPastaOp2;
+    public static javax.swing.JLabel lblCustoProducao;
+    public static javax.swing.JTable tblProducaoPastaOp1;
+    public static javax.swing.JTable tblProducaoPastaOp2;
     public static javax.swing.JTextField txtCodigo;
     public static javax.swing.JFormattedTextField txtQuantidade;
     // End of variables declaration//GEN-END:variables

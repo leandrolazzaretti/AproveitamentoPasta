@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import util.ComboKeyHandler;
 import util.MascaraMoeda;
+import util.MascaraMoeda3;
 import util.SoNumeros;
 import util.Util;
 
@@ -58,7 +59,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         this.txtCadRecConsumo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        this.txtCadRecConsumo.setDocument(new MascaraMoeda());
+        this.txtCadRecConsumo.setDocument(new MascaraMoeda3());
         this.txtCadRecCodigo.setDocument(new SoNumeros());
         this.txtCadRecVal.setDocument(new SoNumeros());
         this.tblCadRecComponentes.getColumnModel().getColumn(1).setPreferredWidth(20);
@@ -66,6 +67,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.pasta.setarComboBox(cbCadReceitaTipo);
         this.cbCadReceitaTipo.setSelectedItem(null);
         desabilitarTabela();
+        cbAtivar();
 
 //      cbAtivar();
     }
@@ -117,7 +119,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecVal.setText(null);
         this.txtCadRecComponentesCodigo.setText(null);
         this.txtCadRecComponentesDesc.setText(null);
-        this.txtCadRecConsumo.setText(null);
+        this.txtCadRecConsumo.setDocument(new MascaraMoeda3());
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
         this.cbCadReceitaTipo.setSelectedItem(null);
         desabilitarTabela();
@@ -164,7 +166,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
     private boolean verificaCampos() {
-        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.txtCadRecVal.getText().isEmpty())) {
+        if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.cbCadReceitaTipo.getSelectedItem().equals("")) || (this.txtCadRecVal.getText().isEmpty())) {
             return false;
         } else {
             return true;
@@ -207,6 +209,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                         JOptionPane.showMessageDialog(null, "Tipo de Pasta não existe.");
                     } else {
                         confirmar(true);
+                        this.txtCadRecCodigo.setEnabled(false);
                         this.txtCadRecComponentesCodigo.requestFocus();
                     }
                 }
@@ -219,6 +222,15 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 this.setVisible(false);
                 this.dispose();
             }
+        }
+    }
+
+    private void fecharFramePesq() {
+        if (this.framePesInsumo != null) {
+            this.framePesInsumo.dispose();
+        }
+        if (this.framePesReceita != null) {
+            this.framePesReceita.dispose();
         }
     }
 
@@ -399,7 +411,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Componentes", "Consumo %"
+                "Código", "Componentes", "Consumo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -420,7 +432,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblCadRecComponentes);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 660, 270));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 820, 280));
 
         jLabel8.setForeground(new java.awt.Color(79, 79, 79));
         jLabel8.setText("Componentes:");
@@ -683,51 +695,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
-    private void btnInsumoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoPesquisarActionPerformed
-        // chama a TelaPesquisarInsumos
-
-        if (this.framePesInsumo == null) {
-            this.framePesInsumo = new TelaPesquisarInsumos();
-        } else {
-            this.framePesInsumo.dispose();
-            this.framePesInsumo = new TelaPesquisarInsumos();
-        }
-        this.util.comandoInternal(this.framePesInsumo);
-        TelaPesquisarInsumos.confirmarEscolha = true;
-        TelaPesquisarInsumos.confimaTela = false;
-
-    }//GEN-LAST:event_btnInsumoPesquisarActionPerformed
-
-    private void btnAddConsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddConsumoActionPerformed
-        // chama metodo para setar a tabela
-        boolean total;
-        if ((this.txtCadRecComponentesCodigo.getText().isEmpty()) || (this.txtCadRecComponentesDesc.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
-        } else {
-            // chamaa o metodo para verificar se o insumo é válido
-            total = recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
-            if (total == true) {
-                JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
-            } else {
-                if (this.txtCadRecCodigo.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
-
-                } else {
-                    total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
-                    if (total == false) {
-                        JOptionPane.showMessageDialog(null, "Componente já existe.");
-                    } else {
-                        recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."));
-                        setarTabela();
-                        this.txtCadRecComponentesCodigo.setText(null);
-                        this.txtCadRecComponentesDesc.setText(null);
-                        this.txtCadRecConsumo.setValue(null);
-                    }
-                }
-            }
-        }
-    }//GEN-LAST:event_btnAddConsumoActionPerformed
-
     private void tbnCadRecTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnCadRecTipoActionPerformed
         // chama o metodo adicionar tipo de pasta
         if (this.cbCadReceitaTipo.getSelectedItem() == null) {
@@ -766,15 +733,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void tblCadRecComponentesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyPressed
-        // Chama o metodo atualizar atraves da tecla Enter
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-            this.tblCadRecComponentes.removeAll();
-            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-        }
-    }//GEN-LAST:event_tblCadRecComponentesKeyPressed
-
     private void txtCadRecCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadRecCodigoFocusLost
         // Evento ao sair do campo de codigo, ele irar trazer todas as irformações referentes ao codigo
         if (!this.txtCadRecCodigo.getText().equals("")) {
@@ -784,18 +742,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 abilitarTabela();
                 pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
             }
-
         }
     }//GEN-LAST:event_txtCadRecCodigoFocusLost
-
-    private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
-        // Chama o metodo atualizar enquanto digita
-        if (!this.txtCadRecCodigo.getText().equals("")) {
-            this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-            this.tblCadRecComponentes.removeAll();
-            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-        }
-    }//GEN-LAST:event_tblCadRecComponentesKeyReleased
 
     private void txtCadRecCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecCodigoKeyPressed
         // chama o metodo atraves da tecla enter
@@ -811,7 +759,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 }
             }
         }
-
     }//GEN-LAST:event_txtCadRecCodigoKeyPressed
 
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
@@ -833,6 +780,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fecharFramePesq();
     }//GEN-LAST:event_btnMinimiActionPerformed
 
     private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
@@ -864,7 +812,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 }
             }
         }
-
+        fecharFramePesq();
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnCadRecLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadRecLimparMouseEntered
@@ -965,17 +913,79 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                         if (total == false) {
                             JOptionPane.showMessageDialog(null, "Componente já existe.");
                         } else {
-                            recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."));
+                            recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."), recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))));
                             setarTabela();
                             this.txtCadRecComponentesCodigo.setText(null);
                             this.txtCadRecComponentesDesc.setText(null);
-                            this.txtCadRecConsumo.setValue(null);
+                            this.txtCadRecComponentesCodigo.requestFocus();
                         }
                     }
                 }
             }
         }
     }//GEN-LAST:event_txtCadRecConsumoKeyPressed
+
+    private void btnAddConsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddConsumoActionPerformed
+        // chama metodo para setar a tabela
+        boolean total;
+        if ((this.txtCadRecComponentesCodigo.getText().isEmpty()) || (this.txtCadRecComponentesDesc.getText().isEmpty()) || (this.txtCadRecConsumo.getText().isEmpty())) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
+        } else {
+            // chamaa o metodo para verificar se o insumo é válido
+            total = recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
+            if (total == true) {
+                JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
+            } else {
+                if (this.txtCadRecCodigo.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
+
+                } else {
+                    total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
+                    if (total == false) {
+                        JOptionPane.showMessageDialog(null, "Componente já existe.");
+                    } else {
+                        recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."), recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ""))));
+                        setarTabela();
+                        this.txtCadRecComponentesCodigo.setText(null);
+                        this.txtCadRecComponentesDesc.setText(null);
+                        this.txtCadRecComponentesCodigo.requestFocus();
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_btnAddConsumoActionPerformed
+
+    private void btnInsumoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoPesquisarActionPerformed
+        // chama a TelaPesquisarInsumos
+
+        if (this.framePesInsumo == null) {
+            this.framePesInsumo = new TelaPesquisarInsumos();
+        } else {
+            this.framePesInsumo.dispose();
+            this.framePesInsumo = new TelaPesquisarInsumos();
+        }
+        this.util.comandoInternal(this.framePesInsumo);
+        TelaPesquisarInsumos.confirmarEscolha = true;
+        TelaPesquisarInsumos.confimaTela = false;
+    }//GEN-LAST:event_btnInsumoPesquisarActionPerformed
+
+    private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
+        // Chama o metodo atualizar enquanto digita
+        if (!this.txtCadRecCodigo.getText().equals("")) {
+            this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            this.tblCadRecComponentes.removeAll();
+            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+        }
+    }//GEN-LAST:event_tblCadRecComponentesKeyReleased
+
+    private void tblCadRecComponentesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyPressed
+        // Chama o metodo atualizar atraves da tecla Enter
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            this.tblCadRecComponentes.removeAll();
+            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+        }
+    }//GEN-LAST:event_tblCadRecComponentesKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

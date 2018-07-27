@@ -11,11 +11,9 @@ import dao.InsumoDao;
 import dto.InsumoDto;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.NumberFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -36,6 +34,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     public static JInternalFrame framePesqInsumo;
     Util util = new Util();
     TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
+    private boolean confirmaMascaraMoeda = false;
 
     /**
      * Creates new form TelaCadInsumos
@@ -44,8 +43,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         this.txtCadInsCodigo.setDocument(new SoNumeros());
-        this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
-        this.txtCadInsPreco.setDocument(new MascaraMoeda()); 
+        this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        this.txtCadInsPreco.setDocument(new MascaraMoeda());
         //this.txtCadInsPreco.setDocument(new SoNumeros()); 
         this.txtCadInsQuant.setDocument(new SoNumeros());
         limparCampos();
@@ -54,23 +53,14 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private void confirmar(boolean confirmar) {
         InsumoDto insumoDto = new InsumoDto();
         InsumoDao insumoDao = new InsumoDao();
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        formatter.setMaximumFractionDigits(2);
 
         insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
         insumoDto.setDescricao(this.txtCadInsDes.getText());
         insumoDto.setUM(this.cbCadInsUm.getSelectedItem().toString());
 
-        //BigDecimal valor = new BigDecimal(this.txtCadInsPreco.getText().replace(",", "."));
-        //NumberFormat nf = NumberFormat.getCurrencyInstance();
-        //String QuantFormatado = nf.format(quant);
-        //String ValorFormatado = nf.format(valor);
-        
-        //QuantFormatado = QuantFormatado.replace("R$ ", "");
-
-        insumoDto.setQuantidade(this.txtCadInsQuant.getText());
-        insumoDto.setPreco(this.txtCadInsPreco.getText().replace(",", "."));
-        //insumoDto.setPreco(ValorFormatado);
+        insumoDto.setQuantidade(this.txtCadInsQuant.getText().replace(".", "").replace(",", "."));
+        insumoDto.setPreco(this.txtCadInsPreco.getText().replace(".", "").replace(",", "."));
+     
 
         if (confirmar == true) {
             insumoDao.adicionarInsumos(insumoDto);
@@ -87,8 +77,8 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.cbCadInsUm.setSelectedItem("kg");
         this.txtCadInsQuant.setText("0");
         this.txtCadInsPreco.setText(null);
-        this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
-        this.txtCadInsPreco.setDocument(new MascaraMoeda()); 
+        this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        this.txtCadInsPreco.setDocument(new MascaraMoeda());
     }
 
     //confirma se o codigo já existe
@@ -124,7 +114,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
-
     private void confirmaAcao(boolean conf) {
         // chama o metodo adicionar
         boolean total;
@@ -153,7 +142,12 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 this.dispose();
             }
         }
+    }
 
+    private void fecharFramePesq() {
+        if (this.framePesqInsumo != null) {
+            this.framePesqInsumo.dispose();
+        }
     }
 
     // quando o mouse estiver em cima
@@ -260,6 +254,11 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 2, 40, 20));
 
+        txtCadInsPreco.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCadInsPrecoFocusLost(evt);
+            }
+        });
         txtCadInsPreco.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCadInsPrecoKeyPressed(evt);
@@ -479,10 +478,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         //Chama a TelePesquisarInsumos
 
         if (this.framePesqInsumo == null) {
-            this.framePesqInsumo = new TelaPesquisarInsumos();          
+            this.framePesqInsumo = new TelaPesquisarInsumos();
         } else {
             this.framePesqInsumo.dispose();
-            this.framePesqInsumo = new TelaPesquisarInsumos();           
+            this.framePesqInsumo = new TelaPesquisarInsumos();
         }
         this.util.comandoInternal(this.framePesqInsumo);
         this.insumo.pesquisarInsumos();
@@ -528,7 +527,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
         // gerar mensagem de salvar antes de sair
-        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && ((this.txtCadInsPreco.getText().equals("0,00"))||(this.txtCadInsPreco.getText().equals(""))) && (this.txtCadInsQuant.getText().equals("0"))) {
+        if ((this.txtCadInsCodigo.getText().isEmpty()) && (this.txtCadInsDes.getText().isEmpty()) && ((this.txtCadInsPreco.getText().equals("0,00")) || (this.txtCadInsPreco.getText().equals(""))) && (this.txtCadInsQuant.getText().equals("0"))) {
             this.setVisible(false);
             this.dispose();
         } else {
@@ -539,9 +538,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 if (result == JOptionPane.NO_OPTION) {
                     this.setVisible(false);
                     this.dispose();
-                } 
+                }
             }
         }
+        fecharFramePesq();
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnCadInsLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCadInsLimparMouseEntered
@@ -581,6 +581,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fecharFramePesq();
     }//GEN-LAST:event_btnMinimiActionPerformed
 
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
@@ -618,8 +619,18 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         // quando ENTER é pressionado
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             confirmaAcao(false);
+            this.confirmaMascaraMoeda = true;
+        }
+        if (this.confirmaMascaraMoeda == false) {
+            this.txtCadInsPreco.setDocument(new MascaraMoeda());
+            this.confirmaMascaraMoeda = true;
         }
     }//GEN-LAST:event_txtCadInsPrecoKeyPressed
+
+    private void txtCadInsPrecoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadInsPrecoFocusLost
+        // quando o campo perder o foco
+        this.confirmaMascaraMoeda = false;
+    }//GEN-LAST:event_txtCadInsPrecoFocusLost
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -9,6 +9,7 @@ import conexao.ModuloConexao;
 import dto.EstoquePastaDto;
 import dto.InsumoDto;
 import dto.ReceitaInsumoDto;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import telas.TelaEstoquePasta;
+import util.CoresAlternadasTabela;
 import util.Util;
 
 /**
@@ -30,6 +32,9 @@ public class EstoquePastaFinalDao {
     Connection conexao = null;
 
     private final Util util = new Util();
+    private final MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
+    private final CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
+    private final InsumoDao insumoDao = new InsumoDao();
 
     private List<EstoquePastaDto> listTemp = new ArrayList<>();
     private List<EstoquePastaDto> listFinalOp1 = new ArrayList<>();
@@ -71,7 +76,7 @@ public class EstoquePastaFinalDao {
             }
 
             pst.close();
-            printInfo();
+            //printInfo();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
@@ -82,7 +87,7 @@ public class EstoquePastaFinalDao {
     private void setaPastaProduzir(ResultSet rs, double quantidade) throws SQLException {
         ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
         recInsDto.setCodigoInsumo(rs.getInt(1));
-        recInsDto.setConsumo(this.util.formatador3(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), quantidade)));
+        recInsDto.setConsumo(this.util.formatador4(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5) * 100, quantidade)));
         recInsDto.setUm(rs.getString(4));
         this.pastaProduzirOp1.add(recInsDto);
     }
@@ -91,7 +96,7 @@ public class EstoquePastaFinalDao {
     private void setaPastaEstoque(ResultSet rs, double quantidade) throws SQLException {
         ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
         recInsDto.setCodigoInsumo(rs.getInt(1));
-        recInsDto.setConsumo(this.util.formatador3(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5), quantidade)));
+        recInsDto.setConsumo(this.util.formatador4(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5) * 100, quantidade)));
         recInsDto.setUm(rs.getString(4));
         this.pastaEstoque.add(recInsDto);
     }
@@ -135,7 +140,7 @@ public class EstoquePastaFinalDao {
                     }
                 }
                 //se a resposta do ID for diferente de Falso e a quantidade em estoque da pasta for diferente de 0
-                if ((confirma != false) && (rs.getInt(3) != 0)) {
+                if ((confirma != false) && (rs.getInt(3) != 0) && (movEstDao.dataComparar(movEstDao.dataAtual(), rs.getString(4)) == false)) {
                     EstoquePastaDto estPastDto = new EstoquePastaDto();
                     estPastDto.setId(rs.getInt(5));
                     estPastDto.setCodigo(rs.getInt(1));
@@ -156,7 +161,7 @@ public class EstoquePastaFinalDao {
     //faz a subtração dos insumos das pastas, chamando os métodos necessarios para isso
     public void subtrairInsumos(int codigo) {
         //chama método para setar lista pastaEstoque com os insumos da pasta que esta na listaTemporária
-        double quantDoInsumoEst = 0, porcentoTotal = 100, porcentoTemp;
+        double quantDoInsumoEst = 0, porcentoTotal = 100, porcentoTemp, quantidadeConvertidaEst, quantidadeConvertidaPast;
         for (int i = 0; (!this.pastaProduzirOp1.isEmpty()) && (i < this.listTemp.size()); i++) {
             buscarInsumos(this.listTemp.get(i).getCodigo(), this.listTemp.get(i).getEstoque(), false);
             //entra dentro da lista pastaProduzir, para verificar compatibilidade dos insumos
@@ -165,8 +170,10 @@ public class EstoquePastaFinalDao {
                 for (int ind = 0; ind < this.pastaEstoque.size(); ind++) {
                     //verifica compatibilidade dos insumos através do código dos insumos
                     if (this.pastaProduzirOp1.get(in).getCodigoInsumo() == this.pastaEstoque.get(ind).getCodigoInsumo()) {
+                        quantidadeConvertidaPast = this.util.conversaoUMparaKG(this.pastaProduzirOp1.get(in).getUm(), this.pastaProduzirOp1.get(in).getConsumo());
+                        quantidadeConvertidaEst = this.util.conversaoUMparaKG(this.pastaEstoque.get(ind).getUm(), this.pastaEstoque.get(ind).getConsumo());
                         //verifica a % que pode ser usada em determinado insumo
-                        porcentoTemp = this.util.formatador3(this.util.regraDeTres1(this.pastaProduzirOp1.get(in).getConsumo(), this.pastaEstoque.get(ind).getConsumo()));
+                        porcentoTemp = this.util.formatador4(this.util.regraDeTres1(quantidadeConvertidaPast, quantidadeConvertidaEst));
                         //se a porcentagem temporária for maior que a Atual então é realizado a troca
                         if (porcentoTemp <= porcentoTotal) {
                             porcentoTotal = porcentoTemp;
@@ -177,7 +184,7 @@ public class EstoquePastaFinalDao {
             }
             //Recalcula o maximo a ser usada de todos os insumos da pasta estoque, com base na % total que this.util.formatador3(this.util.regraDeTres2(porcentoTotal, this.pastaEstoque.get(inde).getConsumo()))pode ser uasda
             for (int inde = 0; inde < this.pastaEstoque.size(); inde++) {
-                this.pastaEstoque.get(inde).setConsumo(this.util.formatador3(this.util.regraDeTres2(porcentoTotal, this.pastaEstoque.get(inde).getConsumo())));
+                this.pastaEstoque.get(inde).setConsumo(this.util.formatador4(this.util.regraDeTres2(porcentoTotal, this.pastaEstoque.get(inde).getConsumo())));
             }
             printInfo();
             //chama o metodo que ira fazer a subtração
@@ -193,14 +200,18 @@ public class EstoquePastaFinalDao {
                     i = -1;
                 }
             }
+            porcentoTotal = 100;
+        }
+        if (this.cofirmaProduzirOp2 == true) {
+            verificarArray(pastaProduzirOp1);
         }
     }
 
     // seta a listfinal com os dados da pasta do estoque que foi usada 
     private void setaListFinal(double usadoDaPastaEstoque, int iT) {
         this.verificaID.add(this.listTemp.get(iT).getId());
-        this.listTemp.get(iT).setUsar(this.util.formatador3(usadoDaPastaEstoque));
-        double porcent = this.util.formatador3(this.util.regraDeTres1(usadoDaPastaEstoque, Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))));
+        this.listTemp.get(iT).setUsar(this.util.formatador4(usadoDaPastaEstoque));
+        double porcent = this.util.formatador4(this.util.regraDeTres1(usadoDaPastaEstoque, Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))));
         //verifica se a % ultrapassa os 100%, caso isso acontece o objeto recebe 100%
         if (porcent > 100) {
             this.listTemp.get(iT).setEquivalencia(100);
@@ -215,50 +226,141 @@ public class EstoquePastaFinalDao {
 
     //seta a tabela que vem por parâmetro
     public void setarTabelaOp1(JTable tabela) {
-        DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
-        modelo.setNumRows(0);
+        double porcentoTotal = 0;
 
         for (int i = 0; i < this.listFinalOp1.size(); i++) {
-            modelo.addRow(new Object[]{
-                this.listFinalOp1.get(i).getId(),
-                this.listFinalOp1.get(i).getCodigo(),
-                this.listFinalOp1.get(i).getDescricao(),
-                this.util.formatadorQuant(this.listFinalOp1.get(i).getEstoque()),
-                this.util.formatadorQuant(this.listFinalOp1.get(i).getUsar()),
-                this.util.formatadorQuant(this.listFinalOp1.get(i).getEquivalencia()) + "%",
-                this.listFinalOp1.get(i).getVencimento()
-            });
+            porcentoTotal += this.listFinalOp1.get(i).getEquivalencia();
         }
+        if (porcentoTotal < 99.98) {
+            limparTblOp1();
+        } else {
+            System.out.println("Porcento TOTAL: " + porcentoTotal);
+            DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+            modelo.setNumRows(0);
+
+            for (int i = 0; i < this.listFinalOp1.size(); i++) {
+                modelo.addRow(new Object[]{
+                    this.listFinalOp1.get(i).getId(),
+                    this.listFinalOp1.get(i).getCodigo(),
+                    this.listFinalOp1.get(i).getDescricao(),
+                    this.util.formatadorQuant3(this.listFinalOp1.get(i).getEstoque()) + " kg",
+                    this.util.formatadorQuant3(this.listFinalOp1.get(i).getUsar()) + " kg",
+                    this.util.formatadorQuant(this.listFinalOp1.get(i).getEquivalencia()) + "%",
+                    this.listFinalOp1.get(i).getVencimento()
+                });
+            }
+            ativarTblOp1();
+        }
+    }
+
+    //Faz a produção da receita, dando update nas pasta da opc1
+    public boolean produzirOpc1() {
+        boolean retorno = true;
+        for (int i = 0; i < this.listFinalOp1.size(); i++) {
+            if (updatePastaEstoque(this.listFinalOp1.get(i).getId(), this.listFinalOp1.get(i).getUsar()) == true) {
+            } else {
+                retorno = false;
+            }
+        }
+        return retorno;
+    }
+
+    //Faz a produção da receita, dando update na pasta/ insumos da opc2
+    public boolean produzirOpc2() {
+        boolean retorno = true;
+        if (this.listFinalOp2.size() > 0) {
+        if (updatePastaEstoque(this.listFinalOp2.get(0).getId(), this.listFinalOp2.get(0).getUsar()) == true) {
+            } else {
+                retorno = false;
+            }
+            
+        }
+        for (int i = 0; i < this.insumosOp2.size(); i++) {
+            if (this.insumoDao.saidaInsumo(this.pastaProduzirOp2.get(i).getConsumo(), this.insumosOp2.get(i).getCodigo()) == true) {
+            } else {
+                retorno = false;
+            }
+        }
+        return retorno;
+    }
+
+    //da update na tabela de PastaEstoque
+    private boolean updatePastaEstoque(int ID, Double quantidade) {
+        boolean confirma = true;
+        String sql = "update tbEstoquePasta set quantidade = (quantidade - " + quantidade + ") where ID = " + ID + "";
+        PreparedStatement pst;
+        try {
+            pst = conexao.prepareStatement(sql);
+            ID = pst.executeUpdate();
+            if (ID > 0) {
+            } else {
+                confirma = false;
+            }
+
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, e);
+        }
+        return confirma;
+    }
+
+    private void limparTblOp1() {
+        TelaEstoquePasta.tblProducaoPastaOp1.setVisible(false);
+        TelaEstoquePasta.tblProducaoPastaOp1.setEnabled(false);
+        TelaEstoquePasta.btnProduzirOp1.setEnabled(false);
+        TelaEstoquePasta.btnProduzirOp1.setForeground(new Color(201, 201, 201));
+    }
+
+    private void ativarTblOp1() {
+        TelaEstoquePasta.tblProducaoPastaOp1.setVisible(true);
+        TelaEstoquePasta.tblProducaoPastaOp1.setEnabled(true);
+        TelaEstoquePasta.btnProduzirOp1.setEnabled(true);
+        TelaEstoquePasta.btnProduzirOp1.setForeground(new Color(66, 66, 66));
+    }
+
+    private void avitarTblOp2() {
+        TelaEstoquePasta.tblProducaoPastaOp2.setEnabled(true);
+        TelaEstoquePasta.tblProducaoPastaOp2.setVisible(true);
+        TelaEstoquePasta.btnProduzirOp2.setEnabled(true);
     }
 
     //seta a tabelaOp2
     public void setarTabelaOp2(JTable tabela) {
-        this.listFinalOp2.add(this.listFinalOp1.get(0));
-
+        double custoProducao = 0;
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
         modelo.setNumRows(0);
 
-        modelo.addRow(new Object[]{
-            this.listFinalOp1.get(0).getId(),
-            this.listFinalOp1.get(0).getCodigo(),
-            this.listFinalOp1.get(0).getDescricao(),
-            this.util.formatadorQuant(this.listFinalOp1.get(0).getEstoque()),
-            this.util.formatadorQuant(this.listFinalOp1.get(0).getUsar()),
-            this.util.formatadorQuant(this.listFinalOp1.get(0).getEquivalencia()) + "%",
-            this.listFinalOp1.get(0).getVencimento()
-        });
+        // verifica se a lista nestá vazia, de pois seta a tabela com os dados da pasta com menor validade 
+        if (!this.listFinalOp1.isEmpty()) {
 
+            this.listFinalOp2.add(this.listFinalOp1.get(0));
+
+            modelo.addRow(new Object[]{
+                this.listFinalOp1.get(0).getId(),
+                this.listFinalOp1.get(0).getCodigo(),
+                this.listFinalOp1.get(0).getDescricao(),
+                this.util.formatadorQuant3(this.listFinalOp1.get(0).getEstoque()) + " kg",
+                this.util.formatadorQuant3(this.listFinalOp1.get(0).getUsar()) + " kg",
+                this.util.formatadorQuant(this.listFinalOp1.get(0).getEquivalencia()) + "%",
+                this.listFinalOp1.get(0).getVencimento()
+            });
+        }
+        // seta a tabela com os dados dos insumos faltantes
         for (int i = 0; i < this.insumosOp2.size(); i++) {
+            custoProducao += this.pastaProduzirOp2.get(i).getConsumo() * Double.parseDouble(this.insumosOp2.get(i).getPreco());
             modelo.addRow(new Object[]{
                 "Insumo",
                 this.insumosOp2.get(i).getCodigo(),
                 this.insumosOp2.get(i).getDescricao(),
-                this.util.formatadorQuant(Double.parseDouble(this.insumosOp2.get(i).getQuantidade())),
-                this.util.formatadorQuant(this.pastaProduzirOp2.get(i).getConsumo()),
-                this.util.formatadorQuant(this.util.formatador3(this.util.regraDeTres1(this.pastaProduzirOp2.get(i).getConsumo(), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))))) + "%",
+                this.util.formatadorQuant3(Double.parseDouble(this.insumosOp2.get(i).getQuantidade())) + " " + this.insumosOp2.get(i).getUM(),
+                this.util.formatadorQuant3(this.pastaProduzirOp2.get(i).getConsumo()) + " " + this.insumosOp2.get(i).getUM(),
+                this.util.formatadorQuant(this.util.formatador4(this.util.regraDeTres1(this.util.conversaoUMparaKG(this.insumosOp2.get(i).getUM(), this.pastaProduzirOp2.get(i).getConsumo()), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))))) + "%",
                 ""
             });
         }
+        avitarTblOp2();
+        TelaEstoquePasta.lblCustoProducao.setText(this.util.formatadorQuant(custoProducao));
+        mudarCorLinha.CorNaLinhaQuantidade(tabela);
     }
 
     //busca os insumos faltante pra compar a opção 2
@@ -284,7 +386,7 @@ public class EstoquePastaFinalDao {
         }
     }
 
-    //subtrai os insumos baseados na porcentagem maxima permitida da determinada pasta do estoque
+    //subtrai os insumos baseados na porcentagem máxima permitida da determinada pasta do estoque
     private boolean subtrairPelaQuantidade() {
         double totalUsado = 0, totalTemp;
         boolean confirma = false;
@@ -294,8 +396,9 @@ public class EstoquePastaFinalDao {
                 //verifica se os insumos são compatíveis
                 if (this.pastaProduzirOp1.get(i).getCodigoInsumo() == this.pastaEstoque.get(in).getCodigoInsumo()) {
                     //faz a subtração do insumo que queremos produzir pelo insumo da pasta em estoque
-                    double insuProd = this.pastaProduzirOp1.get(i).getConsumo();
-                    double insuEstoq = this.pastaEstoque.get(in).getConsumo();
+                    double insuProd = this.util.conversaoUMparaKG(this.pastaProduzirOp1.get(i).getUm(), this.pastaProduzirOp1.get(i).getConsumo());
+                    double insuEstoq = this.util.conversaoUMparaKG(this.pastaEstoque.get(in).getUm(), this.pastaEstoque.get(in).getConsumo());
+
                     totalTemp = insuProd - insuEstoq;
                     totalUsado = insuProd - totalTemp;
                     this.usadoDaPastaEstoque += totalUsado;
@@ -317,7 +420,7 @@ public class EstoquePastaFinalDao {
         this.pesoRestantePastaProduzir = 0;
         for (int i = 0; i < produzir.size(); i++) {
             //variavel recebe a soma do restante dos insumos, gerando assim o peso restante da pasta
-            this.pesoRestantePastaProduzir += this.util.formatador3(produzir.get(i).getConsumo());
+            this.pesoRestantePastaProduzir += this.util.formatador3(this.util.conversaoUMparaKG(produzir.get(i).getUm(), produzir.get(i).getConsumo()));
             //verifica se é = "0", se for verdadeiro o insumo será eliminado da lista
             if (produzir.get(i).getConsumo() <= 0.001) {
                 produzir.remove(i);

@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import util.CoresAlternadasTabela;
 import util.Util;
 
 /**
@@ -29,6 +30,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
     Connection conexao = null;
     Util util = new Util();
     MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
+    CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
     
     private String cbPesquisar = "ep.codigoReceita";
     
@@ -87,6 +89,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
         }
+        this.mudarCorLinha.CorNaLinhaValidade(tblEstPasta);
     }
     
      private String inverterData(String data) {

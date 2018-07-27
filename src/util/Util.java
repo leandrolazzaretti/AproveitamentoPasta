@@ -134,18 +134,26 @@ public class Util {
 //    }
     public String formatador(double valor) {
 
-        DecimalFormat formatador = new DecimalFormat("0.00");
+        DecimalFormat formatador = new DecimalFormat("0.000");
         return formatador.format(valor).replace(",", ".");
     }
 
     public String formatadorQuant(Double quantidade) {
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        formatter.setMaximumFractionDigits(3);
+        formatter.setMaximumFractionDigits(4);
         BigDecimal quant = new BigDecimal(this.formatador(quantidade));
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         String quantFormatado = nf.format(quant);
         quantFormatado = quantFormatado.replace("R$ ", "");
+
+        return quantFormatado;
+    }
+    public String formatadorQuant3(Double quantidade) {
+
+        DecimalFormat df = new DecimalFormat("#,##0.###");
+        String quantFormatado = df.format(quantidade);
+
         return quantFormatado;
     }
 
@@ -161,6 +169,14 @@ public class Util {
     //formata os valores para 3 casas decimais
     public double formatador3(double valor) {
         DecimalFormat df = new DecimalFormat("#.000");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
+    }
+    
+    public double formatador4(double valor) {
+        DecimalFormat df = new DecimalFormat("#.0000");
         double resultado = 0;
         String resultado2 = df.format(valor);
         resultado = Double.parseDouble(resultado2.replace(",", "."));
@@ -238,4 +254,29 @@ public class Util {
 
         return total;
     }
+
+    public double conversaoUMparaKG(String UM, double quantidade) {
+        double total = quantidade;
+
+        if (UM.equals("g")) {
+            total = total / 1000;
+        }
+        if (UM.equals("mg")) {
+            total = total / 1000000;
+        }
+        return total;
+    }
+
+    public double conversaoKGparaUM(String UM, double quantidade) {
+        double total = quantidade;
+
+        if (UM.equals("g")) {
+            total = total * 1000;
+        }
+        if (UM.equals("mg")) {
+            total = total * 1000000;
+        }
+        return total;
+    }
+
 }

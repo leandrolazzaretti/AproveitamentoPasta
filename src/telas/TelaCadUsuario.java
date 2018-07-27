@@ -215,6 +215,12 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         }
     }
 
+    private void fecharFramPesq() {
+        if (this.framePesUsuario != null) {
+            this.framePesUsuario.dispose();
+        }
+    }
+
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(192, 221, 147));
@@ -732,6 +738,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fecharFramPesq();
     }//GEN-LAST:event_btnMinimiActionPerformed
 
     private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
@@ -762,6 +769,7 @@ public class TelaCadUsuario extends javax.swing.JInternalFrame {
                 }
             }
         }
+        fecharFramPesq();
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnLimparMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimparMouseEntered

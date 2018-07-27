@@ -61,10 +61,10 @@ public class FiltroRelatorioInsumo extends javax.swing.JDialog {
         if (this.chInsumo.isSelected()) {
             this.insu = this.txtFiltroInsumo.getText();
         }
-        if (this.chQuant.isSelected()) {
+        if (this.chUM.isSelected()) {
             this.um = this.cbFiltroUM.getSelectedItem().toString();
         }
-        if (this.chUM.isSelected()) {
+        if (this.chQuant.isSelected()) {
             this.quant = this.txtFiltroQuant.getText();
         }
     }

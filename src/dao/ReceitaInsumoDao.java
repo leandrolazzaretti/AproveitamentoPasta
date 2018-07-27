@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import telas.TelaCadReceita;
+import util.Util;
 
 /**
  *
@@ -19,15 +20,16 @@ import telas.TelaCadReceita;
 public class ReceitaInsumoDao {
 
     Connection conexao = null;
+    Util util = new Util();
 
     public ReceitaInsumoDao() {
         this.conexao = ModuloConexao.conector();
     }
 
     //Adiciona componente
-    public void adicionarComponentes(int codReceita, int codigo, String consumo) {
+    public void adicionarComponentes(int codReceita, int codigo, String consumo, double custo) {
 
-        String sql = "insert into tbReceitaInsumo(codigoReceita,codigoInsumo,consumo)values(?,?,?)";
+        String sql = "insert into tbReceitaInsumo(codigoReceita,codigoInsumo,consumo, custoPorKg)values(?,?,?,?)";
 
         PreparedStatement pst;
         try {
@@ -35,11 +37,12 @@ public class ReceitaInsumoDao {
             pst = this.conexao.prepareStatement(sql);
 
             int rec = codReceita;
-            
+
             String cons = consumo;
             pst.setInt(1, rec);
             pst.setInt(2, codigo);
             pst.setString(3, cons);
+            pst.setDouble(4, custo);
 
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
@@ -53,10 +56,37 @@ public class ReceitaInsumoDao {
         }
     }
 
+    //busca a UM e o preço por kg/g/mg/L do insumo desejado e chama o metodo para calcular o custo por kg
+    public double custoPorComponenteKg(int codigo, double consumo) {
+        double custo = 0;
+        String UM = null, sql = "select UM, preco from tbinsumos where codigo = '" + codigo + "'";
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                UM = rs.getString(1);
+                custo = rs.getDouble(2);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        custo = calcularCustoComponente(UM, custo, consumo);
+        return custo;
+    }
+
+    //calcula o custo do componente com base no seu consumo dentro de 1Kg
+    private double calcularCustoComponente(String UM, double custo, double consumo) {
+        consumo = this.util.conversaoKGparaUM(UM, consumo);
+        custo = this.util.formatador3(consumo * custo);
+        return custo;
+    }
+
     // atualiza todos os componente
     public void atualizarComponentes(int codReceita) {
         String sql = "update tbReceitaInsumo"
-                + " set consumo =?"
+                + " set consumo =?, custoPorKg =?"
                 + " where codigoReceita =? and codigoInsumo =?";
         //int count = contarTabela();
 
@@ -67,12 +97,12 @@ public class ReceitaInsumoDao {
             int linha = TelaCadReceita.tblCadRecComponentes.getSelectedRow();
             String cons = (String) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 2);
             int codg = (int) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 0);
-            //int ins = Integer.parseInt(codg);
-            int rec = codReceita;
+            double custo = custoPorComponenteKg(codg, Double.parseDouble(cons.replace(".", "").replace(",", ".")));
 
-            pst.setString(1, cons.replace(",", "."));
-            pst.setInt(2, rec);
-            pst.setInt(3, codg);
+            pst.setString(1, cons.replace(".", "").replace(",", "."));
+            pst.setDouble(2, custo);
+            pst.setInt(3, codReceita);
+            pst.setInt(4, codg);
 
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
@@ -130,7 +160,7 @@ public class ReceitaInsumoDao {
     // verifica se existe algum insumo duplicado na tabela de componentes
     public boolean verificaInsumo(int codReceita, int codigo) {
         String sql = "select count (codigoReceita) as total from tbReceitaInsumo where codigoReceita =? and codigoInsumo =?";
-        
+
         int total = 0;
         PreparedStatement pst;
 
@@ -165,9 +195,8 @@ public class ReceitaInsumoDao {
         return total <= 0;
 
     }
-    
+
     //confirma se o insumo existe através do codigo
-    
     public boolean confirmaInsumoCodigo(String codigo) {
         String sql = "select count (codigo) as total from tbinsumos where codigo ='" + codigo + "';";
         int total = 0;
@@ -183,8 +212,7 @@ public class ReceitaInsumoDao {
         return total <= 0;
 
     }
-    
-    
+
     //seleciona o codigo do insumo atraves da descrição do mesmo
     public int codIns(String descIns) {
         String sql = "select i.codigo from tbinsumos as i where descricao ='" + descIns + "'";
@@ -204,6 +232,7 @@ public class ReceitaInsumoDao {
         }
         return retorno;
     }
+
     //seleciona o descricao do insumo atraves da codigo do mesmo
     public String codIns(int codIns) {
         String sql = "select i.descricao from tbinsumos as i where codigo ='" + codIns + "'";
@@ -223,11 +252,9 @@ public class ReceitaInsumoDao {
         }
         return retorno;
     }
-    
-    
-    
-    public boolean confirmaCodigo(int codigo){
-        String sql = "select codigorec from tbreceita where codigorec = '"+codigo+"'";
+
+    public boolean confirmaCodigo(int codigo) {
+        String sql = "select codigorec from tbreceita where codigorec = '" + codigo + "'";
         PreparedStatement pst;
         boolean retorno = false;
         try {
@@ -235,10 +262,10 @@ public class ReceitaInsumoDao {
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 retorno = true;
-            }else{
+            } else {
                 retorno = false;
             }
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

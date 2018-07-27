@@ -103,7 +103,7 @@ public class Relatorio {
                 ins.setDescricao(rs.getString(2));
                 ins.setUM(rs.getString(3));
                 ins.setQuantidade(this.util.formatadorQuant(rs.getDouble(4)));
-                ins.setPreco(rs.getString(5));
+                ins.setPreco(this.util.formatadorQuant(rs.getDouble(5)));
 
                 this.listaInsumo.add(ins);
             }

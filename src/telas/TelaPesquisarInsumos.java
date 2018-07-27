@@ -17,7 +17,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
-import util.MascaraMoeda;
+import util.CoresAlternadasTabela;
+import util.SoNumeros;
 import util.Util;
 
 /**
@@ -32,6 +33,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     public static boolean confimaTela;
     public static boolean confirmarEscolha;
     Util util = new Util();
+    private final CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
 
     /**
      * Creates new form TelaPesquisarInsumos
@@ -76,13 +78,14 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
                     rs.getString(2),
                     rs.getString(3),
                     this.util.formatadorQuant(rs.getDouble(4)),
-                    rs.getString(5)});
+                    "R$ " + this.util.formatadorQuant(rs.getDouble(5))});
             }
 
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+        this.mudarCorLinha.CorNaLinhaQuantidade(tblCadInsumos);
     }
 
     //seta os campos do formulário com o coteúdo da tabela
@@ -93,8 +96,9 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.txtCadInsDes.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
         TelaCadInsumo.cbCadInsUm.setSelectedItem(this.tblCadInsumos.getModel().getValueAt(setar, 2).toString());
         TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString());
-        TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace("R", "").replace("$", "").replace(" ", ""));
-        TelaCadInsumo.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT); 
+        TelaCadInsumo.txtCadInsPreco.setDocument(new SoNumeros());
+        TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace("R$ ", ""));
+        
     }
 
     //seta o campo da descrição na tela de movimentação de estoque

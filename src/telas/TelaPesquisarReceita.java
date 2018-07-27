@@ -112,8 +112,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
                 int codg = rs.getInt(1);
                 String comp = rs.getString(2);
-                String cons = this.util.formatadorQuant(rs.getDouble(3));
-
+                String cons = this.util.formatadorQuant3(rs.getDouble(3));
                 modelo.addRow(new Object[]{codg, comp, cons});
             }
 

@@ -108,6 +108,7 @@
         </Container>
         <Component class="javax.swing.JFormattedTextField" name="txtCadInsPreco">
           <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtCadInsPrecoFocusLost"/>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtCadInsPrecoKeyPressed"/>
           </Events>
           <AuxValues>

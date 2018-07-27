@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import telas.TelaCadInsumo;
 import telas.TelaMovimentacaoEstoque;
+import util.SoNumeros;
 import util.Util;
 
 /**
@@ -38,7 +39,7 @@ public class InsumoDao {
             pst.setInt(1, insumo.getCodigo());
             pst.setString(2, insumo.getDescricao());
             pst.setString(3, insumo.getUM());
-            pst.setString(4, insumo.getQuantidade().replace(",", "."));
+            pst.setString(4, insumo.getQuantidade());
             pst.setString(5, insumo.getPreco());
             //Atualiza a tabela insumos
             int adicionado = pst.executeUpdate();
@@ -64,7 +65,6 @@ public class InsumoDao {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, insumo.getDescricao());
             pst.setString(2, insumo.getUM());
-            // pst.setString(3, insumo.getQuantidade().replace("R$ ", ""));
             pst.setString(3, insumo.getPreco());
             pst.setInt(4, codigo);
             //Atualiza a tabela insumos
@@ -119,8 +119,9 @@ public class InsumoDao {
                 TelaCadInsumo.txtCadInsDes.setText(rs.getString(2));
                 TelaCadInsumo.cbCadInsUm.setSelectedItem(rs.getString(3));
                 TelaCadInsumo.txtCadInsQuant.setText(this.util.formatadorQuant(rs.getDouble(4)));
-                TelaCadInsumo.txtCadInsPreco.setValue("");
-                TelaCadInsumo.txtCadInsPreco.setText(rs.getString(5).replace("R", "").replace("$", "").replace(" ", ""));
+                TelaCadInsumo.txtCadInsPreco.setDocument(new SoNumeros());
+                //TelaCadInsumo.txtCadInsPreco.setValue("");
+                TelaCadInsumo.txtCadInsPreco.setText(this.util.formatadorQuant(rs.getDouble(5)));
 
             } else {
             }
@@ -146,6 +147,7 @@ public class InsumoDao {
                 TelaMovimentacaoEstoque.txtEstUM.setEnabled(false);
                 TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
                 TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+                TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
                 TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
                 TelaMovimentacaoEstoque.txtEstUM.setText(rs.getString(2));
                 MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
@@ -184,33 +186,31 @@ public class InsumoDao {
     }
 
     //faz um update na tabela de insumos diminuindo a quantidade
-    public void saidaInsumo(double quantidade, int codigo) {
-        Util util = new Util();
-        String resultadoFormt = util.formatador(quantidade);
+    public boolean saidaInsumo(double quantidade, int codigo) {
+        boolean confirmar = true;
         String sql = "update tbinsumos set quantidade = quantidade - ? where codigo = ?";
 
         PreparedStatement pst;
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, resultadoFormt);
+            pst.setString(1, this.util.formatador(quantidade));
             pst.setInt(2, codigo);
-            int confirmar = pst.executeUpdate();
-
-            if (confirmar > 0) {
-
-                JOptionPane.showMessageDialog(null, "Saida de insumo realizada com sucesso.");
+            
+            if (pst.executeUpdate() > 0) {
+            }else{
+                confirmar = false;
             }
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+        return confirmar;
     }
 
     // faz a saida de insumos passando dois parametros como referência
     public void saidaInsumo2(int codigo, double quantidade) {
-        Util util = new Util();
-        String resultadoFormt = util.formatador(quantidade);
+        String resultadoFormt = this.util.formatador(quantidade);
         String sql = "update tbinsumos set quantidade = quantidade - '" + resultadoFormt + "' where codigo = '" + codigo + "'";
         PreparedStatement pst;
         try {
@@ -258,7 +258,7 @@ public class InsumoDao {
             pst = conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                resultado = conversaoUMInsumos(rs.getString(1), rs.getDouble(2), Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",", ".")));
+                resultado = conversaoUMInsumos(rs.getString(1), (rs.getDouble(2) * 100), Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",", ".")));
 
                 saidaInsumo2(rs.getInt(3), resultado);
             }

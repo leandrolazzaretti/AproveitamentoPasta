@@ -45,6 +45,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public TelaPrincipal() {
         initComponents();
         this.conexao = ModuloConexao.conector();
+        
+        
     }
 
     // quando o mouse estiver em cima

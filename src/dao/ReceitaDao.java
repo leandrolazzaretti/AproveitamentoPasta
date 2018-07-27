@@ -22,6 +22,10 @@ import telas.TelaMovimentacaoEstoque;
 public class ReceitaDao {
 
     Connection conexao = null;
+    public static double custoPorKgReceita = 0;
+    private double custoTemp  = 0;
+    private String descricao = null;
+    private boolean confirma = false;
 
     public ReceitaDao() {
         this.conexao = ModuloConexao.conector();
@@ -159,9 +163,9 @@ public class ReceitaDao {
         }
         return total <= 0;
     }
-    
-    public boolean confirmaTipoPasta(String tipoPasta){
-        String sql = "select count (descricao) as total from tbTipoPasta where descricao = '"+tipoPasta+"'";
+
+    public boolean confirmaTipoPasta(String tipoPasta) {
+        String sql = "select count (descricao) as total from tbTipoPasta where descricao = '" + tipoPasta + "'";
         int total = 0;
         PreparedStatement pst;
         try {
@@ -178,25 +182,25 @@ public class ReceitaDao {
 
     public void pesquisarReceitaMovi(int codigo) {
 
-        String sql = "select descricao from tbreceita where codigorec ='" + codigo + "'";
+        String sql = "select r.descricao, ri.custoPorKg from tbReceitaInsumo as ri"
+                + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
+                + " where codigorec ='" + codigo + "'";
 
         PreparedStatement pst;
 
         try {
             pst = this.conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
-                TelaMovimentacaoEstoque.txtDescricao.setEnabled(false);
-                TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
-                TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
-                TelaMovimentacaoEstoque.txtDescricao.setText(rs.getString(1));
-                TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
-                MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
-                TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
-                    
-                
-            } else {
+            while (rs.next()) {
+                this.custoPorKgReceita += rs.getDouble(2);
+                this.descricao = rs.getString(1);
+                if (this.confirma == false) {
+                    editarCamposTelaMovEst(descricao);
+                    this.confirma = true;
+                }
+            }
+            //caso não encontre nenhum codigo cadastrado com esse núremo gera mensagem de aviso
+            if (this.confirma == false) {
                 JOptionPane.showMessageDialog(null, "Código inválido.");
             }
 
@@ -204,6 +208,23 @@ public class ReceitaDao {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+        this.confirma = false;
+    }
+
+    private void editarCamposTelaMovEst(String descricao) {
+        TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
+        TelaMovimentacaoEstoque.txtDescricao.setEnabled(false);
+        TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
+        TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
+        TelaMovimentacaoEstoque.txtDescricao.setText(descricao);
+        TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
+        MovimentacaoEstoqueDao movDao = new MovimentacaoEstoqueDao();
+        TelaMovimentacaoEstoque.txtEstData.setText(movDao.inverterData(movDao.dataAtual()).replace("-", "/"));
+    }
+
+    public double custoPorKg(double quantidade) {
+        this.custoTemp = quantidade * this.custoPorKgReceita;
+        return custoTemp;
     }
 
     public void pesquisarProducaoPasta(int codigo) {
@@ -228,7 +249,7 @@ public class ReceitaDao {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     public String buscaCodigo(String descricao) {
         String sql = "select codigorec from tbreceita where descricao = '" + descricao + "'";
         String codigo = null;

@@ -41,6 +41,7 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         this.conexao = ModuloConexao.conector();
         pesquisarUsuario();
         retirarBordas();
+        this.tblCadUsuario.getTableHeader().setReorderingAllowed(false);
     }
 
     // metodo para retirar as bordas do JinternalFrame

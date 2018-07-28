@@ -45,6 +45,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         pesquisarInsumos();
 
         retirarBordas();
+        this.tblCadInsumos.getTableHeader().setReorderingAllowed(false);
     }
 
     // metodo para retirar as bordas do JinternalFrame

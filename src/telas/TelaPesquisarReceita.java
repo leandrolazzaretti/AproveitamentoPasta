@@ -41,6 +41,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         this.conexao = ModuloConexao.conector();
         pesquisarReceita();
         retirarBordas();
+        this.tblPesquisarReceita.getTableHeader().setReorderingAllowed(false);
     }
 
     // metodo para retirar as bordas do JinternalFrame

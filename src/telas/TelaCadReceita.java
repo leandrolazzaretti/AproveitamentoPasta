@@ -90,6 +90,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.btnInsumoPesquisar.setEnabled(false);
         this.btnAddConsumo.setEnabled(false);
         this.tblCadRecComponentes.setVisible(false);
+        this.tblCadRecComponentes.getTableHeader().setReorderingAllowed(false);
+
     }
 
     private void confirmar(boolean confirmar) {

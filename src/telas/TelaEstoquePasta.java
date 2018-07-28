@@ -8,7 +8,9 @@ package telas;
 import com.sun.glass.events.KeyEvent;
 import dao.EstoquePastaDao;
 import dao.EstoquePastaFinalDao;
+import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
+import dto.MovimentacaoEstoqueDto;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -45,6 +47,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtQuantidade.setDocument(new MascaraMoeda());
         alterarCorEnable(this.btnProduzirOp1);
         alterarCorEnable(this.btnProduzirOp2);
+        this.tblProducaoPastaOp1.getTableHeader().setReorderingAllowed(false);
+        this.tblProducaoPastaOp2.getTableHeader().setReorderingAllowed(false);
     }
 
     private void limparCampos() {
@@ -62,6 +66,20 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         ((DefaultTableModel) this.tblProducaoPastaOp2.getModel()).setRowCount(0);
     }
 
+    private void insertPasta() {
+        MovimentacaoEstoqueDto movEstDto = new MovimentacaoEstoqueDto();
+        MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
+        ReceitaDao receitaDao = new ReceitaDao();
+
+        movEstDto.setCodigoReceita(Integer.parseInt(this.txtCodigo.getText()));
+        movEstDto.setUM("kg");
+        movEstDto.setQuantidade(Double.parseDouble(this.txtQuantidade.getText().replace(".", "").replace(",", ".")));
+        movEstDto.setData(movEstDao.dataAtual());
+        movEstDto.setDataVencimento(movEstDao.dataVencimento(movEstDao.dataAtual(), receitaDao.buscaVencimento(Integer.parseInt(this.txtCodigo.getText()))));
+
+        movEstDao.entradaPasta(movEstDto);
+    }
+
     private void fecharFramPesq() {
         if (this.framePesReceita != null) {
             this.framePesReceita.dispose();
@@ -71,12 +89,11 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private void retornarCoresBtn() {
         retornaCor(this.jPanel8, this.btnProduzirOp1);
         retornaCor(this.jPanel7, this.btnProduzirOp2);
-        
     }
 
     //retorna a cor para padrão enabled
     private void alterarCorEnable(JButton botao) {
-        botao.setForeground(new Color(201,201,201));
+        botao.setForeground(new Color(201, 201, 201));
     }
 
     // quando o mouse estiver em cima
@@ -121,7 +138,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         btnLimpar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        btnConfirmar = new javax.swing.JButton();
+        btnProcurar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -281,23 +298,23 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnConfirmar.setForeground(new java.awt.Color(79, 79, 79));
-        btnConfirmar.setText("Confirmar");
-        btnConfirmar.setContentAreaFilled(false);
-        btnConfirmar.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnProcurar.setForeground(new java.awt.Color(79, 79, 79));
+        btnProcurar.setText("Procurar");
+        btnProcurar.setContentAreaFilled(false);
+        btnProcurar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnConfirmarMouseEntered(evt);
+                btnProcurarMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnConfirmarMouseExited(evt);
+                btnProcurarMouseExited(evt);
             }
         });
-        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+        btnProcurar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfirmarActionPerformed(evt);
+                btnProcurarActionPerformed(evt);
             }
         });
-        jPanel3.add(btnConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 24));
+        jPanel3.add(btnProcurar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 24));
 
         jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 100, 25));
 
@@ -549,17 +566,17 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         limparCampos();
     }//GEN-LAST:event_btnLimparActionPerformed
 
-    private void btnConfirmarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseEntered
+    private void btnProcurarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProcurarMouseEntered
         /// quando o mouse estiver em cima
-        alteraCor(this.jPanel3, this.btnConfirmar);
-    }//GEN-LAST:event_btnConfirmarMouseEntered
+        alteraCor(this.jPanel3, this.btnProcurar);
+    }//GEN-LAST:event_btnProcurarMouseEntered
 
-    private void btnConfirmarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseExited
+    private void btnProcurarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProcurarMouseExited
         // quando o mouse sair de cima
-        retornaCor(this.jPanel3, this.btnConfirmar);
-    }//GEN-LAST:event_btnConfirmarMouseExited
+        retornaCor(this.jPanel3, this.btnProcurar);
+    }//GEN-LAST:event_btnProcurarMouseExited
 
-    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+    private void btnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarActionPerformed
         //chama o metodo para dar entrado ou saida em insumo ou pasta
         //alteraCorPressionado(this.jPanel3, this.btnConfirmar);
         if (!this.txtQuantidade.getText().equals("") && (!this.txtCodigo.getText().equals(""))) {
@@ -570,13 +587,13 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
                 this.tblProducaoPastaOp1.removeAll();
                 this.tblProducaoPastaOp2.removeAll();
-                this.estPasFinal.limparVariaveis();
+                this.estPasFinal.limparVariaveis(true);
                 this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
                 this.estPasFinal.buscarInsumos(codigo, quantidade, true);
                 this.estPasFinal.subtrairInsumos(codigo);
                 retornarCoresBtn();
-                this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
                 this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
+                this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
 
             } else {
                 this.tblProducaoPastaOp1.removeAll();
@@ -587,7 +604,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         }
 
         //confirmaAcao(false);
-    }//GEN-LAST:event_btnConfirmarActionPerformed
+    }//GEN-LAST:event_btnProcurarActionPerformed
 
     private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
         // chama metodo ao pressionar a tecla Enter  
@@ -617,13 +634,13 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
                     this.tblProducaoPastaOp1.removeAll();
                     this.tblProducaoPastaOp2.removeAll();
-                    this.estPasFinal.limparVariaveis();
+                    this.estPasFinal.limparVariaveis(true);
                     this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
                     this.estPasFinal.buscarInsumos(codigo, quantidade, true);
                     this.estPasFinal.subtrairInsumos(codigo);
                     retornarCoresBtn();
-                    this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
                     this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
+                    this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
 
                 } else {
                     this.tblProducaoPastaOp1.removeAll();
@@ -666,9 +683,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private void btnProduzirOp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProduzirOp1ActionPerformed
         // chama os metodos para fazer a produção da pasta, tendo como base a primeira opção de produção
         if (this.estPasFinal.produzirOpc1() == true) {
-            JOptionPane.showMessageDialog(null, "Produção da pasta realizada com sucesso.");
+            insertPasta();
             limparCampos();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Erro na produção!");
         }
     }//GEN-LAST:event_btnProduzirOp1ActionPerformed
@@ -676,20 +693,20 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private void btnProduzirOp2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProduzirOp2ActionPerformed
         // chama os metodos para fazer a produção da pasta, tendo como base a segunda opção de produção
         if (this.estPasFinal.produzirOpc2() == true) {
-            JOptionPane.showMessageDialog(null, "Produção da pasta realizada com sucesso.");
+            insertPasta();
             limparCampos();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Erro na produção!");
         }
     }//GEN-LAST:event_btnProduzirOp2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnConfirmar;
     private javax.swing.JButton btnFechar;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnMinimi;
     private javax.swing.JButton btnPesquisar;
+    private javax.swing.JButton btnProcurar;
     public static javax.swing.JButton btnProduzirOp1;
     public static javax.swing.JButton btnProduzirOp2;
     private javax.swing.JLabel jLabel1;

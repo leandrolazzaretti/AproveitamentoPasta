@@ -56,6 +56,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtEstQuantidade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         this.txtEstQuantidade.setDocument(new MascaraMoeda());
         this.txtEstData.setValue(null);
+        limparCampos();
+        this.txtDescricao.setText(null);
+        if (this.cbEstoque.getSelectedItem().equals("Insumo")) {
+            this.txtEstUM.setText(null);
+        }
     }
 
     private void movimentacao(boolean confirmaTipo, String confirmaEstoque) {

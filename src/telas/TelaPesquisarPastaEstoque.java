@@ -41,6 +41,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         retirarBordas();
+        this.tblEstPasta.getTableHeader().setReorderingAllowed(false);
         setarTabelaPasta();
     }
     

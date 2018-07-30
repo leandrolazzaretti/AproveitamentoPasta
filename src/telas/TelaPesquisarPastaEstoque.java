@@ -32,7 +32,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
     MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
     CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
     
-    private String cbPesquisar = "ep.codigoReceita";
+    private String cbPesquisar = "ep.ID";
     
     /**
      * Creates new form TelaPesquisarPastaEstoque
@@ -53,7 +53,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
 
     //Seta a tabela de estoque de pastas
     public void setarTabelaPasta() {
-        String sql = "select ep.codigoReceita, r.descricao, ep.quantidade, r.datavencimento, ep.data, ep.dataVencimento from tbEstoquePasta as ep"
+        String sql = "select ep.ID, r.descricao, ep.quantidade, r.datavencimento, ep.data, ep.dataVencimento from tbEstoquePasta as ep"
                 + " inner join tbreceita as r on ep.codigoReceita = r.codigorec"
                 + " where " + this.cbPesquisar + " like ?";
 
@@ -150,7 +150,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         jLabel6.setText("Pesquisar por:");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 53, -1, -1));
 
-        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Pasta", "Quantidade", "Validade" }));
+        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Pasta", "Quantidade", "Validade" }));
         cbPesMovEst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbPesMovEstActionPerformed(evt);
@@ -165,12 +165,13 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         });
         getContentPane().add(txtMovEst, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 74, 228, -1));
 
+        tblEstPasta.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblEstPasta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Código", "Pasta", "Quantidade ", "Validade", "Data", "Data Vencimento"
+                "ID", "Pasta", "Quantidade ", "Validade", "Data", "Data Vencimento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -245,8 +246,8 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
 
     private void cbPesMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPesMovEstActionPerformed
         //  // adiciona um valor a variável cbPesquizar
-        if (this.cbPesMovEst.getSelectedItem().equals("Código")) {
-            this.cbPesquisar = "ep.codigoReceita";
+        if (this.cbPesMovEst.getSelectedItem().equals("ID")) {
+            this.cbPesquisar = "ep.ID";
         } else {
             if (this.cbPesMovEst.getSelectedItem().equals("Pasta")) {
                 this.cbPesquisar = "r.descricao";
@@ -272,7 +273,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
             ReceitaDao receitaDao = new ReceitaDao();
             int setar = this.tblEstPasta.getSelectedRow();
             TelaMovimentacaoEstoque.txtDescricao.setText((String) this.tblEstPasta.getModel().getValueAt(setar, 1));
-            TelaMovimentacaoEstoque.txtCodigo.setText(receitaDao.buscaCodigo((String) this.tblEstPasta.getModel().getValueAt(setar, 1)));
+            TelaMovimentacaoEstoque.txtCodigo.setText( "" + this.tblEstPasta.getModel().getValueAt(setar, 0));
             TelaMovimentacaoEstoque.txtCodigo.setEnabled(false);
             TelaMovimentacaoEstoque.txtEstQuantidade.setEnabled(true);
             TelaMovimentacaoEstoque.txtEstData.setEnabled(true);

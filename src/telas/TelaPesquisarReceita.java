@@ -6,6 +6,7 @@
 package telas;
 
 import conexao.ModuloConexao;
+import dao.ReceitaInsumoDao;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
@@ -115,6 +116,8 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 String comp = rs.getString(2);
                 String cons = this.util.formatadorQuant3(rs.getDouble(3));
                 modelo.addRow(new Object[]{codg, comp, cons});
+                ReceitaInsumoDao.consumoTotal2.add(rs.getDouble(3));
+                ReceitaInsumoDao.consumoTotal += rs.getDouble(3);
             }
 
             pst.close();

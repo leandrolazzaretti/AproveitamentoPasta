@@ -23,7 +23,7 @@ public class ReceitaDao {
 
     Connection conexao = null;
     public static double custoPorKgReceita = 0;
-    private double custoTemp  = 0;
+    private double custoTemp = 0;
     private String descricao = null;
     private boolean confirma = false;
 
@@ -180,11 +180,9 @@ public class ReceitaDao {
         return total <= 0;
     }
 
-    public void pesquisarReceitaMovi(int codigo) {
+    public void pesquisarReceitaMovi(String condicao) {
 
-        String sql = "select r.descricao, ri.custoPorKg from tbReceitaInsumo as ri"
-                + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
-                + " where codigorec ='" + codigo + "'";
+        String sql = condicao;
 
         PreparedStatement pst;
 
@@ -279,5 +277,24 @@ public class ReceitaDao {
         }
         return codigo;
     }
+    
+    public int buscaVencimentoID(int ID) {
+        String sql = "select r.datavencimento from tbEstoquePasta as ep"
+                + " inner join tbreceita as r on r.codigorec = ep.codigoReceita"
+                + " where ep.ID = '" + ID + "'";
+        int codigo = 0;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            codigo = rs.getInt(1);
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return codigo;
+    }
+    
+    
 
 }

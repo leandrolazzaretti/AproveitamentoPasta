@@ -15,13 +15,15 @@ public class ReceitaInsumoDto {
     private int codigoInsumo;
     private double consumo;
     private String um;
+    private double custoPorKg;
     
-    public ReceitaInsumoDto(int id, int codigoReceita,  int codigoInsumo, double consumo, String um){
+    public ReceitaInsumoDto(int id, int codigoReceita,  int codigoInsumo, double consumo, String um, double custoPorKg){
         this.id = id;
         this.codigoReceita = codigoReceita;
         this.codigoInsumo = codigoInsumo;
         this.consumo = consumo;
         this.um = um;
+        this.custoPorKg = custoPorKg;
     }
     
     public ReceitaInsumoDto(){
@@ -66,6 +68,14 @@ public class ReceitaInsumoDto {
 
     public void setUm(String um) {
         this.um = um;
+    }
+
+    public double getCustoPorKg() {
+        return custoPorKg;
+    }
+
+    public void setCustoPorKg(double custoPorKg) {
+        this.custoPorKg = custoPorKg;
     }
     
     

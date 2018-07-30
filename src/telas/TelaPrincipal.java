@@ -45,8 +45,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public TelaPrincipal() {
         initComponents();
         this.conexao = ModuloConexao.conector();
-        
-        
     }
 
     // quando o mouse estiver em cima
@@ -63,7 +61,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         separador.setBackground(new Color(255, 255, 255));
         separador.setForeground(new Color(219, 219, 219));
         botao.setForeground(new Color(66, 66, 66));
-
     }
 
     // quando o botão for pressionado
@@ -74,8 +71,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
         botao.setForeground(new Color(255, 255, 255));
     }
 
-    private void confirmaBotaoTela() {
-
+    private void fecharTelas() {
+        if (this.frameEstoquePasta != null) {
+            this.frameEstoquePasta.dispose();
+        }
+        if (this.frameInsumo != null) {
+            this.frameInsumo.dispose();
+        }
+        if (this.frameMovimentacao != null) {
+            this.frameMovimentacao.dispose();
+        }
+        if (this.frameReceita != null) {
+            this.frameReceita.dispose();
+        }
+        if (this.frameUsuario != null) {
+            this.frameUsuario.dispose();
+        }
     }
 
     /**
@@ -494,10 +505,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
         // Chama a tela usuario
+        fecharTelas();
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
             this.util.retirarBordas(this.frameUsuario);
-
         } else {
             this.frameUsuario.dispose();
             this.frameUsuario = new TelaCadUsuario();
@@ -508,6 +519,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menCadUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadUsuActionPerformed
         // cahama a TelaCadUsu     
+        fecharTelas();
         if (this.frameUsuario == null) {
             this.frameUsuario = new TelaCadUsuario();
             this.util.retirarBordas(this.frameUsuario);
@@ -521,6 +533,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsumoActionPerformed
         // chama a TelaCadInsumos  
+        fecharTelas();
         if (this.frameInsumo == null) {
             this.frameInsumo = new TelaCadInsumo();
             this.util.retirarBordas(this.frameInsumo);
@@ -535,6 +548,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
         // chama a TelaCadInsumos     
+        fecharTelas();
         if (this.frameInsumo == null) {
             this.frameInsumo = new TelaCadInsumo();
             this.util.retirarBordas(this.frameInsumo);
@@ -549,6 +563,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed
         // chama a TelaCadReceita
+        fecharTelas();
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
             this.util.retirarBordas(this.frameReceita);
@@ -562,6 +577,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menCadRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadRecActionPerformed
         // chama a TelaCadReceita
+        fecharTelas();
         if (this.frameReceita == null) {
             this.frameReceita = new TelaCadReceita();
             this.util.retirarBordas(this.frameReceita);
@@ -575,6 +591,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menConMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConMovEstActionPerformed
         // chama TelaMovimentacaoEstoque
+        fecharTelas();
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
             this.util.retirarBordas(this.frameMovimentacao);
@@ -588,6 +605,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void tbnEstPastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnEstPastaActionPerformed
         // chama TelaEstoquePasta
+        fecharTelas();
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
             this.util.retirarBordas(this.frameEstoquePasta);
@@ -601,6 +619,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menConEstPasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menConEstPasActionPerformed
         // chama TelaEstoquePasta
+        fecharTelas();
         if (this.frameEstoquePasta == null) {
             this.frameEstoquePasta = new TelaEstoquePasta();
             this.util.retirarBordas(this.frameEstoquePasta);
@@ -615,6 +634,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnMovEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovEstoqueActionPerformed
         // chama TelaMovimentação Estoque
+        fecharTelas();
         if (this.frameMovimentacao == null) {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
             this.util.retirarBordas(this.frameMovimentacao);

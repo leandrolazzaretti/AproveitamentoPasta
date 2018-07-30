@@ -27,7 +27,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import util.ComboKeyHandler;
-import util.MascaraMoeda;
 import util.MascaraMoeda3;
 import util.SoNumeros;
 import util.Util;
@@ -122,6 +121,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.txtCadRecComponentesCodigo.setText(null);
         this.txtCadRecComponentesDesc.setText(null);
         this.txtCadRecConsumo.setDocument(new MascaraMoeda3());
+        this.recInsDao.limparVariaveis();
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
         this.cbCadReceitaTipo.setSelectedItem(null);
         desabilitarTabela();
@@ -145,6 +145,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 //        deletarComponente();
         if (this.tblCadRecComponentes.getSelectedRow() != -1) {
             DefaultTableModel remov = (DefaultTableModel) this.tblCadRecComponentes.getModel();
+            this.recInsDao.removerConsumoDaList(this.tblCadRecComponentes.getSelectedRow(), Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(".", "").replace(",", ".")));
             recInsDao.deletarComponente(Integer.parseInt(this.txtCadRecCodigo.getText()));
             remov.removeRow(this.tblCadRecComponentes.getSelectedRow());
         }
@@ -742,6 +743,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             TelaPesquisarReceita pesqRec = new TelaPesquisarReceita();
             if (pesq.pesquisarReceita(Integer.parseInt(this.txtCadRecCodigo.getText())) == true) {
                 abilitarTabela();
+                this.recInsDao.limparVariaveis();
                 pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
             }
         }
@@ -755,6 +757,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 TelaPesquisarReceita pesqRec = new TelaPesquisarReceita();
                 if (pesq.pesquisarReceita(Integer.parseInt(this.txtCadRecCodigo.getText())) == true) {
                     abilitarTabela();
+                    this.recInsDao.limparVariaveis();
                     pesqRec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
                 } else {
                     this.txtCadRecDes.requestFocus();
@@ -903,7 +906,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
             } else {
                 //chamaa o metodo para verificar se o insumo é válido
-                total = recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
+                total = this.recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
                 if (total == true) {
                     JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
                 } else {
@@ -911,15 +914,19 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                         JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
 
                     } else {
-                        total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
+                        total = this.recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
                         if (total == false) {
                             JOptionPane.showMessageDialog(null, "Componente já existe.");
                         } else {
-                            recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."), recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))));
-                            setarTabela();
-                            this.txtCadRecComponentesCodigo.setText(null);
-                            this.txtCadRecComponentesDesc.setText(null);
-                            this.txtCadRecComponentesCodigo.requestFocus();
+                            if (this.recInsDao.verificaConsumoTotalAdd(Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))) == false) {
+                                JOptionPane.showMessageDialog(null, "Consumo exede o total de 1kg.");
+                            } else {
+                                this.recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ".")), this.recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))));
+                                setarTabela();
+                                this.txtCadRecComponentesCodigo.setText(null);
+                                this.txtCadRecComponentesDesc.setText(null);
+                                this.txtCadRecComponentesCodigo.requestFocus();
+                            }
                         }
                     }
                 }
@@ -934,7 +941,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         } else {
             // chamaa o metodo para verificar se o insumo é válido
-            total = recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
+            total = this.recInsDao.confirmaInsumoCodigo(this.txtCadRecComponentesCodigo.getText());
             if (total == true) {
                 JOptionPane.showMessageDialog(null, "O Componente descrito não existe.");
             } else {
@@ -942,15 +949,19 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Código do cadastro inválido.");
 
                 } else {
-                    total = recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
+                    total = this.recInsDao.verificaInsumo(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()));
                     if (total == false) {
                         JOptionPane.showMessageDialog(null, "Componente já existe.");
                     } else {
-                        recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), this.txtCadRecConsumo.getText().replace(",", "."), recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ""))));
-                        setarTabela();
-                        this.txtCadRecComponentesCodigo.setText(null);
-                        this.txtCadRecComponentesDesc.setText(null);
-                        this.txtCadRecComponentesCodigo.requestFocus();
+                        if (this.recInsDao.verificaConsumoTotalAdd(Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))) == false) {
+                            JOptionPane.showMessageDialog(null, "Consumo exede o total de 1kg.");
+                        } else {
+                            this.recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ".")), this.recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ""))));
+                            setarTabela();
+                            this.txtCadRecComponentesCodigo.setText(null);
+                            this.txtCadRecComponentesDesc.setText(null);
+                            this.txtCadRecComponentesCodigo.requestFocus();
+                        }
                     }
                 }
             }
@@ -974,18 +985,28 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
         // Chama o metodo atualizar enquanto digita
         if (!this.txtCadRecCodigo.getText().equals("")) {
-            this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-            this.tblCadRecComponentes.removeAll();
-            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            if (this.recInsDao.verificaConsumoTotalUpdate(this.tblCadRecComponentes.getSelectedRow(), Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(".", "").replace(",", "."))) == false) {
+                JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
+            } else {
+                this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+                this.tblCadRecComponentes.removeAll();
+                this.recInsDao.limparVariaveis();
+                this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            }
+
         }
     }//GEN-LAST:event_tblCadRecComponentesKeyReleased
 
     private void tblCadRecComponentesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyPressed
         // Chama o metodo atualizar atraves da tecla Enter
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-            this.tblCadRecComponentes.removeAll();
-            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            if (this.recInsDao.verificaConsumoTotalUpdate(this.tblCadRecComponentes.getSelectedRow(), Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(".", "").replace(",", "."))) == false) {
+                JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
+            } else {
+                this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+                this.tblCadRecComponentes.removeAll();
+                this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            }
         }
     }//GEN-LAST:event_tblCadRecComponentesKeyPressed
 

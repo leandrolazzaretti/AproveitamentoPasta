@@ -58,6 +58,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtQuantidade.setDocument(new MascaraMoeda());
         this.txtQuantidade.setEnabled(false);
         this.lblCustoProducao.setText("0,00");
+        this.lblValorReaproveitadoOpc1.setText("0,00");
+        this.lblValorReaproveitadoOpc2.setText("0,00");
         this.btnProduzirOp1.setEnabled(false);
         this.btnProduzirOp2.setEnabled(false);
         alterarCorEnable(this.btnProduzirOp1);
@@ -153,6 +155,10 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         btnProduzirOp1 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         btnProduzirOp2 = new javax.swing.JButton();
+        lbltext = new javax.swing.JLabel();
+        lblValorReaproveitadoOpc1 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        lblValorReaproveitadoOpc2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -367,7 +373,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblProducaoPastaOp1);
 
-        jLabel8.setText("Custo de produção: R$ ");
+        jLabel8.setText("Custo em insumos: R$ ");
 
         lblCustoProducao.setForeground(new java.awt.Color(255, 0, 0));
         lblCustoProducao.setText("0,00");
@@ -420,26 +426,44 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jPanel7.add(btnProduzirOp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
 
+        lbltext.setText("Reaproveitado: R$");
+
+        lblValorReaproveitadoOpc1.setForeground(new java.awt.Color(0, 153, 0));
+        lblValorReaproveitadoOpc1.setText("0,00");
+
+        jLabel9.setText("Reaproveitado: R$");
+
+        lblValorReaproveitadoOpc2.setForeground(new java.awt.Color(0, 153, 0));
+        lblValorReaproveitadoOpc2.setText("0,00");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel6)
-                .addGap(80, 80, 80)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(80, 80, 80)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(lbltext)
+                        .addGap(8, 8, 8)
+                        .addComponent(lblValorReaproveitadoOpc1)))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(8, 8, 8)
+                        .addComponent(lblValorReaproveitadoOpc2)
+                        .addGap(39, 39, 39)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCustoProducao)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblCustoProducao))
+                    .addComponent(jLabel7))
+                .addGap(19, 33, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -462,7 +486,11 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(lblCustoProducao))
+                    .addComponent(lblCustoProducao)
+                    .addComponent(lbltext)
+                    .addComponent(lblValorReaproveitadoOpc1)
+                    .addComponent(jLabel9)
+                    .addComponent(lblValorReaproveitadoOpc2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
@@ -717,6 +745,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -728,6 +757,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JLabel lblCustoProducao;
+    public static javax.swing.JLabel lblValorReaproveitadoOpc1;
+    public static javax.swing.JLabel lblValorReaproveitadoOpc2;
+    private javax.swing.JLabel lbltext;
     public static javax.swing.JTable tblProducaoPastaOp1;
     public static javax.swing.JTable tblProducaoPastaOp2;
     public static javax.swing.JTextField txtCodigo;

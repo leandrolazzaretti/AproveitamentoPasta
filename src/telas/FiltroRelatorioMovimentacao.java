@@ -22,7 +22,7 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
     int xMouse;
     int yMouse;
 
-    private String tipo = "";
+    private String tipo = "!=";
     private String estoque = "";
     private String desc = "";
     private String cod = "";

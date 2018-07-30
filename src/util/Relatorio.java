@@ -39,7 +39,7 @@ public class Relatorio {
     List lista;
     String url;
     Util util = new Util();
-    
+
     public Relatorio() {
         this.conexao = ModuloConexao.conector();
     }
@@ -117,12 +117,12 @@ public class Relatorio {
 
     public void relatorioMovimentacaoSetar(String tipo, String estoque, String codigo, String descricao, String dataDe, String dataAte) {
         String vazio = "";
-        String sql = "select * from tbMovimentacao where (quantidade "+ tipo +" '0') and"
+        String sql = "select * from tbMovimentacao where (quantidade " + tipo + "'0') and"
                 + " (tipo ='" + estoque + "' or '" + estoque + "'='" + vazio + "')"
                 + " and (codigoID ='" + codigo + "' or '" + codigo + "'='" + vazio + "') and"
                 + " (descricao = '" + descricao + "' or '" + descricao + "' = '" + vazio + "') and"
-                + " ((data >= '" + dataDe + "' and data <= '" + dataAte + "') or"
-                + " ('" + dataDe + "' = '" + vazio + "' and '" + dataAte + "' = '" + vazio + "'))"
+                + " (data >= '" + dataDe + "' and data <= '" + dataAte + "' or"
+                + " '" + dataDe + "' = '" + vazio + "' and '" + dataAte + "' = '" + vazio + "')"
                 + " order by data";
         PreparedStatement pst;
         this.url = "/Report/Movimentacao.jrxml";

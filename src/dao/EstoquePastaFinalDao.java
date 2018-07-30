@@ -48,7 +48,7 @@ public class EstoquePastaFinalDao {
 
     private boolean cofirmaProduzirOp2 = true, confirmaUrl = true, confirmaListTempX = true;
     private String componenteDeletado = null, insumosDeletados, consultarMin = ") as tb1 order by tb1.vencimento";
-    private double usadoDaPastaEstoque, pesoRestantePastaProduzir;
+    private double usadoDaPastaEstoque, pesoRestantePastaProduzir, valorReaproveitado;
     private int proximaPastaEstoque = 0;
 
     public EstoquePastaFinalDao() {
@@ -144,7 +144,7 @@ public class EstoquePastaFinalDao {
                     setaListTemp(rs);
                 }
             }
-                this.confirmaListTempX = false;
+            this.confirmaListTempX = false;
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -240,21 +240,21 @@ public class EstoquePastaFinalDao {
         }
         if (porcentoTotal < 99.98) {
             if (this.proximaPastaEstoque <= this.listTempX.size()) {
-                
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //aqui a baixo minha nova lógica
-            limparVariaveis(false);
-            for(int i = this.proximaPastaEstoque; i < this.listTempX.size(); i++){
-                this.listTemp.add(this.listTempX.get(i));
-            }
-            buscarInsumos(Integer.parseInt(TelaEstoquePasta.txtCodigo.getText()), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", ".")), true);
-            subtrairInsumos(Integer.parseInt(TelaEstoquePasta.txtCodigo.getText()));
-            this.proximaPastaEstoque++;
-            setarTabelaOp1(TelaEstoquePasta.tblProducaoPastaOp1);
-            }else{
-             limparTblOp1();
+                //aqui a baixo minha nova lógica
+                limparVariaveis(false);
+                for (int i = this.proximaPastaEstoque; i < this.listTempX.size(); i++) {
+                    this.listTemp.add(this.listTempX.get(i));
+                }
+                buscarInsumos(Integer.parseInt(TelaEstoquePasta.txtCodigo.getText()), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", ".")), true);
+                subtrairInsumos(Integer.parseInt(TelaEstoquePasta.txtCodigo.getText()));
+                this.proximaPastaEstoque++;
+                setarTabelaOp1(TelaEstoquePasta.tblProducaoPastaOp1);
+            } else {
+                limparTblOp1();
             }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +274,10 @@ public class EstoquePastaFinalDao {
                     this.util.formatadorQuant(this.listFinalOp1.get(i).getEquivalencia()) + "%",
                     this.listFinalOp1.get(i).getVencimento()
                 });
+                valorReaproveitado(this.listFinalOp1.get(i).getCodigo(), this.listFinalOp1.get(i).getUsar());
             }
+            TelaEstoquePasta.lblValorReaproveitadoOpc1.setText(this.util.formatadorQuant(this.valorReaproveitado));
+            this.valorReaproveitado = 0;
             ativarTblOp1();
         }
     }
@@ -335,6 +338,27 @@ public class EstoquePastaFinalDao {
         return confirma;
     }
 
+    private void valorReaproveitado(int codigoReceita, double quantidade){
+        this.valorReaproveitado += quantidade * buscaCustoReceita(codigoReceita);
+}
+    //busca o custo por kg de determinada receita através do código
+    private double buscaCustoReceita(int codigoReceita) {
+        String sql = "select custoPorKg from tbReceitaInsumo where codigoReceita = " + codigoReceita + "";
+        PreparedStatement pst;
+        double custo = 0;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                custo += rs.getDouble(1);
+            }
+            pst.close();
+        } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, e);
+        }
+        return custo;
+    }
+
     private void limparTblOp1() {
         TelaEstoquePasta.tblProducaoPastaOp1.setVisible(false);
         TelaEstoquePasta.tblProducaoPastaOp1.setEnabled(false);
@@ -375,6 +399,7 @@ public class EstoquePastaFinalDao {
                 this.util.formatadorQuant(this.listFinalOp1.get(0).getEquivalencia()) + "%",
                 this.listFinalOp1.get(0).getVencimento()
             });
+            valorReaproveitado(this.listFinalOp1.get(0).getCodigo(), this.listFinalOp1.get(0).getUsar());
         }
         // seta a tabela com os dados dos insumos faltantes
         for (int i = 0; i < this.insumosOp2.size(); i++) {
@@ -390,8 +415,11 @@ public class EstoquePastaFinalDao {
             });
         }
         avitarTblOp2();
+        TelaEstoquePasta.lblValorReaproveitadoOpc2.setText(this.util.formatadorQuant(this.valorReaproveitado));
+        this.valorReaproveitado = 0;
         TelaEstoquePasta.lblCustoProducao.setText(this.util.formatadorQuant(custoProducao));
         mudarCorLinha.CorNaLinhaQuantidade(tabela);
+        
     }
 
     //busca os insumos faltante pra compar a opção 2
@@ -577,7 +605,7 @@ public class EstoquePastaFinalDao {
 
     //limpa as variaveis para iniciar uma nova busca 
     public void limparVariaveis(boolean confirma) {
-        if ( confirma == true) {
+        if (confirma == true) {
             this.listTempX.clear();
         }
         this.listTemp.clear();
@@ -596,5 +624,6 @@ public class EstoquePastaFinalDao {
         this.consultarMin = ") as tb1 order by tb1.vencimento";
         this.usadoDaPastaEstoque = 0;
         this.pesoRestantePastaProduzir = 0;
+        this.valorReaproveitado = 0;
     }
 }

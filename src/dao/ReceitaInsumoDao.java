@@ -9,6 +9,8 @@ import conexao.ModuloConexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import telas.TelaCadReceita;
 import util.Util;
@@ -21,14 +23,44 @@ public class ReceitaInsumoDao {
 
     Connection conexao = null;
     Util util = new Util();
+    public static double consumoTotal = 0, consumoTotalTemp = 0;
+    public static List<Double> consumoTotal2 = new ArrayList<>();
 
     public ReceitaInsumoDao() {
         this.conexao = ModuloConexao.conector();
     }
 
+    //verifica se o valor total do consumo ultrapassa 1kg enquanto estamos no adicionar
+    public boolean verificaConsumoTotalAdd(double consumo){
+        return consumoTotal + consumo <= 1;
+    }
+    
+    //verifica se o valor total do consumo ultrapassa 1kg enquanto estamos no atualizar
+    public boolean verificaConsumoTotalUpdate(int linha, double consumo){
+        this.consumoTotalTemp = 0;
+        this.consumoTotal2.set(linha, consumo);
+        for(int i = 0; i < this.consumoTotal2.size(); i++){
+            this.consumoTotalTemp += this.consumoTotal2.get(i);
+        }
+        return this.consumoTotalTemp <= 1;
+    }
+    
+    //seta a posição removida com o valor "0"
+    public void removerConsumoDaList(int index, double consumo){
+        this.consumoTotal2.remove(index);
+        this.consumoTotal -= consumo;
+        this.consumoTotal = this.util.formatador4(consumoTotal);
+    }
+    
+    //limpa algumas variáveis 
+    public void limparVariaveis(){
+        this.consumoTotal = 0;
+        this.consumoTotal2.clear();
+    }
+    
     //Adiciona componente
-    public void adicionarComponentes(int codReceita, int codigo, String consumo, double custo) {
-
+    public void adicionarComponentes(int codReceita, int codigo, double consumo, double custo) {
+       
         String sql = "insert into tbReceitaInsumo(codigoReceita,codigoInsumo,consumo, custoPorKg)values(?,?,?,?)";
 
         PreparedStatement pst;
@@ -38,15 +70,15 @@ public class ReceitaInsumoDao {
 
             int rec = codReceita;
 
-            String cons = consumo;
             pst.setInt(1, rec);
             pst.setInt(2, codigo);
-            pst.setString(3, cons);
+            pst.setDouble(3, consumo);
             pst.setDouble(4, custo);
 
             int adicionado = pst.executeUpdate();
             if (adicionado > 0) {
                 //System.out.println("Deu boa.");
+                this.consumoTotal += consumo;
             }
             pst.close();
 

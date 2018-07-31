@@ -88,7 +88,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameUsuario.dispose();
         }
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -558,7 +557,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.util.retirarBordas(this.frameInsumo);
         }
         this.util.comandoInternal(this.frameInsumo);
-
     }//GEN-LAST:event_menCadInsActionPerformed
 
     private void btnReceitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaActionPerformed
@@ -627,7 +625,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameEstoquePasta.dispose();
             this.frameEstoquePasta = new TelaEstoquePasta();
             this.util.retirarBordas(this.frameEstoquePasta);
-
         }
         this.util.comandoInternal(this.frameEstoquePasta);
     }//GEN-LAST:event_menConEstPasActionPerformed
@@ -643,7 +640,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.frameMovimentacao = new TelaMovimentacaoEstoque();
             this.util.retirarBordas(this.frameMovimentacao);
         }
-
         this.util.comandoInternal(this.frameMovimentacao);
     }//GEN-LAST:event_btnMovEstoqueActionPerformed
 
@@ -673,7 +669,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menRelInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelInsActionPerformed
         // Gerando um relatório de clientes
-
         if (this.jDialogInsumo == false) {
             (new FiltroRelatorioInsumo(this, false)).setVisible(true);
             this.jDialogInsumo = true;

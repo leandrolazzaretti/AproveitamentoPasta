@@ -117,6 +117,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
                 String cons = this.util.formatadorQuant3(rs.getDouble(3));
                 modelo.addRow(new Object[]{codg, comp, cons});
                 ReceitaInsumoDao.consumoTotal2.add(rs.getDouble(3));
+                ReceitaInsumoDao.consumoTotal3.add(rs.getDouble(3));
                 ReceitaInsumoDao.consumoTotal += rs.getDouble(3);
             }
 

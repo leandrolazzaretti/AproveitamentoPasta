@@ -201,7 +201,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                             limparCampos("Código:");
                         }
                     }
-
                 } else {
                     //this.txtEstData.setText(inverterData(this.movEstDao.dataAtual()).replace("-", "/"));
                     double quantidade = Double.parseDouble(this.txtEstQuantidade.getText().replace(",", "."));
@@ -272,7 +271,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     public void retornaCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(255, 255, 255));
         botao.setForeground(new Color(66, 66, 66));
-
     }
 
     // quando o botão for pressionado
@@ -618,7 +616,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void btnMovEstPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovEstPesquisarActionPerformed
         // chama a tela de pesquisa receita ou insumo
-
         if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
             if (this.cbTipo.getSelectedItem().equals("Entrada")) {
                 if (this.framePesReceita == null) {
@@ -640,7 +637,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                 this.rec.pesquisarReceita();
                 this.util.comandoInternal2(this.framePesEstoquePasta);
             }
-
         } else {
             if (this.framePesInsumo == null) {
                 this.framePesInsumo = new TelaPesquisarInsumos();
@@ -666,7 +662,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
     private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
         // chama metodo ao pressionar a tecla Enter   
-
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
                 if ((!this.txtCodigo.getText().equals("") && (this.cbTipo.getSelectedItem().equals("Saída")))) {
@@ -680,7 +675,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                             + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
                             + " where ri.codigoReceita ='" + Integer.parseInt(this.txtCodigo.getText()) + "'");
                     this.txtEstUM.setText("kg");
-
                 }
             } else {
                 if (!this.txtCodigo.getText().equals("")) {
@@ -689,7 +683,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
             }
         }
-
     }//GEN-LAST:event_txtCodigoKeyPressed
 
     private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered

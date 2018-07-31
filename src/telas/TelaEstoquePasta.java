@@ -475,13 +475,12 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel6)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -630,18 +629,15 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         }
-
-        //confirmaAcao(false);
+        
     }//GEN-LAST:event_btnProcurarActionPerformed
 
     private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
         // chama metodo ao pressionar a tecla Enter  
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-
             if (!this.txtCodigo.getText().equals("")) {
                 ReceitaDao pesq = new ReceitaDao();
                 pesq.pesquisarProducaoPasta(Integer.parseInt(this.txtCodigo.getText()));
-
             }
         }
     }//GEN-LAST:event_txtCodigoKeyPressed
@@ -669,7 +665,6 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
                     retornarCoresBtn();
                     this.estPasFinal.setarTabelaOp2(tblProducaoPastaOp2);
                     this.estPasFinal.setarTabelaOp1(tblProducaoPastaOp1);
-
                 } else {
                     this.tblProducaoPastaOp1.removeAll();
                     this.tblProducaoPastaOp2.removeAll();

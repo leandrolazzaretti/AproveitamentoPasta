@@ -37,16 +37,16 @@ import util.Util;
  */
 public class TelaCadReceita extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;
+    private Connection conexao = null;
     public int codigoTipo;
     private String descIns;
-    TipoPastaDao pasta = new TipoPastaDao();
-    ReceitaInsumoDao recInsDao = new ReceitaInsumoDao();
-    TelaPesquisarReceita rec = new TelaPesquisarReceita();
-    ReceitaDao recDao = new ReceitaDao();
-    Util util = new Util();
-    boolean verifica = false;
-    String armazena = null;
+    private final TipoPastaDao pasta = new TipoPastaDao();
+    private final ReceitaInsumoDao recInsDao = new ReceitaInsumoDao();
+    private final TelaPesquisarReceita rec = new TelaPesquisarReceita();
+    private final ReceitaDao recDao = new ReceitaDao();
+    private final Util util = new Util();
+    private boolean verifica = false, confKeyEnter = true;
+    private String armazena = null;
 
     public static JInternalFrame framePesInsumo;
     public static JInternalFrame framePesReceita;
@@ -168,6 +168,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.tblCadRecComponentes.setComponentPopupMenu(popupMenu);
     }
 
+    //verifica se os campos estão setados 
     private boolean verificaCampos() {
         if ((this.txtCadRecCodigo.getText().isEmpty()) || (this.txtCadRecDes.getText().isEmpty()) || (this.txtCadRecPan.getText().isEmpty()) || (this.cbCadReceitaTipo.getSelectedItem().equals("")) || (this.txtCadRecVal.getText().isEmpty())) {
             return false;
@@ -176,16 +177,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }
 
-//    //mascara para o campo Consumo(foramato de moeda)
-//    private void mascaraConsu() {
-//        DecimalFormat dFormat = new DecimalFormat("##0.00");
-//        NumberFormatter formatter = new NumberFormatter(dFormat);
-//
-//        formatter.setFormat(dFormat);
-//        formatter.setAllowsInvalid(false);
-//
-//        this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
-//    }
     private void confirmaAcao(boolean conf) {
         // chama o metodo adicionar / ou Atualizar       
         boolean total;
@@ -234,6 +225,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
         if (this.framePesReceita != null) {
             this.framePesReceita.dispose();
+        }
+    }
+
+    //seta a váriavel "confConsumoUpd" com o valor do novo consumo
+    private double setarConsumo() {
+        String confConsumoUpd = this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString();
+        if (confConsumoUpd.equals("")) {
+            return 0;
+        } else {
+            return Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(",", "."));
         }
     }
 
@@ -423,6 +424,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblCadRecComponentes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCadRecComponentesMouseClicked(evt);
             }
         });
         tblCadRecComponentes.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -684,7 +690,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private void btnReceitaPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceitaPesquisarActionPerformed
         // chama a TelaPesquisarReceita
         limparCampos();
-
         if (this.framePesReceita == null) {
             this.framePesReceita = new TelaPesquisarReceita();
         } else {
@@ -694,8 +699,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.rec.pesquisarReceita();
         this.util.comandoInternal(this.framePesReceita);
         TelaPesquisarReceita.confirmarEscolha = 1;
-
-
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
     private void tbnCadRecTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnCadRecTipoActionPerformed
@@ -984,32 +987,40 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private void tblCadRecComponentesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyReleased
         // Chama o metodo atualizar enquanto digita
-        if (!this.txtCadRecCodigo.getText().equals("")) {
-            if (this.recInsDao.verificaConsumoTotalUpdate(this.tblCadRecComponentes.getSelectedRow(), Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(".", "").replace(",", "."))) == false) {
-                JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
-            } else {
-                this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-                this.tblCadRecComponentes.removeAll();
-                this.recInsDao.limparVariaveis();
-                this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+        if (this.confKeyEnter == true) {
+            if (!this.txtCadRecCodigo.getText().equals("")) {
+                int linha = this.tblCadRecComponentes.getSelectedRow();
+                if (this.recInsDao.verificaConsumoTotalUpdate(linha, setarConsumo()) == false) {
+                    JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
+                    this.tblCadRecComponentes.getModel().setValueAt(this.util.formatadorQuant3(this.recInsDao.retornaValorConsumo(linha)), linha, 2);
+                } else {
+                    this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+                    this.tblCadRecComponentes.removeAll();
+                    this.recInsDao.limparVariaveis();
+                    this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+                }
             }
-
+            this.confKeyEnter = false;
         }
     }//GEN-LAST:event_tblCadRecComponentesKeyReleased
 
     private void tblCadRecComponentesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCadRecComponentesKeyPressed
-        // Chama o metodo atualizar atraves da tecla Enter
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (this.recInsDao.verificaConsumoTotalUpdate(this.tblCadRecComponentes.getSelectedRow(), Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(".", "").replace(",", "."))) == false) {
-                JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
-            } else {
-                this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-                this.tblCadRecComponentes.removeAll();
-                this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
-            }
-        }
+//        // Chama o metodo atualizar atraves da tecla Enter
+//        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+//            if (this.recInsDao.verificaConsumoTotalUpdate(this.tblCadRecComponentes.getSelectedRow(), setarConsumo()) == false) {
+//                JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
+//            } else {
+//                this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+//                this.tblCadRecComponentes.removeAll();
+//                this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
+//            }
+//        }
     }//GEN-LAST:event_tblCadRecComponentesKeyPressed
 
+    private void tblCadRecComponentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadRecComponentesMouseClicked
+        // quando o mouse for clicado
+        this.confKeyEnter = true;
+    }//GEN-LAST:event_tblCadRecComponentesMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddConsumo;

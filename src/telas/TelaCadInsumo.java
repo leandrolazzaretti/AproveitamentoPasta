@@ -61,7 +61,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         insumoDto.setQuantidade(this.txtCadInsQuant.getText().replace(".", "").replace(",", "."));
         insumoDto.setPreco(this.txtCadInsPreco.getText().replace(".", "").replace(",", "."));
      
-
         if (confirmar == true) {
             insumoDao.adicionarInsumos(insumoDto);
 
@@ -102,7 +101,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         } else {
             return true;
         }
-
     }
 
     // confirma se os campos estão setados
@@ -160,7 +158,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     public void retornaCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(255, 255, 255));
         botao.setForeground(new Color(66, 66, 66));
-
     }
 
     // quando o botão for pressionado
@@ -469,8 +466,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     private void btnCadInsLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadInsLimparActionPerformed
         // chama o metodo limpar    
-        // altera a cor quando pressionado
-        //alteraCorPressionado(this.jPanel4, this.btnCadInsLimpar);
         limparCampos();
         this.txtCadInsCodigo.requestFocus();
     }//GEN-LAST:event_btnCadInsLimparActionPerformed
@@ -487,11 +482,6 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.insumo.pesquisarInsumos();
         TelaPesquisarInsumos.confimaTela = true;
         TelaPesquisarInsumos.confirmarEscolha = true;
-
-//        TelaPesquisarInsumos insumos = new TelaPesquisarInsumos();
-//        TelaPrincipal.Desktop.add(insumos);
-//        insumos.setVisible(true);
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txtCadInsCodigoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadInsCodigoFocusLost

@@ -25,6 +25,7 @@ public class ReceitaInsumoDao {
     Util util = new Util();
     public static double consumoTotal = 0, consumoTotalTemp = 0;
     public static List<Double> consumoTotal2 = new ArrayList<>();
+    public static List<Double> consumoTotal3 = new ArrayList<>();
 
     public ReceitaInsumoDao() {
         this.conexao = ModuloConexao.conector();
@@ -45,9 +46,16 @@ public class ReceitaInsumoDao {
         return this.consumoTotalTemp <= 1;
     }
     
+    //retorna o valor anterior do consumo, antes da auteração
+    public double retornaValorConsumo(int i){
+        this.consumoTotal2.set(i, this.consumoTotal3.get(i));        
+        return this.consumoTotal3.get(i);
+    }
+    
     //seta a posição removida com o valor "0"
     public void removerConsumoDaList(int index, double consumo){
         this.consumoTotal2.remove(index);
+        this.consumoTotal3.remove(index);
         this.consumoTotal -= consumo;
         this.consumoTotal = this.util.formatador4(consumoTotal);
     }
@@ -56,6 +64,7 @@ public class ReceitaInsumoDao {
     public void limparVariaveis(){
         this.consumoTotal = 0;
         this.consumoTotal2.clear();
+        this.consumoTotal3.clear();
     }
     
     //Adiciona componente
@@ -79,6 +88,8 @@ public class ReceitaInsumoDao {
             if (adicionado > 0) {
                 //System.out.println("Deu boa.");
                 this.consumoTotal += consumo;
+                this.consumoTotal2.add(consumo);
+                this.consumoTotal3.add(consumo);
             }
             pst.close();
 
@@ -127,11 +138,14 @@ public class ReceitaInsumoDao {
             pst = this.conexao.prepareStatement(sql);
 
             int linha = TelaCadReceita.tblCadRecComponentes.getSelectedRow();
-            String cons = (String) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 2);
-            int codg = (int) TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 0);
+            String cons = TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 2).toString();
+            if (cons.equals("")) {
+                cons = "0";
+            }
+            int codg = Integer.parseInt(TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 0).toString());
             double custo = custoPorComponenteKg(codg, Double.parseDouble(cons.replace(".", "").replace(",", ".")));
 
-            pst.setString(1, cons.replace(".", "").replace(",", "."));
+            pst.setString(1, cons.replace(",", "."));
             pst.setDouble(2, custo);
             pst.setInt(3, codReceita);
             pst.setInt(4, codg);

@@ -81,7 +81,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
                     this.util.formatadorQuant(rs.getDouble(4)),
                     "R$ " + this.util.formatadorQuant(rs.getDouble(5))});
             }
-
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -99,7 +98,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadInsumo.txtCadInsQuant.setText(this.tblCadInsumos.getModel().getValueAt(setar, 3).toString());
         TelaCadInsumo.txtCadInsPreco.setDocument(new SoNumeros());
         TelaCadInsumo.txtCadInsPreco.setText(this.tblCadInsumos.getModel().getValueAt(setar, 4).toString().replace("R$ ", ""));
-        
     }
 
     //seta o campo da descrição na tela de movimentação de estoque

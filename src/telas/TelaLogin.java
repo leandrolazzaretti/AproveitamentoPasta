@@ -51,6 +51,7 @@ public class TelaLogin extends javax.swing.JFrame {
                     TelaPrincipal.menCadUsu.setEnabled(false);
                     TelaPrincipal.btnUsuario.setVisible(false);
                     TelaPrincipal.jPanel5.setVisible(false);
+                    TelaPrincipal.jSeparator5.setVisible(false);
                     TelaPrincipal.lblUsuario.setText(rs.getString(5));
                     TelaPrincipal.menRelUsu.setEnabled(false);
                     this.dispose();

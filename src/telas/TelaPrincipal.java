@@ -103,9 +103,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
         lblUsuario = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        jSeparator4 = new javax.swing.JSeparator();
         jPanel5 = new javax.swing.JPanel();
         btnUsuario = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JSeparator();
         jPanel6 = new javax.swing.JPanel();
         btnMovEstoque = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
@@ -170,6 +170,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jSeparator4.setForeground(new java.awt.Color(219, 219, 219));
+        jPanel3.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 220, 10));
+
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -198,10 +201,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
         jPanel5.add(btnUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 40));
 
-        jSeparator4.setForeground(new java.awt.Color(219, 219, 219));
-        jPanel5.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 220, 10));
-
-        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 200, 238, 40));
+        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 238, 40));
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -822,7 +822,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JSeparator jSeparator5;
+    public static javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     public static javax.swing.JLabel lblUsuario;

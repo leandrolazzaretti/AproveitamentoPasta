@@ -8,8 +8,10 @@ package telas;
 import com.sun.glass.events.KeyEvent;
 import dao.EstoquePastaDao;
 import dao.EstoquePastaFinalDao;
+import dao.MovimentacaoDao;
 import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
+import dto.MovimentacaoDto;
 import dto.MovimentacaoEstoqueDto;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
@@ -31,10 +33,11 @@ import util.Util;
 public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
     public static JInternalFrame framePesReceita;
-    TelaPesquisarReceita rec = new TelaPesquisarReceita();
+    private final TelaPesquisarReceita rec = new TelaPesquisarReceita();
     Util util = new Util();
-    EstoquePastaDao estPas = new EstoquePastaDao();
-    EstoquePastaFinalDao estPasFinal = new EstoquePastaFinalDao();
+    private final EstoquePastaDao estPas = new EstoquePastaDao();
+    private final EstoquePastaFinalDao estPasFinal = new EstoquePastaFinalDao();
+    private final MovimentacaoDao movDao = new MovimentacaoDao();
     public static boolean jDialogSobre;
 
     /**
@@ -80,7 +83,17 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         movEstDto.setDataVencimento(movEstDao.dataVencimento(movEstDao.dataAtual(), receitaDao.buscaVencimento(Integer.parseInt(this.txtCodigo.getText()))));
 
         movEstDao.entradaPasta(movEstDto);
+        
+        //a estrutura abaixo seta a tabela de movimentação de estoque
+        MovimentacaoDto movDto = new MovimentacaoDto();
+        movDto.setTipo("Pasta");
+        movDto.setCodigoID(movEstDto.getCodigoReceita());
+        movDto.setDescricao(this.movDao.buscaDescricaoReceita(movEstDto.getCodigoReceita()));
+        movDto.setQuantidade("" + movEstDto.getQuantidade());
+        movDto.setData(this.util.dataAtual());
+        this.movDao.movimentacao(movDto);
     }
+    
 
     private void fecharFramPesq() {
         if (this.framePesReceita != null) {
@@ -330,10 +343,13 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
         jPanel5.setBackground(new java.awt.Color(236, 255, 209));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(155, 155, 155)));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel6.setText("Primeira opção - Utilizando apenas Pastas do estoque:");
+        jPanel5.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 12, -1, 25));
 
         jLabel7.setText("Segunda opção - Utilizando Pastas mais Insumos:");
+        jPanel5.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(447, 12, -1, 25));
 
         tblProducaoPastaOp2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblProducaoPastaOp2.setModel(new javax.swing.table.DefaultTableModel(
@@ -354,6 +370,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jScrollPane3.setViewportView(tblProducaoPastaOp2);
 
+        jPanel5.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(437, 63, 420, 272));
+
         tblProducaoPastaOp1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         tblProducaoPastaOp1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -373,10 +391,14 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblProducaoPastaOp1);
 
+        jPanel5.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 63, 430, 272));
+
         jLabel8.setText("Custo em insumos: R$ ");
+        jPanel5.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(607, 43, -1, -1));
 
         lblCustoProducao.setForeground(new java.awt.Color(255, 0, 0));
         lblCustoProducao.setText("0,00");
+        jPanel5.add(lblCustoProducao, new org.netbeans.lib.awtextra.AbsoluteConstraints(722, 43, -1, -1));
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -402,6 +424,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jPanel8.add(btnProduzirOp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
 
+        jPanel5.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(351, 12, 70, -1));
+
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -426,75 +450,21 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         });
         jPanel7.add(btnProduzirOp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
 
+        jPanel5.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(777, 12, 70, -1));
+
         lbltext.setText("Reaproveitado: R$");
+        jPanel5.add(lbltext, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 43, -1, -1));
 
         lblValorReaproveitadoOpc1.setForeground(new java.awt.Color(0, 153, 0));
         lblValorReaproveitadoOpc1.setText("0,00");
+        jPanel5.add(lblValorReaproveitadoOpc1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 43, -1, -1));
 
         jLabel9.setText("Reaproveitado: R$");
+        jPanel5.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(447, 43, -1, -1));
 
         lblValorReaproveitadoOpc2.setForeground(new java.awt.Color(0, 153, 0));
         lblValorReaproveitadoOpc2.setText("0,00");
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(80, 80, 80)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(lbltext)
-                        .addGap(8, 8, 8)
-                        .addComponent(lblValorReaproveitadoOpc1)))
-                .addGap(26, 26, 26)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(8, 8, 8)
-                        .addComponent(lblValorReaproveitadoOpc2)
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCustoProducao))
-                    .addComponent(jLabel7))
-                .addGap(19, 33, Short.MAX_VALUE)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(lblCustoProducao)
-                    .addComponent(lbltext)
-                    .addComponent(lblValorReaproveitadoOpc1)
-                    .addComponent(jLabel9)
-                    .addComponent(lblValorReaproveitadoOpc2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-        );
+        jPanel5.add(lblValorReaproveitadoOpc2, new org.netbeans.lib.awtextra.AbsoluteConstraints(546, 43, -1, -1));
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 858, 330));
 

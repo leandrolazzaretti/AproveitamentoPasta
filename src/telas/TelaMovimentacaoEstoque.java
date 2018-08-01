@@ -185,7 +185,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         } else {
             //confirma se é pasta ou insumo
             if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
-                //confirma se é entrada ou saida                
+                //confirma se é entrada ou saida
                 if (this.cbTipo.getSelectedItem().equals("Entrada")) {
                     //verifica se a data é compatível
                     if (this.movEstDao.dataComparar(this.movEstDao.dataAtual(), inverterData(this.txtEstData.getText().replace("/", "-"))) == false) {
@@ -208,7 +208,6 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
                     if (soma < quantidade) {
                         JOptionPane.showMessageDialog(null, "Quantidade em estoque " + soma + "kg\nNão atende a sua necessidade.");
                         conf2 = true;
-
                     } else {
                         confirmaEstoquePasta(false);
                         movimentacao(false, "Pasta");

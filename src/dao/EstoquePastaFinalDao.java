@@ -8,6 +8,7 @@ package dao;
 import conexao.ModuloConexao;
 import dto.EstoquePastaDto;
 import dto.InsumoDto;
+import dto.MovimentacaoDto;
 import dto.ReceitaInsumoDto;
 import java.awt.Color;
 import java.sql.Connection;
@@ -35,6 +36,8 @@ public class EstoquePastaFinalDao {
     private final MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
     private final CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
     private final InsumoDao insumoDao = new InsumoDao();
+    private final MovimentacaoDto movDto = new MovimentacaoDto();
+    private final MovimentacaoDao movDao = new MovimentacaoDao();
 
     private List<EstoquePastaDto> listTemp = new ArrayList<>();
     private List<EstoquePastaDto> listTempX = new ArrayList<>();
@@ -290,12 +293,35 @@ public class EstoquePastaFinalDao {
             } else {
                 retorno = false;
             }
+            movimentarPastasOpc(this.listFinalOp1 ,"-", i);
         }
         this.confirmaListTempX = true;
         this.listTempX.clear();
         return retorno;
     }
-
+    
+    //metodo que seta movDto para atualizar a tabela de movimentação seta com os dados da pasta
+    private void movimentarPastasOpc(List<EstoquePastaDto> estPasDto ,String entradaSaida, int i){
+        this.movDto.setTipo("Pasta");
+        this.movDto.setCodigoID(estPasDto.get(i).getCodigo());
+        this.movDto.setDescricao(estPasDto.get(i).getDescricao());
+        this.movDto.setQuantidade(entradaSaida + estPasDto.get(i).getUsar());
+        this.movDto.setData(this.util.dataAtual());
+                
+        this.movDao.movimentacao(movDto);
+    }
+    
+    //metodo que seta movDto para atualizar a tabela de movimentação, seta com os dados dos insumos
+    private void movimentarInsumosOpc(List<ReceitaInsumoDto> recInsDto, String entradaSaida, int i){
+        this.movDto.setTipo("Insumo");
+        this.movDto.setCodigoID(this.insumosOp2.get(i).getCodigo());
+        this.movDto.setDescricao(this.insumosOp2.get(i).getDescricao());
+        this.movDto.setQuantidade(entradaSaida + this.util.formatador(recInsDto.get(i).getConsumo()));
+        this.movDto.setData(this.util.dataAtual());
+        
+        this.movDao.movimentacao(movDto);
+    }
+    
     //Faz a produção da receita, dando update na pasta/ insumos da opc2
     public boolean produzirOpc2() {
         boolean retorno = true;
@@ -305,13 +331,14 @@ public class EstoquePastaFinalDao {
             } else {
                 retorno = false;
             }
-
+            movimentarPastasOpc(this.listFinalOp2, "-", 0);
         }
         for (int i = 0; i < this.insumosOp2.size(); i++) {
             if (this.insumoDao.saidaInsumo(this.pastaProduzirOp2.get(i).getConsumo(), this.insumosOp2.get(i).getCodigo()) == true) {
             } else {
                 retorno = false;
             }
+            movimentarInsumosOpc(this.pastaProduzirOp2, "-", i);
         }
         this.confirmaListTempX = true;
         this.listTempX.clear();
@@ -419,7 +446,6 @@ public class EstoquePastaFinalDao {
         this.valorReaproveitado = 0;
         TelaEstoquePasta.lblCustoProducao.setText(this.util.formatadorQuant(custoProducao));
         mudarCorLinha.CorNaLinhaQuantidade(tabela);
-        
     }
 
     //busca os insumos faltante pra compar a opção 2

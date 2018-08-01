@@ -17,12 +17,13 @@ import javax.swing.JOptionPane;
  * @author Leandro
  */
 public class MovimentacaoDao {
+
     Connection conexao = null;
-    
-    public MovimentacaoDao(){
+
+    public MovimentacaoDao() {
         this.conexao = ModuloConexao.conector();
     }
-    
+
     //Da entrada na tabela de movimentação 
     public void movimentacao(MovimentacaoDto movDto) {
         String sql = "insert into tbMovimentacao(tipo,codigoID, descricao, data,quantidade) values(?,?,?,?,?)";
@@ -41,8 +42,8 @@ public class MovimentacaoDao {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-        // busca o codigo da tabela de insumos através da descrição
+
+    // busca o codigo da tabela de insumos através da descrição
     public int buscaCodigoInsumo(String descricao) {
         String sql = "select codigo from tbinsumos where descricao =?";
         int codigo = 0;
@@ -60,8 +61,8 @@ public class MovimentacaoDao {
         }
         return codigo;
     }
-     
-        // busca o codigo da tabela de receita através da descrição
+
+    // busca o codigo da tabela de receita através da descrição
     public int buscaCodigoReceita(String descricao) {
         String sql = "select codigorec from tbreceita where descricao =?";
         int codigo = 0;
@@ -78,5 +79,24 @@ public class MovimentacaoDao {
             JOptionPane.showMessageDialog(null, e);
         }
         return codigo;
+    }
+
+    //busca a descrição da receita
+    public String buscaDescricaoReceita(int codigo) {
+        String sql = "select descricao from tbreceita where codigorec =?";
+        String retorno = null;
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            pst.setInt(1, codigo);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                retorno = rs.getString(1);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return retorno;
     }
 }

@@ -7,9 +7,11 @@ package dao;
 
 import conexao.ModuloConexao;
 import dto.InsumoDto;
+import dto.MovimentacaoDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import telas.TelaCadInsumo;
 import telas.TelaMovimentacaoEstoque;
@@ -24,6 +26,8 @@ public class InsumoDao {
 
     Connection conexao = null;
     Util util = new Util();
+    private final MovimentacaoDao movDao = new MovimentacaoDao();
+    private final MovimentacaoDto movDto = new MovimentacaoDto();
 
     public InsumoDao() {
         this.conexao = ModuloConexao.conector();
@@ -196,9 +200,9 @@ public class InsumoDao {
             pst = this.conexao.prepareStatement(sql);
             pst.setString(1, this.util.formatador(quantidade));
             pst.setInt(2, codigo);
-            
+
             if (pst.executeUpdate() > 0) {
-            }else{
+            } else {
                 confirmar = false;
             }
             pst.close();
@@ -247,9 +251,9 @@ public class InsumoDao {
 
     //retorna as UM/Consumo dos insumos da receita a dar entrada, e da saida dos insumos através da entrada da receita
     public void retirarInsumo(int codRec) {
-        Double resultado;
+        double resultado;
 
-        String sql = "SELECT i.UM, cr.consumo, cr.codigoInsumo"
+        String sql = "SELECT i.UM, cr.consumo, cr.codigoInsumo, i.descricao"
                 + " FROM tbReceitaInsumo as cr"
                 + " inner join tbinsumos as i on cr.codigoInsumo = i.codigo"
                 + " where cr.codigoReceita ='" + codRec + "'";
@@ -259,15 +263,23 @@ public class InsumoDao {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 resultado = conversaoUMInsumos(rs.getString(1), (rs.getDouble(2) * 100), Double.parseDouble(telas.TelaMovimentacaoEstoque.txtEstQuantidade.getText().replace(",", ".")));
-
                 saidaInsumo2(rs.getInt(3), resultado);
+                movimentarInsumos(rs, resultado);
             }
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
         }
+    }
 
+    private void movimentarInsumos(ResultSet rs, double quantidade) throws SQLException {
+        this.movDto.setTipo("Insumo");
+        this.movDto.setCodigoID(rs.getInt(3));
+        this.movDto.setDescricao(rs.getString(4));
+        this.movDto.setQuantidade("-" + quantidade);
+        this.movDto.setData(this.util.dataAtual());
+        this.movDao.movimentacao(movDto);
     }
 
     //Converte a UM dos insumos para kg, e calcula a quantida de cada insumo para cada Kg da minha pasta

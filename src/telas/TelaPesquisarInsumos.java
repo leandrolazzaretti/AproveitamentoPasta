@@ -8,12 +8,9 @@ package telas;
 import conexao.ModuloConexao;
 import dao.MovimentacaoEstoqueDao;
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
@@ -27,12 +24,12 @@ import util.Util;
  */
 public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
     private String cbPesquisar = "codigo";
     public static boolean confimaTela;
     public static boolean confirmarEscolha;
-    Util util = new Util();
+    private final Util util = new Util();
     private final CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
 
     /**
@@ -138,8 +135,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         txtPesquisarInsumos = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCadInsumos = new javax.swing.JTable();
-        jPanel6 = new javax.swing.JPanel();
-        btnMinimi = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnFechar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -162,7 +157,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameDeiconified(evt);
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -216,32 +210,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 840, 190));
 
-        jPanel6.setBackground(new java.awt.Color(143, 165, 110));
-        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        btnMinimi.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        btnMinimi.setForeground(new java.awt.Color(79, 79, 79));
-        btnMinimi.setText("-");
-        btnMinimi.setContentAreaFilled(false);
-        btnMinimi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnMinimi.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        btnMinimi.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnMinimiMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnMinimiMouseExited(evt);
-            }
-        });
-        btnMinimi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMinimiActionPerformed(evt);
-            }
-        });
-        jPanel6.add(btnMinimi, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 44, 20));
-
-        getContentPane().add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(776, 2, 40, 20));
-
         jPanel1.setBackground(new java.awt.Color(143, 165, 110));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -271,7 +239,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         jLabel1.setText("Tabela de Insumos");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 140, -1));
 
-        setBounds(0, 89, 858, 312);
+        setBounds(0, 0, 858, 312);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblCadInsumosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCadInsumosMouseClicked
@@ -321,27 +289,6 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_cbPesquisarInsActionPerformed
 
-    private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
-        /// quando o mouse está em cima
-        this.jPanel6.setBackground(new Color(210, 226, 186));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
-    }//GEN-LAST:event_btnMinimiMouseEntered
-
-    private void btnMinimiMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseExited
-        // quando o mouse sair de cima
-        this.jPanel6.setBackground(new Color(143, 165, 110));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
-    }//GEN-LAST:event_btnMinimiMouseExited
-
-    private void btnMinimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimiActionPerformed
-        try {
-            // minimiza a tela
-            this.setIcon(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnMinimiActionPerformed
-
     private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
         // quando o mouse está em cima
         this.jPanel1.setBackground(new Color(211, 57, 33));
@@ -362,28 +309,15 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
         // passa o foco para o campo de texto 
         this.txtPesquisarInsumos.requestFocus();
-        // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143, 165, 110));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameActivated
-
-    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        // passa o foco para o campo de texto 
-        this.txtPesquisarInsumos.requestFocus();
-        // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143, 165, 110));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
-    }//GEN-LAST:event_formInternalFrameDeiconified
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFechar;
-    private javax.swing.JButton btnMinimi;
     private javax.swing.JComboBox<String> cbPesquisarIns;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tblCadInsumos;
     private javax.swing.JTextField txtPesquisarInsumos;

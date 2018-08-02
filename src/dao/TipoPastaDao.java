@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 
 public class TipoPastaDao {
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
     public TipoPastaDao() {
         this.conexao = ModuloConexao.conector();

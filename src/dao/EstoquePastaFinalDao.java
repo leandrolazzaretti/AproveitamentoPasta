@@ -244,9 +244,6 @@ public class EstoquePastaFinalDao {
         if (porcentoTotal < 99.98) {
             if (this.proximaPastaEstoque <= this.listTempX.size()) {
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //aqui a baixo minha nova lógica
                 limparVariaveis(false);
                 for (int i = this.proximaPastaEstoque; i < this.listTempX.size(); i++) {
@@ -259,9 +256,6 @@ public class EstoquePastaFinalDao {
             } else {
                 limparTblOp1();
             }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         } else {
             System.out.println("Porcento TOTAL: " + porcentoTotal);
             DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
@@ -529,7 +523,7 @@ public class EstoquePastaFinalDao {
                 recInsDto.setCodigoReceita(this.pastaProduzirOp1.get(i).getCodigoReceita());
                 recInsDto.setCodigoInsumo(this.pastaProduzirOp1.get(i).getCodigoInsumo());
                 recInsDto.setUm(this.pastaProduzirOp1.get(i).getUm());
-                recInsDto.setConsumo(this.pastaProduzirOp1.get(i).getConsumo());
+                 recInsDto.setConsumo(this.pastaProduzirOp1.get(i).getConsumo());
                 this.pastaProduzirOp2.add(recInsDto);
                 this.cofirmaProduzirOp2 = false;
 
@@ -633,6 +627,8 @@ public class EstoquePastaFinalDao {
     public void limparVariaveis(boolean confirma) {
         if (confirma == true) {
             this.listTempX.clear();
+            this.confirmaListTempX = true;
+            this.proximaPastaEstoque = 0;
         }
         this.listTemp.clear();
         this.listFinalOp1.clear();

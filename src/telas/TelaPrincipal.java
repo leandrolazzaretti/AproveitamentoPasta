@@ -31,13 +31,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static boolean jDialogInsumo;
     public static boolean jDialogReceita;
     public static boolean jDialogMovimentacao;
+    public static boolean jDialogEstoquePasta;
 
     private final Relatorio relatorio = new Relatorio();
     private final Util util = new Util();
     private int xMouse;
     private int yMouse;
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
     /**
      * Creates new form TelaPrincipal
@@ -72,22 +73,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     private void fecharTelas() {
-        if (this.frameEstoquePasta != null) {
+        if ((this.frameEstoquePasta != null) && (!this.frameEstoquePasta.isIcon())) {
             this.frameEstoquePasta.dispose();
         }
-        if (this.frameInsumo != null) {
+        if ((this.frameInsumo != null) && (!this.frameInsumo.isIcon())) {
             this.frameInsumo.dispose();
         }
-        if (this.frameMovimentacao != null) {
+        if ((this.frameMovimentacao != null) && (!this.frameMovimentacao.isIcon())) {
             this.frameMovimentacao.dispose();
         }
-        if (this.frameReceita != null) {
+        if ((this.frameReceita != null) && (!this.frameReceita.isIcon())) {
             this.frameReceita.dispose();
         }
-        if (this.frameUsuario != null) {
+        if ((this.frameUsuario != null) && (!this.frameUsuario.isIcon())) {
             this.frameUsuario.dispose();
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -136,6 +138,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menRelRec = new javax.swing.JMenuItem();
         menRelUsu = new javax.swing.JMenuItem();
         menRelMovEst = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         menOpc = new javax.swing.JMenu();
         menOpcSair = new javax.swing.JMenuItem();
 
@@ -355,14 +358,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
         Desktop.setLayout(DesktopLayout);
         DesktopLayout.setHorizontalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 856, Short.MAX_VALUE)
+            .addGap(0, 858, Short.MAX_VALUE)
         );
         DesktopLayout.setVerticalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 558, Short.MAX_VALUE)
         );
 
-        jPanel2.add(Desktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 858, 560));
+        jPanel2.add(Desktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 860, 560));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1100, 616));
 
@@ -472,6 +475,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menRelatorio.add(menRelMovEst);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setText("Estoque Pasta");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menRelatorio.add(jMenuItem1);
 
         menu.add(menRelatorio);
 
@@ -764,6 +776,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
         alteraCorPressionado(this.jPanel9, this.jSeparator6, this.tbnEstPasta);
     }//GEN-LAST:event_tbnEstPastaMouseClicked
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // Gerando um relatório de Estoque Pasta
+        if (this.jDialogEstoquePasta == false) {
+            (new FiltroRelatorioEstoquePasta(this, false)).setVisible(true);
+            this.jDialogEstoquePasta = true;
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -809,6 +829,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

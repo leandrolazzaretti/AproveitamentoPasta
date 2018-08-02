@@ -1,229 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receita" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92c3435c-6327-4c4d-b1d2-f3136444b016">
-	<property name="ireport.zoom" value="1.331000000000002"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receita" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c6087826-188e-45a5-b718-6c2429acd4f3">
+	<property name="ireport.zoom" value="1.9487171000000025"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<subDataset name="New Dataset 1" uuid="0535aac7-eeb6-4be2-86df-6be724cb35e7">
-		<queryString language="SQL">
-			<![CDATA[select r.descricao as desc_r, tp.descricao as desc_tp, r.pantone, r.datavencimento, i.descricao as desc_i, ri.consumo from tbReceitaInsumo as ri
-inner join tbreceita as r on r.codigorec = ri.codigoReceita
-inner join tbinsumos as i on i.codigo = ri.codigoInsumo
-inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
-		</queryString>
-		<field name="desc_r" class="java.lang.Object"/>
-		<field name="desc_tp" class="java.lang.Object"/>
-		<field name="pantone" class="java.lang.Object"/>
-		<field name="datavencimento" class="java.lang.Object"/>
-		<field name="desc_i" class="java.lang.Object"/>
-		<field name="consumo" class="java.lang.Object"/>
-	</subDataset>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
 	</parameter>
-	<queryString language="SQL">
-		<![CDATA[select r.descricao as descri_r, tp.descricao as descri_tp, r.pantone, r.datavencimento, i.descricao as descri_i, ri.consumo from tbReceitaInsumo as ri
+	<queryString>
+		<![CDATA[select ri.codigoReceita, r.descricao as descRec, tp.descricao as descTp, r.pantone, r.datavencimento,ri.custoPorKg from tbReceitaInsumo as ri
 inner join tbreceita as r on r.codigorec = ri.codigoReceita
-inner join tbinsumos as i on i.codigo = ri.codigoInsumo
-inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
+inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta
+group by  ri.codigoReceita]]>
 	</queryString>
-	<field name="descri_r" class="java.lang.Object"/>
-	<field name="descri_tp" class="java.lang.Object"/>
+	<field name="codigoReceita" class="java.lang.Object"/>
+	<field name="descRec" class="java.lang.Object"/>
+	<field name="descTp" class="java.lang.Object"/>
 	<field name="pantone" class="java.lang.Object"/>
 	<field name="datavencimento" class="java.lang.Object"/>
-	<field name="descri_i" class="java.lang.Object"/>
-	<field name="consumo" class="java.lang.Object"/>
-	<group name="Receita">
-		<groupExpression><![CDATA[$F{descri_r}]]></groupExpression>
-		<groupHeader>
-			<band height="22">
-				<textField>
-					<reportElement x="6" y="1" width="110" height="20" uuid="4daabfd9-c516-4811-ad8f-7e12b995fb6b"/>
-					<textElement>
-						<font fontName="Arial" size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[""+$F{descri_r}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="126" y="1" width="92" height="20" uuid="efb88734-1b0e-4652-a1de-be08133fa052"/>
-					<textElement>
-						<font fontName="Arial" size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[""+$F{descri_tp}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="228" y="1" width="92" height="20" uuid="c9c77d08-cfac-4a09-bb4c-e087649a9cbe"/>
-					<textElement>
-						<font fontName="Arial" size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[""+$F{pantone}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="320" y="1" width="58" height="20" uuid="8c9ac9cb-a5f7-41f1-b01f-3c3f1cdd24dc"/>
-					<textElement>
-						<font fontName="Arial" size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[""+$F{datavencimento}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="389" y="0" width="94" height="20" uuid="84982293-1e32-4398-8fbd-93aaf82544cc"/>
-					<textElement>
-						<font fontName="Arial" size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[""+$F{descri_i}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="483" y="2" width="68" height="20" uuid="8354700a-eb63-4406-8ecb-1b5553e886a9"/>
-					<textElement textAlignment="Right">
-						<font fontName="Arial" size="10"/>
-					</textElement>
-					<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupHeader>
-		<groupFooter>
-			<band/>
-		</groupFooter>
-	</group>
+	<field name="custoPorKg" class="java.lang.Object"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="114" splitType="Stretch">
+		<band height="97" splitType="Stretch">
 			<staticText>
-				<reportElement x="105" y="62" width="97" height="24" uuid="3963c50f-2c62-4035-a36b-1cfd507397a5"/>
+				<reportElement x="0" y="0" width="195" height="63" forecolor="#246012" uuid="574db111-fabd-4133-ad26-b06478eb8c52"/>
+				<textElement>
+					<font fontName="Calibri Light" size="50"/>
+				</textElement>
+				<text><![CDATA[Receita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="82" y="63" width="113" height="24" uuid="528922bf-9885-4f66-8a04-ffaa59a9d629"/>
 				<textElement>
 					<font fontName="Calibri Light" size="18"/>
 				</textElement>
 				<text><![CDATA[Relatório]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="202" height="63" forecolor="#8FA56E" uuid="13913384-7ecc-44e4-a1a4-b63522d1914b"/>
-				<textElement>
-					<font fontName="Calibri Light" size="50"/>
-				</textElement>
-				<text><![CDATA[Receitas]]></text>
-			</staticText>
-			<line>
-				<reportElement x="0" y="108" width="555" height="1" forecolor="#999999" uuid="aaeb4576-c142-4f37-ac27-b1245e9adb74"/>
-			</line>
 		</band>
 	</title>
 	<pageHeader>
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="23" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="19" width="555" height="1" forecolor="#999999" uuid="80f0d339-28f6-4a18-9167-13336367ec08"/>
-			</line>
+		<band height="37" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="30" uuid="5e81c7bd-c4bf-4f77-9870-f7ec2e10e007"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="0" y="0" width="110" height="20" forecolor="#8FA56E" uuid="8545fe18-eb4e-4bc1-9c9c-4923b3b6184c"/>
+				<reportElement x="4" y="0" width="66" height="20" forecolor="#246012" uuid="ff1ec5ae-1c53-401d-9849-3e01300351c0"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="0" width="117" height="20" forecolor="#246012" uuid="e272bf59-4c4e-4fca-adad-2beacec84d18"/>
+				<textElement>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="126" y="0" width="92" height="20" forecolor="#8FA56E" uuid="d6cc8061-d44e-460b-9f0c-4e4be2c58512"/>
+				<reportElement x="195" y="0" width="96" height="20" forecolor="#246012" uuid="d68cf7a7-b476-4d9d-8d1d-4d3168a67deb"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tipo Pasta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="305" y="0" width="84" height="20" forecolor="#8FA56E" uuid="c808d9bd-0d6b-4c8f-89a5-c44f317c2e5b"/>
+				<reportElement x="297" y="0" width="79" height="20" forecolor="#246012" uuid="8e198a58-57fd-4144-b2e1-1f6f75be3b21"/>
 				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Vencimento]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="228" y="0" width="77" height="20" forecolor="#8FA56E" uuid="9509b1ed-16a7-4f20-adc7-56d32e4c2fcf"/>
-				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Pantone]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="470" y="0" width="80" height="20" forecolor="#8FA56E" uuid="24d80334-01c5-4dfd-a1ad-19e301afce7e"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Arial" size="12" isBold="true"/>
+				<reportElement x="388" y="0" width="82" height="20" forecolor="#246012" uuid="8dcf1ebe-ee3c-4c85-9cd7-5a3da8a97f04"/>
+				<textElement>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Consumo (%)]]></text>
+				<text><![CDATA[Vencimento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="389" y="0" width="81" height="20" forecolor="#8FA56E" uuid="338929b0-cc7b-430d-853d-1bf0d199dbca"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Arial" size="12" isBold="true"/>
+				<reportElement x="470" y="0" width="80" height="20" forecolor="#246012" uuid="14e420b4-a5c0-4219-a5c3-d2551dc92aab"/>
+				<textElement>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Insumo]]></text>
+				<text><![CDATA[Custo por Kg]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="144" splitType="Stretch">
-			<componentElement>
-				<reportElement key="table" x="190" y="0" width="180" height="140" uuid="fea2d8b7-db9c-4d17-893d-30d865edecf6"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="New Dataset 1" uuid="85d3572d-102f-4d11-a5ff-6e80626740d9">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource(1)]]></dataSourceExpression>
-					</datasetRun>
-					<jr:column width="160" uuid="90bff475-7862-42bd-bdbf-ed63115827f2">
-						<jr:tableHeader height="53" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="160" height="53" uuid="ffb9222c-d325-4f2c-b04e-c05e25c270c6"/>
-								<text><![CDATA[Insumo]]></text>
-							</staticText>
-						</jr:tableHeader>
-						<jr:columnHeader height="48" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="160" height="48" uuid="b13c4a70-9678-437c-ab87-5827b5819f4b"/>
-								<textFieldExpression><![CDATA[""+$F{desc_i}]]></textFieldExpression>
-							</textField>
-						</jr:columnHeader>
-					</jr:column>
-					<jr:column width="146" uuid="3ece22b4-167e-4c4f-8937-fb0ba2e9d95f">
-						<jr:tableHeader height="53" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="146" height="53" uuid="26660668-8993-4a59-b4ad-f2a6c8211304"/>
-								<text><![CDATA[Consumo]]></text>
-							</staticText>
-						</jr:tableHeader>
-						<jr:columnHeader height="48" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="146" height="48" uuid="dfed3340-18c8-46df-a23a-6774180bf5d9"/>
-								<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
-							</textField>
-						</jr:columnHeader>
-					</jr:column>
-				</jr:table>
-			</componentElement>
+		<band height="77" splitType="Stretch">
+			<rectangle>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="72" uuid="2e4f2950-f929-44b6-9758-3f94d645ce02"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="469" y="28" width="82" height="20" forecolor="#246012" uuid="faea0849-d980-4d69-adc6-2ab7e8cdf81d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Consumo por kg]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="28" width="53" height="20" forecolor="#246012" uuid="a3edc2b7-3690-4fe2-9e66-9e5d17adde57"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[UM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="295" y="28" width="89" height="20" forecolor="#246012" uuid="fa581f38-ee5c-4e4c-a2bc-dcd02471b5a3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Insumos]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="297" y="48" width="256" height="19" uuid="9a1212bb-d2cb-458e-93a5-7c3569982d99"/>
+				<subreportParameter name="codigoReceita">
+					<subreportParameterExpression><![CDATA[$F{codigoReceita}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subReport.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="290" y="26" width="1" height="46" uuid="ac5042d5-3885-4329-8638-2cfd7fc10c05"/>
+			</line>
+			<line>
+				<reportElement x="291" y="26" width="264" height="1" uuid="0f96c248-d1fd-4800-acd6-c503de91e208"/>
+			</line>
+			<textField>
+				<reportElement x="82" y="4" width="113" height="20" uuid="e17045a0-1216-4f82-83cc-2612d9a8babb"/>
+				<textFieldExpression><![CDATA[$F{descRec}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="4" width="79" height="20" uuid="0d20270a-f70d-4517-b698-b6e00a10152c"/>
+				<textFieldExpression><![CDATA[$F{datavencimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="11" y="4" width="71" height="20" uuid="066d1ae0-5575-41b2-8c2e-f07ff4c0ad1b"/>
+				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="299" y="4" width="93" height="20" uuid="6aae693b-a5d9-4550-b4da-6cc8e4d6caa8"/>
+				<textFieldExpression><![CDATA[$F{pantone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="475" y="4" width="75" height="20" uuid="b65b3572-7a7e-4e0c-87d7-2b90b1da16ee"/>
+				<textFieldExpression><![CDATA[$F{custoPorKg}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="199" y="4" width="94" height="20" uuid="5aadd537-53d0-4ab0-809d-eca12ae7766b"/>
+				<textFieldExpression><![CDATA[$F{descTp}]]></textFieldExpression>
+			</textField>
 		</band>
+		<band/>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="31" splitType="Stretch">
-			<line>
-				<reportElement x="0" y="0" width="555" height="1" forecolor="#999999" uuid="297e2866-e9e7-47a0-afdb-c45dbb6b6d41"/>
-			</line>
+		<band height="32" splitType="Stretch">
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="6" y="7" width="137" height="20" uuid="2da4bf14-4c8a-4b69-907b-1fda465d67f3"/>
+				<reportElement x="6" y="6" width="137" height="20" uuid="f62d26fd-16fb-4a5c-898e-4cee2b70a82b"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="434" y="4" width="80" height="20" uuid="ef19f880-6cc9-4217-851d-385e1bba8aa5"/>
+				<reportElement x="430" y="2" width="80" height="20" uuid="caa0db5c-cfe5-40ea-a7f6-e7024cd0f6c4"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="517" y="4" width="34" height="20" uuid="27151973-1b5c-4e5e-ac03-a0b3bd711177"/>
+				<reportElement x="515" y="2" width="34" height="20" uuid="9b4ba1eb-dca2-4e2a-9040-b711079b8be9"/>
 				<textElement>
 					<font fontName="Arial"/>
 				</textElement>
@@ -232,6 +187,6 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta;]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="36" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>

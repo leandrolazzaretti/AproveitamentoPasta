@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EstoquePasta" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf33209f-a48f-4bc2-ba36-f9ee217f4a8b">
+	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="ID" class="java.lang.String"/>
+	<field name="codigoReceita" class="java.lang.String"/>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="quantidade" class="java.lang.String"/>
+	<field name="data" class="java.lang.String"/>
+	<field name="dataVencimento" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement x="221" y="56" width="105" height="24" uuid="5e29318b-51ad-4800-a9f9-bd17668117ac"/>
+				<textElement>
+					<font fontName="Calibri Light" size="18"/>
+				</textElement>
+				<text><![CDATA[Relatório]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="-6" width="323" height="63" forecolor="#246012" uuid="d408b848-311b-4d06-88ec-d9b23aa372ec"/>
+				<textElement>
+					<font fontName="Calibri Light" size="50"/>
+				</textElement>
+				<text><![CDATA[Estoque Pasta]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="30" uuid="58ea5518-a352-4af2-ba9e-6fc0b2a6b86e"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="4" y="5" width="48" height="20" forecolor="#246012" uuid="0cd21c5f-acc4-49cc-8279-7bd889939e57"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="57" y="5" width="67" height="20" forecolor="#246012" uuid="d09b2676-fb9d-4ea2-8def-fed64984c910"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="145" y="5" width="92" height="20" forecolor="#246012" uuid="04ab20fe-07fc-4152-a690-cd61f1502dc3"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receita]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="271" y="5" width="92" height="20" forecolor="#246012" uuid="03f83b09-53b9-4495-bb43-7b5900331837"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="366" y="5" width="84" height="20" forecolor="#246012" uuid="e6b9bf7c-978b-40ed-a203-33582ee42af9"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="5" width="101" height="20" forecolor="#246012" uuid="1a56082f-6166-40e9-b200-76f844a7158e"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data vencimento]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="7" y="0" width="50" height="20" uuid="c2ea6ef6-d519-44e6-a811-5f8c0b35ec40"/>
+				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="59" y="0" width="75" height="20" uuid="b05d105f-82c0-4641-bc4b-0b1c91555a43"/>
+				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="149" y="0" width="114" height="20" uuid="b48ff470-b75c-4135-aaa4-ea91388ff208"/>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="273" y="0" width="92" height="20" uuid="bc644b62-4dd4-4e0b-b250-47bd3e7acd17"/>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="368" y="0" width="85" height="20" uuid="13ad1751-3017-4cce-aac9-ea5ab4d26655"/>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="0" width="95" height="20" uuid="9e892e2b-42fd-4bce-88fd-9620d5cdc902"/>
+				<textFieldExpression><![CDATA[$F{dataVencimento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="11" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="52" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="517" y="5" width="34" height="20" uuid="ed9fd208-5492-4940-9661-9c0b1a46ac8d"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="432" y="5" width="80" height="20" uuid="d811a063-e3ca-4804-86d5-c39fccc16b5e"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="8" y="9" width="137" height="20" uuid="8a454f9a-887a-4571-9341-69dbeb3101ea"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

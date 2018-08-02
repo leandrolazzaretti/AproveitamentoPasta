@@ -21,8 +21,8 @@ import util.Util;
  */
 public class ReceitaInsumoDao {
 
-    Connection conexao = null;
-    Util util = new Util();
+    private Connection conexao = null;
+    private Util util = new Util();
     public static double consumoTotal = 0, consumoTotalTemp = 0;
     public static List<Double> consumoTotal2 = new ArrayList<>();
     public static List<Double> consumoTotal3 = new ArrayList<>();

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7e7a5a59-7f87-45fa-9706-77cdc107106c">
-	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.zoom" value="1.9487171000000016"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
+	</parameter>
 	<field name="codigoReceita" class="java.lang.String"/>
 	<field name="descRec" class="java.lang.String"/>
 	<field name="descTP" class="java.lang.String"/>
@@ -99,7 +102,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="74" splitType="Stretch">
 			<textField>
 				<reportElement x="7" y="0" width="63" height="20" uuid="16742293-9ca6-4eea-a36b-1e7086cd26a7"/>
 				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
@@ -132,13 +135,21 @@
 				<reportElement x="499" y="0" width="53" height="20" uuid="6f19e3bd-d611-48ff-a97c-85f121c45cfd"/>
 				<textFieldExpression><![CDATA[$F{consumo}]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="3" y="29" width="350" height="45" uuid="069ce12a-d871-416a-91fa-e5f86569294e"/>
+				<subreportParameter name="codigoReceita">
+					<subreportParameterExpression><![CDATA[$F{codigoReceita}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subReport.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 	<columnFooter>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch">
+		<band height="43" splitType="Stretch">
 			<textField>
 				<reportElement x="432" y="3" width="80" height="20" uuid="4725d9c8-24ae-41d7-a062-61aaf925b632"/>
 				<textElement textAlignment="Right">
@@ -163,6 +174,6 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>

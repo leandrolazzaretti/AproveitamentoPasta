@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  */
 public class MovimentacaoDao {
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
     public MovimentacaoDao() {
         this.conexao = ModuloConexao.conector();

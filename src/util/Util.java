@@ -23,7 +23,7 @@ import static telas.TelaPrincipal.Desktop;
  */
 public class Util {
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
     public Util() {
         this.conexao = ModuloConexao.conector();
@@ -109,10 +109,10 @@ public class Util {
     public void comandoInternal2(JInternalFrame frame) {
         try {
             Desktop.add(frame);
-            frame.setLocation(0, 250);
+            frame.setLocation(0, 84);
             frame.setVisible(true);
             frame.toFront();
-//         
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);

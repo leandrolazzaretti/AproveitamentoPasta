@@ -398,7 +398,7 @@
                         <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
                         <Column editable="false" title="Estoque" type="java.lang.Object"/>
                         <Column editable="false" title="Usar" type="java.lang.Object"/>
-                        <Column editable="false" title="Equivale &#xe0; % " type="java.lang.Object"/>
+                        <Column editable="false" title="Equivale &#xe0; (%)" type="java.lang.Object"/>
                         <Column editable="false" title="Vencimento" type="java.lang.Object"/>
                       </Table>
                     </Property>

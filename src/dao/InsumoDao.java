@@ -24,8 +24,8 @@ import util.Util;
  */
 public class InsumoDao {
 
-    Connection conexao = null;
-    Util util = new Util();
+    private Connection conexao = null;
+    private Util util = new Util();
     private final MovimentacaoDao movDao = new MovimentacaoDao();
     private final MovimentacaoDto movDto = new MovimentacaoDto();
 

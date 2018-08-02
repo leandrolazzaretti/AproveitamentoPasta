@@ -18,8 +18,8 @@ import util.Relatorio;
  */
 public class FiltroRelatorioUsuario extends javax.swing.JDialog {
 
-    int xMouse;
-    int yMouse;
+    private int xMouse;
+    private int yMouse;
 
     private String cod = "";
     private String nome = "";

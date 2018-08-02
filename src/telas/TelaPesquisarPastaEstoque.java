@@ -9,12 +9,9 @@ import conexao.ModuloConexao;
 import dao.MovimentacaoEstoqueDao;
 import dao.ReceitaDao;
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
@@ -27,10 +24,10 @@ import util.Util;
  */
 public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
     
-    Connection conexao = null;
-    Util util = new Util();
-    MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
-    CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
+    private Connection conexao = null;
+    private final Util util = new Util();
+    private final MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
+    private final CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
     
     private String cbPesquisar = "ep.ID";
     
@@ -112,8 +109,6 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         txtMovEst = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblEstPasta = new javax.swing.JTable();
-        jPanel6 = new javax.swing.JPanel();
-        btnMinimi = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnFechar = new javax.swing.JButton();
 
@@ -132,7 +127,6 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
             public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameDeiconified(evt);
             }
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -171,7 +165,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Pasta", "Quantidade ", "Validade", "Data", "Data Vencimento"
+                "ID", "Pasta", "Quantidade ", "Validade", "Data Entrada", "Data Vencimento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -190,32 +184,6 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         jScrollPane2.setViewportView(tblEstPasta);
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 840, 190));
-
-        jPanel6.setBackground(new java.awt.Color(143, 165, 110));
-        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        btnMinimi.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        btnMinimi.setForeground(new java.awt.Color(79, 79, 79));
-        btnMinimi.setText("-");
-        btnMinimi.setContentAreaFilled(false);
-        btnMinimi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnMinimi.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        btnMinimi.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnMinimiMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnMinimiMouseExited(evt);
-            }
-        });
-        btnMinimi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMinimiActionPerformed(evt);
-            }
-        });
-        jPanel6.add(btnMinimi, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 44, 20));
-
-        getContentPane().add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(776, 2, 40, 20));
 
         jPanel1.setBackground(new java.awt.Color(143, 165, 110));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -241,7 +209,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(816, 2, 40, 20));
 
-        setBounds(0, 89, 858, 316);
+        setBounds(0, 0, 858, 316);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbPesMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPesMovEstActionPerformed
@@ -285,27 +253,6 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tblEstPastaMouseClicked
 
-    private void btnMinimiMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseEntered
-        /// quando o mouse está em cima
-        this.jPanel6.setBackground(new Color(210, 226, 186));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
-    }//GEN-LAST:event_btnMinimiMouseEntered
-
-    private void btnMinimiMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimiMouseExited
-        // quando o mouse sair de cima
-        this.jPanel6.setBackground(new Color(143, 165, 110));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
-    }//GEN-LAST:event_btnMinimiMouseExited
-
-    private void btnMinimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinimiActionPerformed
-        try {
-            // minimiza a tela
-            this.setIcon(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnMinimiActionPerformed
-
     private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
         // quando o mouse está em cima
         this.jPanel1.setBackground(new Color(211, 57, 33));
@@ -327,27 +274,15 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         // passa o foco para o campo de texto 
         this.txtMovEst.requestFocus();
         // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143, 165, 110));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_formInternalFrameActivated
-
-    private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
-        // passa o foco para o campo de texto 
-        this.txtMovEst.requestFocus();
-        // quando o mouse sair de cima  
-        this.jPanel6.setBackground(new Color(143, 165, 110));
-        this.btnMinimi.setForeground(new Color(79, 79, 79));
-    }//GEN-LAST:event_formInternalFrameDeiconified
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFechar;
-    private javax.swing.JButton btnMinimi;
     private javax.swing.JComboBox<String> cbPesMovEst;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblEstPasta;
     private javax.swing.JTextField txtMovEst;

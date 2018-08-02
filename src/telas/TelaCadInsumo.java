@@ -30,10 +30,10 @@ import util.Util;
  */
 public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;
+    private Connection conexao = null;
     public static JInternalFrame framePesqInsumo;
-    Util util = new Util();
-    TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
+    private final Util util = new Util();
+    private final TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
     private boolean confirmaMascaraMoeda = false;
 
     /**
@@ -478,7 +478,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
             this.framePesqInsumo.dispose();
             this.framePesqInsumo = new TelaPesquisarInsumos();
         }
-        this.util.comandoInternal(this.framePesqInsumo);
+        this.util.comandoInternal2(this.framePesqInsumo);
         this.insumo.pesquisarInsumos();
         TelaPesquisarInsumos.confimaTela = true;
         TelaPesquisarInsumos.confirmarEscolha = true;

@@ -20,9 +20,9 @@ import util.HashUtil;
  */
 public class TelaLogin extends javax.swing.JFrame {
 
-    Connection conexao = null;
-    int xMouse;
-    int yMouse;
+    private Connection conexao = null;
+    private int xMouse;
+    private int yMouse;
 
     public void logar() {
         String sql = "select * from tbusuarios where login=? and senha=?";

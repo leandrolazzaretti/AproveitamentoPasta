@@ -34,7 +34,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
     public static JInternalFrame framePesReceita;
     private final TelaPesquisarReceita rec = new TelaPesquisarReceita();
-    Util util = new Util();
+    private final Util util = new Util();
     private final EstoquePastaDao estPas = new EstoquePastaDao();
     private final EstoquePastaFinalDao estPasFinal = new EstoquePastaFinalDao();
     private final MovimentacaoDao movDao = new MovimentacaoDao();
@@ -48,8 +48,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.txtCodigo.setDocument(new SoNumeros());
         this.txtQuantidade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         this.txtQuantidade.setDocument(new MascaraMoeda());
-        alterarCorEnable(this.btnProduzirOp1);
-        alterarCorEnable(this.btnProduzirOp2);
+        retornarCoresEnable();
         this.tblProducaoPastaOp1.getTableHeader().setReorderingAllowed(false);
         this.tblProducaoPastaOp2.getTableHeader().setReorderingAllowed(false);
     }
@@ -65,8 +64,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.lblValorReaproveitadoOpc2.setText("0,00");
         this.btnProduzirOp1.setEnabled(false);
         this.btnProduzirOp2.setEnabled(false);
-        alterarCorEnable(this.btnProduzirOp1);
-        alterarCorEnable(this.btnProduzirOp2);
+        retornarCoresEnable();
         ((DefaultTableModel) this.tblProducaoPastaOp1.getModel()).setRowCount(0);
         ((DefaultTableModel) this.tblProducaoPastaOp2.getModel()).setRowCount(0);
     }
@@ -105,9 +103,14 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         retornaCor(this.jPanel8, this.btnProduzirOp1);
         retornaCor(this.jPanel7, this.btnProduzirOp2);
     }
-
+    
+    private void retornarCoresEnable(){
+        alterarCorEnable(this.jPanel8, this.btnProduzirOp1);
+        alterarCorEnable(this.jPanel7, this.btnProduzirOp2);
+    }
     //retorna a cor para padrão enabled
-    private void alterarCorEnable(JButton botao) {
+    private void alterarCorEnable(JPanel painel ,JButton botao) {
+        painel.setBackground(new Color(255, 255, 255));
         botao.setForeground(new Color(201, 201, 201));
     }
 
@@ -357,7 +360,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Código", "Descrição", "Estoque", "Usar", "Equivale à % ", "Vencimento"
+                "ID", "Código", "Descrição", "Estoque", "Usar", "Equivale à (%)", "Vencimento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -543,7 +546,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             this.framePesReceita = new TelaPesquisarReceita();
         }
         this.rec.pesquisarReceita();
-        this.util.comandoInternal(this.framePesReceita);
+        this.util.comandoInternal2(this.framePesReceita);
         TelaPesquisarReceita.confirmarEscolha = 3;
     }//GEN-LAST:event_btnPesquisarActionPerformed
 

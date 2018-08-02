@@ -6,6 +6,7 @@
 package util;
 
 import conexao.ModuloConexao;
+import dto.EstoquePastaRelatorioDto;
 import dto.InsumoDto;
 import dto.MovimentacaoDto;
 import dto.RelatorioReceitaDto;
@@ -31,14 +32,15 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class Relatorio {
 
-    Connection conexao;
-    List<UsuarioDto> listaUsuario = new ArrayList<>();
-    List<InsumoDto> listaInsumo = new ArrayList<>();
-    List<MovimentacaoDto> listaMovimentacao = new ArrayList<>();
-    List<RelatorioReceitaDto> listaReceita = new ArrayList<>();
-    List lista;
-    String url;
-    Util util = new Util();
+    private Connection conexao;
+    private List<UsuarioDto> listaUsuario = new ArrayList<>();
+    private List<InsumoDto> listaInsumo = new ArrayList<>();
+    private List<MovimentacaoDto> listaMovimentacao = new ArrayList<>();
+    private List<RelatorioReceitaDto> listaReceita = new ArrayList<>();
+    private List<EstoquePastaRelatorioDto> listaPastaEstoque = new ArrayList<>();
+    private List lista;
+    private String url;
+    private Util util = new Util();
 
     public Relatorio() {
         this.conexao = ModuloConexao.conector();
@@ -135,7 +137,7 @@ public class Relatorio {
                 mov.setTipo(rs.getString(1));
                 mov.setCodigoID(rs.getInt(2));
                 mov.setDescricao(rs.getString(3));
-                mov.setData(rs.getString(4));
+                mov.setData(this.util.inverterData(rs.getString(4)).replace("-", "/"));
                 mov.setQuantidade(this.util.formatadorQuant(rs.getDouble(5)));
 
                 this.listaMovimentacao.add(mov);
@@ -148,9 +150,50 @@ public class Relatorio {
         }
     }
 
+    public void relatorioEstoquePastaSetar(String id, String codigo, String descricao, String dataDe, String dataAte, String dataValidade, boolean confirmaValidade) {
+        String vazio = "";
+        String validade = dataValidade;
+        if (confirmaValidade == true) {
+            validade = dataValidade.replace("<", ">");
+        }
+        String sql = "select ep.ID, ep.codigoReceita, r.descricao, ep.quantidade, ep.data, ep.dataVencimento"
+                + " from tbEstoquePasta as ep"
+                + " inner join tbreceita as r on r.codigorec = ep.codigoReceita"
+                + " where (ep.ID ='" + id + "' or '" + id + "'='" + vazio + "')"
+                + " and (ep.codigoReceita ='" + codigo + "' or '" + codigo + "'='" + vazio + "') and"
+                + " (r.descricao = '" + descricao + "' or '" + descricao + "' = '" + vazio + "') and"
+                + " (ep.data >= '" + dataDe + "' and ep.data <= '" + dataAte + "' or"
+                + " '" + dataDe + "' = '" + vazio + "' and '" + dataAte + "' = '" + vazio + "') and"
+                + " (ep.dataVencimento " + dataValidade + " or '" + vazio + "' " + validade + ")"
+                + " order by ep.data";
+        PreparedStatement pst;
+        this.url = "/Report/EstoquePasta.jrxml";
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                EstoquePastaRelatorioDto estPasRelDto = new EstoquePastaRelatorioDto();
+                estPasRelDto.setID(rs.getInt(1));
+                estPasRelDto.setCodigoReceita(rs.getInt(2));
+                estPasRelDto.setDescricao(rs.getString(3));
+                estPasRelDto.setQuantidade(this.util.formatadorQuant(rs.getDouble(4)));
+                estPasRelDto.setData(this.util.inverterData(rs.getString(5)).replace("-", "/"));
+                estPasRelDto.setDataVencimento(this.util.inverterData(rs.getString(6)).replace("-", "/"));
+
+                this.listaPastaEstoque.add(estPasRelDto);
+            }
+            this.lista = this.listaPastaEstoque;
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+
     public void relatorioReceitaSetar(String codigo, String receita, String tipoPasta, String pantone, String vencimento, String insumo) {
         String vazio = "";
-        String sql = "select ri.codigoReceita, r.descricao as desc_r, tp.descricao as desc_tp, r.pantone, r.datavencimento, i.descricao as desc_i, i.UM, ri.consumo   from tbReceitaInsumo as ri"
+        String sql = "select ri.codigoReceita, r.descricao as descRec, tp.descricao as descTp, r.pantone, r.datavencimento, i.descricao as desc_i, i.UM, ri.consumo   from tbReceitaInsumo as ri"
                 + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                 + " inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta"
@@ -160,6 +203,7 @@ public class Relatorio {
                 + " (r.pantone = '" + pantone + "' or '" + pantone + "' = '" + vazio + "') and"
                 + " (r.datavencimento = '" + vencimento + "' or '" + vencimento + "' = '" + vazio + "') and"
                 + " (i.descricao = '" + insumo + "' or '" + insumo + "' = '" + vazio + "')"
+                + " group by ri.codigoReceita"
                 + " order by ri.codigoReceita;";
         PreparedStatement pst;
         this.url = "/Report/Receitas.jrxml";
@@ -178,6 +222,44 @@ public class Relatorio {
                 relRec.setDescIns(rs.getString(6));
                 relRec.setUM(rs.getString(7));
                 relRec.setConsumo(this.util.formatadorQuant(rs.getDouble(8)));
+
+                this.listaReceita.add(relRec);
+            }
+            this.lista = this.listaReceita;
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
+        }
+    }
+    public void relatorioReceitaSetarTeste(String codigo, String receita, String tipoPasta, String pantone, String vencimento, String insumo) {
+        String vazio = "";
+        String sql = "select ri.codigoReceita, r.descricao as descRec, tp.descricao as descTp, r.pantone, r.datavencimento, ri.custoPorKg from tbReceitaInsumo as ri"
+                + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
+                + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
+                + " inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta"
+                + " where (ri.codigoReceita ='" + codigo + "' or '" + codigo + "'='" + vazio + "')"
+                + " and (r.descricao ='" + receita + "' or '" + receita + "'='" + vazio + "') and"
+                + " (tp.descricao = '" + tipoPasta + "' or '" + tipoPasta + "' = '" + vazio + "') and"
+                + " (r.pantone = '" + pantone + "' or '" + pantone + "' = '" + vazio + "') and"
+                + " (r.datavencimento = '" + vencimento + "' or '" + vencimento + "' = '" + vazio + "') and"
+                + " (i.descricao = '" + insumo + "' or '" + insumo + "' = '" + vazio + "')"
+                + " order by ri.codigoReceita;";
+        PreparedStatement pst;
+        this.url = "/Report/Receita.jrxml";
+
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                RelatorioReceitaDto relRec = new RelatorioReceitaDto();
+
+                relRec.setCodigoReceita(rs.getInt(1));
+                relRec.setDescRec(rs.getString(2));
+                relRec.setDescTP(rs.getString(3));
+                relRec.setPantone(rs.getString(4));
+                relRec.setDataVencimento(rs.getInt(5));
+                relRec.setCustoPorKg(this.util.formatadorQuant(rs.getDouble(6)));
 
                 this.listaReceita.add(relRec);
             }

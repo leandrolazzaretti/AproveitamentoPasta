@@ -21,7 +21,7 @@ import util.Relatorio;
  */
 public class FiltroRelatorioReceita extends javax.swing.JDialog {
 
-    TipoPastaDao tipoPastaDao = new TipoPastaDao();
+    private final TipoPastaDao tipoPastaDao = new TipoPastaDao();
 
     private String cod = "";
     private String rec = "";

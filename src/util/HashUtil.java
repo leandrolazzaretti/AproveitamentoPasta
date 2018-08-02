@@ -1,11 +1,8 @@
 package util;
 
 
-import com.sun.istack.internal.logging.Logger;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
 /*

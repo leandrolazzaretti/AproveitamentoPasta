@@ -32,17 +32,17 @@ import util.SoNumeros;
  */
 public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;
+    private Connection conexao = null;
     private String cbPesquisar = "ep.codigoReceita";
-    MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
-    InsumoDao insumoDao = new InsumoDao();
-    ReceitaDao receitaDao = new ReceitaDao();
-    Util util = new Util();
+    private final MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
+    private final InsumoDao insumoDao = new InsumoDao();
+    private final ReceitaDao receitaDao = new ReceitaDao();
+    private final Util util = new Util();
     public static JInternalFrame framePesReceita;
     public static JInternalFrame framePesInsumo;
     public static JInternalFrame framePesEstoquePasta;
-    TelaPesquisarReceita rec = new TelaPesquisarReceita();
-    TelaPesquisarInsumos ins = new TelaPesquisarInsumos();
+    private final TelaPesquisarReceita rec = new TelaPesquisarReceita();
+    private final TelaPesquisarInsumos ins = new TelaPesquisarInsumos();
 
     /**
      * Creates new form TelaEstoque
@@ -247,7 +247,20 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             }
         }
     }
-
+    
+    //fecha as demais telas que estão abertas
+    private void fecharTelas() {
+        if (this.framePesReceita != null) {
+            this.framePesReceita.dispose();
+        }
+        if (this.framePesEstoquePasta != null) {
+            this.framePesEstoquePasta.dispose();
+        }
+        if (this.framePesInsumo != null) {
+            this.framePesInsumo.dispose();
+        }
+    }
+    
     private void fecharFramePesquizar() {
         if (this.framePesEstoquePasta != null) {
             this.framePesEstoquePasta.dispose();
@@ -313,6 +326,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         btnLimpar = new javax.swing.JButton();
         txtEstQuantidade = new javax.swing.JFormattedTextField();
         jPanel5 = new javax.swing.JPanel();
+        jDesktopPane1 = new javax.swing.JDesktopPane();
         jLabel6 = new javax.swing.JLabel();
         lblCustoProducao = new javax.swing.JLabel();
 
@@ -541,19 +555,24 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         jPanel5.setBackground(new java.awt.Color(236, 255, 209));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(155, 155, 155)));
         jPanel5.setPreferredSize(new java.awt.Dimension(860, 300));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jDesktopPane1.setBackground(new java.awt.Color(236, 255, 209));
+
+        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
+        jDesktopPane1.setLayout(jDesktopPane1Layout);
+        jDesktopPane1Layout.setHorizontalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 856, Short.MAX_VALUE)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 306, Short.MAX_VALUE)
+        jDesktopPane1Layout.setVerticalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 308, Short.MAX_VALUE)
         );
 
-        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 858, 308));
+        jPanel5.add(jDesktopPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 1, -1, 308));
+
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 250, 859, 310));
 
         jLabel6.setText("Custo de produção: R$ ");
         jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 204, -1, -1));
@@ -585,6 +604,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         } else {
             ativarTblPasta();
         }
+        fecharTelas();
         alterarLbl();
     }//GEN-LAST:event_cbEstoqueActionPerformed
 
@@ -607,7 +627,9 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
             if (this.cbTipo.getSelectedItem().equals("Saída")) {
                 limparCampos("ID:");
+                fecharTelas();
             } else {
+                fecharTelas();
                 limparCampos("Código:");
             }
         }
@@ -617,34 +639,43 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         // chama a tela de pesquisa receita ou insumo
         if (this.cbEstoque.getSelectedItem().equals("Pasta")) {
             if (this.cbTipo.getSelectedItem().equals("Entrada")) {
+                fecharTelas();
                 if (this.framePesReceita == null) {
                     this.framePesReceita = new TelaPesquisarReceita();
                 } else {
                     this.framePesReceita.dispose();
                     this.framePesReceita = new TelaPesquisarReceita();
                 }
+                this.framePesReceita.setVisible(true);
+                this.jDesktopPane1.add(this.framePesReceita);
                 this.rec.pesquisarReceita();
-                this.util.comandoInternal2(this.framePesReceita);
+               // this.util.comandoInternal2(this.framePesReceita);
                 TelaPesquisarReceita.confirmarEscolha = 2;
             } else {
+                fecharTelas();
                 if (this.framePesEstoquePasta == null) {
                     this.framePesEstoquePasta = new TelaPesquisarPastaEstoque();
                 } else {
                     this.framePesEstoquePasta.dispose();
                     this.framePesEstoquePasta = new TelaPesquisarPastaEstoque();
                 }
+                this.framePesEstoquePasta.setVisible(true);
+                this.jDesktopPane1.add(this.framePesEstoquePasta);
                 this.rec.pesquisarReceita();
-                this.util.comandoInternal2(this.framePesEstoquePasta);
+                //this.util.comandoInternal2(this.framePesEstoquePasta);
             }
         } else {
+            fecharTelas();
             if (this.framePesInsumo == null) {
                 this.framePesInsumo = new TelaPesquisarInsumos();
             } else {
                 this.framePesInsumo.dispose();
                 this.framePesInsumo = new TelaPesquisarInsumos();
             }
+            this.framePesInsumo.setVisible(true);
+            this.jDesktopPane1.add(this.framePesInsumo);
             this.ins.pesquisarInsumos();
-            this.util.comandoInternal2(this.framePesInsumo);
+            //this.util.comandoInternal2(this.framePesInsumo);
             TelaPesquisarInsumos.confirmarEscolha = false;
         }
     }//GEN-LAST:event_btnMovEstPesquisarActionPerformed
@@ -797,6 +828,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnMovEstPesquisar;
     private javax.swing.JComboBox<String> cbEstoque;
     public static javax.swing.JComboBox<String> cbTipo;
+    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

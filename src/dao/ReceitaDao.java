@@ -21,7 +21,7 @@ import telas.TelaMovimentacaoEstoque;
  */
 public class ReceitaDao {
 
-    Connection conexao = null;
+    private Connection conexao = null;
     public static double custoPorKgReceita = 0;
     private double custoTemp = 0;
     private String descricao = null;

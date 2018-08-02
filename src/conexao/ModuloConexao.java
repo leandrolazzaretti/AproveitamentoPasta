@@ -19,7 +19,8 @@ public class ModuloConexao {
 
     public static Connection conector() {
         if (conexao == null) {
-            String url = "jdbc:sqlite:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/DataBase/prjAproveitamento.db";
+            String url = "jdbc:sqlite:DataBase/prjAproveitamento.db";
+           //String url = "jdbc:sqlite:/Users/Leandro/Documents/NetBeansProjects/prjAproveitamentoPastas/DataBase/prjAproveitamento.db";
             String driver = "org.sqlite.JDBC";
 
             try {

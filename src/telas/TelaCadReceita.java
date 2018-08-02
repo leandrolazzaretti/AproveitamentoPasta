@@ -697,7 +697,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             this.framePesReceita = new TelaPesquisarReceita();
         }
         this.rec.pesquisarReceita();
-        this.util.comandoInternal(this.framePesReceita);
+        this.util.comandoInternal2(this.framePesReceita);
         TelaPesquisarReceita.confirmarEscolha = 1;
     }//GEN-LAST:event_btnReceitaPesquisarActionPerformed
 
@@ -980,7 +980,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             this.framePesInsumo.dispose();
             this.framePesInsumo = new TelaPesquisarInsumos();
         }
-        this.util.comandoInternal(this.framePesInsumo);
+        this.util.comandoInternal2(this.framePesInsumo);
         TelaPesquisarInsumos.confirmarEscolha = true;
         TelaPesquisarInsumos.confimaTela = false;
     }//GEN-LAST:event_btnInsumoPesquisarActionPerformed

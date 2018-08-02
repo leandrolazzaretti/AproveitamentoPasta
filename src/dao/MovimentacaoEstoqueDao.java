@@ -26,11 +26,11 @@ import javax.swing.JTable;
  */
 public class MovimentacaoEstoqueDao {
 
-    Connection conexao = null;
-    Util util = new Util();
-    List<ReceitaInsumoDto> pastaProduzir = new ArrayList<>();
-    List<ReceitaInsumoDto> pastaEstoque = new ArrayList<>();
-    List<ReceitaInsumoDto> pastasTemp = new ArrayList<>();
+    private Connection conexao = null;
+    private Util util = new Util();
+    private List<ReceitaInsumoDto> pastaProduzir = new ArrayList<>();
+    private List<ReceitaInsumoDto> pastaEstoque = new ArrayList<>();
+    private List<ReceitaInsumoDto> pastasTemp = new ArrayList<>();
 
     public MovimentacaoEstoqueDao() {
         this.conexao = ModuloConexao.conector();

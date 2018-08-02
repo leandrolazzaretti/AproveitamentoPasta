@@ -16,6 +16,7 @@ public class RelatorioReceitaDto {
     private String descTP;
     private String pantone;
     private int dataVencimento;
+    private String custoPorKg;
     private String descIns;
     private String UM;
     private String consumo;
@@ -24,12 +25,13 @@ public class RelatorioReceitaDto {
 
     }
 
-    public RelatorioReceitaDto(int codigoReceita, String descRec, String descTP, String pantone, int dataVencimento, String descIns, String UM, String consumo) {
+    public RelatorioReceitaDto(int codigoReceita, String descRec, String descTP, String pantone, int dataVencimento, String custoPorKg, String descIns, String UM, String consumo) {
         this.codigoReceita = codigoReceita;
         this.descRec = descRec;
         this.descTP = descTP;
         this.pantone = pantone;
         this.dataVencimento = dataVencimento;
+        this.custoPorKg = custoPorKg;
         this.descIns = descIns;
         this.UM = UM;
         this.consumo = consumo;
@@ -97,5 +99,13 @@ public class RelatorioReceitaDto {
 
     public void setConsumo(String consumo) {
         this.consumo = consumo;
+    }
+
+    public String getCustoPorKg() {
+        return custoPorKg;
+    }
+
+    public void setCustoPorKg(String custoPorKg) {
+        this.custoPorKg = custoPorKg;
     }
 }

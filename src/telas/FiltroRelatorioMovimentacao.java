@@ -19,8 +19,8 @@ import util.Relatorio;
  */
 public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
 
-    int xMouse;
-    int yMouse;
+    private int xMouse;
+    private int yMouse;
 
     private String tipo = "!=";
     private String estoque = "";

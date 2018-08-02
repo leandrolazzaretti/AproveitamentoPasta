@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReport" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1fd339d1-2649-4aaf-847a-87fe14a99816">
+	<property name="ireport.zoom" value="2.1435888100000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codigoReceita" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("1")]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select i.descricao, i.UM, ri.consumo from tbReceitaInsumo as ri
+inner join tbinsumos as i on i.codigo = ri.codigoInsumo
+where ri.codigoReceita = $P{codigoReceita}]]>
+	</queryString>
+	<field name="descricao" class="java.lang.Object"/>
+	<field name="UM" class="java.lang.Object"/>
+	<field name="consumo" class="java.lang.Object"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="4" y="0" width="90" height="20" uuid="ac3ae7f8-c52a-4c10-b9e8-b3a08f38b8a8"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[""+$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="97" y="0" width="53" height="20" uuid="716f99c1-d025-46e2-97d5-48f0fe8e07c6"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[""+$F{UM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="175" y="0" width="82" height="20" uuid="5da26d99-a6a6-48ba-8014-e4b42ba5955c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

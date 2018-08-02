@@ -28,13 +28,13 @@ import util.Util;
  */
 public class TelaCadUsuario extends javax.swing.JInternalFrame {
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
-    TelaPesquisarUsuario user = new TelaPesquisarUsuario();
-    UsuarioDao lista = new UsuarioDao();
+    private final TelaPesquisarUsuario user = new TelaPesquisarUsuario();
+    private final UsuarioDao lista = new UsuarioDao();
     private int index = -1;
     private int codigo;
-    Util frame = new Util();
+    private final Util frame = new Util();
     public static JInternalFrame framePesUsuario;
 
     /**

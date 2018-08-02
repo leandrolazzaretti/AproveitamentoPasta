@@ -22,7 +22,7 @@ import util.HashUtil;
  */
 public class UsuarioDao {
 
-    Connection conexao = null;
+    private Connection conexao = null;
 
     public UsuarioDao() {
         this.conexao = ModuloConexao.conector();

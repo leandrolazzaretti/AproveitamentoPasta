@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7e7a5a59-7f87-45fa-9706-77cdc107106c">
-	<property name="ireport.zoom" value="1.9487171000000016"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="1.4641000000000015"/>
+	<property name="ireport.x" value="23"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="codigoReceita" class="java.lang.String"/>
 	<field name="codigoReceita" class="java.lang.String"/>
 	<field name="descRec" class="java.lang.String"/>
 	<field name="descTP" class="java.lang.String"/>
@@ -102,7 +103,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="74" splitType="Stretch">
+		<band height="63" splitType="Stretch">
 			<textField>
 				<reportElement x="7" y="0" width="63" height="20" uuid="16742293-9ca6-4eea-a36b-1e7086cd26a7"/>
 				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
@@ -136,11 +137,11 @@
 				<textFieldExpression><![CDATA[$F{consumo}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="3" y="29" width="350" height="45" uuid="069ce12a-d871-416a-91fa-e5f86569294e"/>
+				<reportElement x="3" y="31" width="350" height="20" uuid="ac46b176-412c-420d-b040-f33b4c6361b6"/>
 				<subreportParameter name="codigoReceita">
 					<subreportParameterExpression><![CDATA[$F{codigoReceita}]]></subreportParameterExpression>
 				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<connectionExpression><![CDATA[]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subReport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>

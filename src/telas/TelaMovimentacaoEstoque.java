@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import util.MascaraMoeda;
 import util.Util;
 import util.SoNumeros;
+import util.UpperCaseDocument;
 
 /**
  *
@@ -57,6 +58,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         this.txtEstQuantidade.setDocument(new MascaraMoeda());
         this.txtEstData.setValue(null);
         limparCampos("Código:");
+        this.txtEstUM.setText("kg");
         this.txtDescricao.setText(null);
         if (this.cbEstoque.getSelectedItem().equals("Insumo")) {
             this.txtEstUM.setText(null);
@@ -272,6 +274,11 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
             this.framePesInsumo.dispose();
         }
     }
+    
+     //chama o método para tornar as letras do campo Maiusculas
+    private void upperCase() {
+        this.txtDescricao.setDocument(new UpperCaseDocument());
+    }
 
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JButton botao) {
@@ -369,7 +376,7 @@ public class TelaMovimentacaoEstoque extends javax.swing.JInternalFrame {
         jPanel2.add(lblCodigoID, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, -1, -1));
 
         jLabel7.setForeground(new java.awt.Color(79, 79, 79));
-        jLabel7.setText("Quantidade:");
+        jLabel7.setText("Quantidade kg:");
         jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 130, -1, -1));
 
         lblRecIns.setForeground(new java.awt.Color(79, 79, 79));

@@ -39,7 +39,7 @@ where ri.codigoReceita = $P{codigoReceita}]]>
 				<textFieldExpression><![CDATA[""+$F{UM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="175" y="0" width="82" height="20" uuid="5da26d99-a6a6-48ba-8014-e4b42ba5955c"/>
+				<reportElement x="206" y="0" width="82" height="20" uuid="5da26d99-a6a6-48ba-8014-e4b42ba5955c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[""+$F{consumo}]]></textFieldExpression>
 			</textField>

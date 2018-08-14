@@ -347,7 +347,7 @@ public class FiltroRelatorioUsuario extends javax.swing.JDialog {
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        setSize(new java.awt.Dimension(338, 331));
+        setSize(new java.awt.Dimension(338, 318));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

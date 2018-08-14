@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import util.UpperCaseDocument;
 import util.Util;
 
 /**
@@ -24,7 +25,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     private Connection conexao = null;
 
-    private String cbPesquisar = "codigorec";
+    private String cbPesquisar = "r.descricao";
     public int codRecIns = 0;
     public int codIns = 0;
     public static int confirmarEscolha;
@@ -40,6 +41,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         pesquisarReceita();
         retirarBordas();
         this.tblPesquisarReceita.getTableHeader().setReorderingAllowed(false);
+        upperCase();
     }
 
     // metodo para retirar as bordas do JinternalFrame
@@ -67,7 +69,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtPesquisarReceita.getText() + "%");
+            pst.setString(1, "%" + this.txtPesquisarReceita.getText() + "%");
             ResultSet rs = pst.executeQuery();
             this.codRecIns = rs.getInt(1);
             //Preencher a tabela usando a bibliotéca rs2xml.jar
@@ -89,10 +91,13 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
     //seta a tabela tblCadRecComponentes com os dados do banco
     public void setarTbComponentes(int codigoRec) {
-        String sql = "select ri.codigoInsumo , i.descricao, ri.consumo from tbreceita as r "
+        double custoPorkg = 0;
+        String sql = "select ri.codigoInsumo , i.descricao, ri.consumo, ri.custoPorkg from tbreceita as r "
                 + "inner join tbReceitaInsumo as ri on ri.codigoReceita = r.codigorec "
                 + "inner join tbinsumos as i on i.codigo = ri.codigoInsumo "
-                + "where r.codigorec ='" + codigoRec + "'";
+                + "inner join tbTipoInsumo as ti on ti.codigo = i.codigoTipoInsumo "
+                + "where r.codigorec ='" + codigoRec + "'"
+                + "order by ti.ordenacao";
 
         PreparedStatement pst;
 
@@ -111,13 +116,14 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
                 int codg = rs.getInt(1);
                 String comp = rs.getString(2);
-                String cons = this.util.formatadorQuant3(rs.getDouble(3));
+                String cons = this.util.formatadorQuant6(rs.getDouble(3));
                 modelo.addRow(new Object[]{codg, comp, cons});
                 ReceitaInsumoDao.consumoTotal2.add(rs.getDouble(3));
                 ReceitaInsumoDao.consumoTotal3.add(rs.getDouble(3));
                 ReceitaInsumoDao.consumoTotal += rs.getDouble(3);
+                custoPorkg += rs.getDouble(4);
             }
-
+            TelaCadReceita.txtCustoPorKg.setText(this.util.formatadorQuant(custoPorkg));
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -135,21 +141,21 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaCadReceita.txtCadRecPan.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 2).toString());
         TelaCadReceita.cbCadReceitaTipo.setSelectedItem(this.tblPesquisarReceita.getModel().getValueAt(setar, 3).toString());
         TelaCadReceita.txtCadRecVal.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 4).toString());
-        
+
         TelaCadReceita.txtCadRecComponentesCodigo.setEnabled(true);
         TelaCadReceita.txtCadRecComponentesCodigo.requestFocus();
         TelaCadReceita.txtCadRecConsumo.setEnabled(true);
         TelaCadReceita.btnInsumoPesquisar.setEnabled(true);
         TelaCadReceita.btnAddConsumo.setEnabled(true);
         TelaCadReceita.tblCadRecComponentes.setVisible(true);
-        
+
         this.codRecIns = Integer.parseInt(TelaCadReceita.txtCadRecCodigo.getText());
         setarTbComponentes(this.codRecIns);
-        
+
     }
 
     //seta os campos na tela de movimentação de estoque
-    public void setarCampos2(){
+    public void setarCampos2() {
         int setar = this.tblPesquisarReceita.getSelectedRow();
         TelaMovimentacaoEstoque.txtCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
         TelaMovimentacaoEstoque.txtDescricao.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 1).toString());
@@ -158,14 +164,19 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
         TelaMovimentacaoEstoque.txtEstData.setEnabled(true);
         TelaMovimentacaoEstoque.txtEstQuantidade.requestFocus();
     }
-    
+
     //seta os campos na tela de Produção Pasta
-    public void setarCampos3(){
+    public void setarCampos3() {
         int setar = this.tblPesquisarReceita.getSelectedRow();
-         TelaEstoquePasta.txtCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
-         TelaEstoquePasta.txtCodigo.setEnabled(false);
-         TelaEstoquePasta.txtQuantidade.setEnabled(true);
-         TelaEstoquePasta.txtQuantidade.requestFocus();
+        TelaEstoquePasta.txtCodigo.setText(this.tblPesquisarReceita.getModel().getValueAt(setar, 0).toString());
+        TelaEstoquePasta.descricao = this.tblPesquisarReceita.getModel().getValueAt(setar, 1).toString();
+        TelaEstoquePasta.txtCodigo.setEnabled(false);
+        TelaEstoquePasta.txtQuantidade.setEnabled(true);
+        TelaEstoquePasta.txtQuantidade.requestFocus();
+    }
+
+    private void upperCase() {
+        this.txtPesquisarReceita.setDocument(new UpperCaseDocument());
     }
 
     /**
@@ -251,7 +262,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 838, 190));
 
-        cbPesquisarReceita.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Descrição", "Pantone", "Tipo", "Validade" }));
+        cbPesquisarReceita.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Descrição", "Código", "Pantone", "Tipo", "Validade" }));
         cbPesquisarReceita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbPesquisarReceitaActionPerformed(evt);
@@ -301,7 +312,7 @@ public class TelaPesquisarReceita extends javax.swing.JInternalFrame {
             } else {
                 if (this.confirmarEscolha == 2) {
                     setarCampos2();
-                    
+
                 } else {
                     setarCampos3();
                 }

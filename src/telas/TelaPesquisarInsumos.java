@@ -16,6 +16,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 import util.CoresAlternadasTabela;
 import util.SoNumeros;
+import util.UpperCaseDocument;
 import util.Util;
 
 /**
@@ -26,7 +27,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
     private Connection conexao = null;
 
-    private String cbPesquisar = "codigo";
+    private String cbPesquisar = "descricao";
     public static boolean confimaTela;
     public static boolean confirmarEscolha;
     private final Util util = new Util();
@@ -43,6 +44,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         retirarBordas();
         this.tblCadInsumos.getTableHeader().setReorderingAllowed(false);
+        upperCase();
     }
 
     // metodo para retirar as bordas do JinternalFrame
@@ -67,7 +69,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtPesquisarInsumos.getText() + "%");
+            pst.setString(1,"%"+ this.txtPesquisarInsumos.getText() + "%");
             ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar
             while (rs.next()) {
@@ -121,6 +123,9 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         
     }
 
+     private void upperCase(){
+        this.txtPesquisarInsumos.setDocument(new UpperCaseDocument());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,7 +174,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         jLabel6.setText("Pesquisar por:");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
-        cbPesquisarIns.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Descrição", "UM", "Quantidade", "Preço" }));
+        cbPesquisarIns.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Descrição", "Código", "UM", "Quantidade", "Preço" }));
         cbPesquisarIns.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbPesquisarInsActionPerformed(evt);

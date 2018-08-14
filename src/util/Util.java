@@ -112,7 +112,7 @@ public class Util {
             frame.setLocation(0, 84);
             frame.setVisible(true);
             frame.toFront();
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             System.out.println(e);
@@ -149,9 +149,18 @@ public class Util {
 
         return quantFormatado;
     }
+
     public String formatadorQuant3(Double quantidade) {
 
         DecimalFormat df = new DecimalFormat("#,##0.###");
+        String quantFormatado = df.format(quantidade);
+
+        return quantFormatado;
+    }
+    
+    public String formatadorQuant6(Double quantidade) {
+
+        DecimalFormat df = new DecimalFormat("#,##0.######");
         String quantFormatado = df.format(quantidade);
 
         return quantFormatado;
@@ -174,9 +183,25 @@ public class Util {
         resultado = Double.parseDouble(resultado2.replace(",", "."));
         return resultado;
     }
-    
+
     public double formatador4(double valor) {
         DecimalFormat df = new DecimalFormat("#.0000");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
+    }
+    
+    public double formatador6(double valor) {
+        DecimalFormat df = new DecimalFormat("#.000000");
+        double resultado = 0;
+        String resultado2 = df.format(valor);
+        resultado = Double.parseDouble(resultado2.replace(",", "."));
+        return resultado;
+    }
+    
+    public double formatador8(double valor) {
+        DecimalFormat df = new DecimalFormat("#.00000000");
         double resultado = 0;
         String resultado2 = df.format(valor);
         resultado = Double.parseDouble(resultado2.replace(",", "."));
@@ -278,5 +303,4 @@ public class Util {
         }
         return total;
     }
-
 }

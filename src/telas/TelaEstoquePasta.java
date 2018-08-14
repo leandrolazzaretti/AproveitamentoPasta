@@ -32,6 +32,7 @@ import util.Util;
  */
 public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
+    public static JInternalFrame frameOpPasta;
     public static JInternalFrame framePesReceita;
     private final TelaPesquisarReceita rec = new TelaPesquisarReceita();
     private final Util util = new Util();
@@ -39,6 +40,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private final EstoquePastaFinalDao estPasFinal = new EstoquePastaFinalDao();
     private final MovimentacaoDao movDao = new MovimentacaoDao();
     public static boolean jDialogSobre;
+    public static String descricao;
 
     /**
      * Creates new form TelaEstoquePasta
@@ -62,8 +64,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         this.lblCustoProducao.setText("0,00");
         this.lblValorReaproveitadoOpc1.setText("0,00");
         this.lblValorReaproveitadoOpc2.setText("0,00");
-        this.btnProduzirOp1.setEnabled(false);
-        this.btnProduzirOp2.setEnabled(false);
+        this.btnVisualizarOp1.setEnabled(false);
+        this.btnVisualizarOp2.setEnabled(false);
         retornarCoresEnable();
         ((DefaultTableModel) this.tblProducaoPastaOp1.getModel()).setRowCount(0);
         ((DefaultTableModel) this.tblProducaoPastaOp2.getModel()).setRowCount(0);
@@ -81,7 +83,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         movEstDto.setDataVencimento(movEstDao.dataVencimento(movEstDao.dataAtual(), receitaDao.buscaVencimento(Integer.parseInt(this.txtCodigo.getText()))));
 
         movEstDao.entradaPasta(movEstDto);
-        
+
         //a estrutura abaixo seta a tabela de movimentação de estoque
         MovimentacaoDto movDto = new MovimentacaoDto();
         movDto.setTipo("Pasta");
@@ -91,25 +93,73 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         movDto.setData(this.util.dataAtual());
         this.movDao.movimentacao(movDto);
     }
-    
 
-    private void fecharFramPesq() {
+    private void setaTabelaOpcPasta1() {
+        DefaultTableModel modelo = (DefaultTableModel) TelaOpcaoPasta.tblOpcPasta.getModel();
+        modelo.setNumRows(0);
+
+        for (int i = 0; i < EstoquePastaFinalDao.listFinalOp1.size(); i++) {
+            modelo.addRow(new Object[]{
+                EstoquePastaFinalDao.listFinalOp1.get(i).getId(),
+                EstoquePastaFinalDao.listFinalOp1.get(i).getCodigo(),
+                EstoquePastaFinalDao.listFinalOp1.get(i).getDescricao(),
+                this.util.formatadorQuant6(EstoquePastaFinalDao.listFinalOp1.get(i).getUsar()) + " kg",
+                this.util.formatadorQuant(EstoquePastaFinalDao.listFinalOp1.get(i).getEquivalencia()) + "%",
+                EstoquePastaFinalDao.listFinalOp1.get(i).getVencimento()
+            });
+        }
+    }
+
+    private void setaTabelaOpcPasta2() {
+        DefaultTableModel modelo = (DefaultTableModel) TelaOpcaoPasta.tblOpcPasta.getModel();
+        modelo.setNumRows(0);
+
+        if (EstoquePastaFinalDao.listFinalOp22.isEmpty()) {
+
+        } else {
+            modelo.addRow(new Object[]{
+                EstoquePastaFinalDao.listFinalOp22.get(0).getId(),
+                EstoquePastaFinalDao.listFinalOp22.get(0).getCodigo(),
+                EstoquePastaFinalDao.listFinalOp22.get(0).getDescricao(),
+                this.util.formatadorQuant6(EstoquePastaFinalDao.listFinalOp22.get(0).getUsar()) + " kg",
+                this.util.formatadorQuant(EstoquePastaFinalDao.listFinalOp22.get(0).getEquivalencia()) + "%",
+                EstoquePastaFinalDao.listFinalOp22.get(0).getVencimento()
+            });
+        }
+
+        for (int i = 0; i < EstoquePastaFinalDao.insumosOp2.size(); i++) {
+            modelo.addRow(new Object[]{
+                "Insumo",
+                EstoquePastaFinalDao.insumosOp2.get(i).getCodigo(),
+                EstoquePastaFinalDao.insumosOp2.get(i).getDescricao(),
+                this.util.formatadorQuant6(EstoquePastaFinalDao.pastaProduzirOp22.get(i).getConsumo()) + " " + EstoquePastaFinalDao.insumosOp2.get(i).getUM(),
+                this.util.formatadorQuant(this.util.formatador6(this.util.regraDeTres1(this.util.conversaoUMparaKG(EstoquePastaFinalDao.insumosOp2.get(i).getUM(), EstoquePastaFinalDao.pastaProduzirOp22.get(i).getConsumo()), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))))) + "%",
+                ""
+            });
+        }
+    }
+
+    private void fecharFram() {
         if (this.framePesReceita != null) {
             this.framePesReceita.dispose();
+        }
+        if (this.frameOpPasta != null) {
+            this.frameOpPasta.dispose();
         }
     }
 
     private void retornarCoresBtn() {
-        retornaCor(this.jPanel8, this.btnProduzirOp1);
-        retornaCor(this.jPanel7, this.btnProduzirOp2);
+        retornaCor(this.jPanel8, this.btnVisualizarOp1);
+        retornaCor(this.jPanel7, this.btnVisualizarOp2);
     }
-    
-    private void retornarCoresEnable(){
-        alterarCorEnable(this.jPanel8, this.btnProduzirOp1);
-        alterarCorEnable(this.jPanel7, this.btnProduzirOp2);
+
+    private void retornarCoresEnable() {
+        alterarCorEnable(this.jPanel8, this.btnVisualizarOp1);
+        alterarCorEnable(this.jPanel7, this.btnVisualizarOp2);
     }
+
     //retorna a cor para padrão enabled
-    private void alterarCorEnable(JPanel painel ,JButton botao) {
+    private void alterarCorEnable(JPanel painel, JButton botao) {
         painel.setBackground(new Color(255, 255, 255));
         botao.setForeground(new Color(201, 201, 201));
     }
@@ -168,9 +218,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         lblCustoProducao = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
-        btnProduzirOp1 = new javax.swing.JButton();
+        btnVisualizarOp1 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
-        btnProduzirOp2 = new javax.swing.JButton();
+        btnVisualizarOp2 = new javax.swing.JButton();
         lbltext = new javax.swing.JLabel();
         lblValorReaproveitadoOpc1 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -407,53 +457,53 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
         jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnProduzirOp1.setText("Produzir");
-        btnProduzirOp1.setToolTipText("Produzir");
-        btnProduzirOp1.setContentAreaFilled(false);
-        btnProduzirOp1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnProduzirOp1.setEnabled(false);
-        btnProduzirOp1.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnVisualizarOp1.setText("Visualizar");
+        btnVisualizarOp1.setToolTipText("Produzir");
+        btnVisualizarOp1.setContentAreaFilled(false);
+        btnVisualizarOp1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVisualizarOp1.setEnabled(false);
+        btnVisualizarOp1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnProduzirOp1MouseEntered(evt);
+                btnVisualizarOp1MouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnProduzirOp1MouseExited(evt);
+                btnVisualizarOp1MouseExited(evt);
             }
         });
-        btnProduzirOp1.addActionListener(new java.awt.event.ActionListener() {
+        btnVisualizarOp1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProduzirOp1ActionPerformed(evt);
+                btnVisualizarOp1ActionPerformed(evt);
             }
         });
-        jPanel8.add(btnProduzirOp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
+        jPanel8.add(btnVisualizarOp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 25));
 
-        jPanel5.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(351, 12, 70, -1));
+        jPanel5.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(331, 12, -1, -1));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnProduzirOp2.setText("Produzir");
-        btnProduzirOp2.setToolTipText("Produzir");
-        btnProduzirOp2.setContentAreaFilled(false);
-        btnProduzirOp2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnProduzirOp2.setEnabled(false);
-        btnProduzirOp2.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnVisualizarOp2.setText("Visualizar");
+        btnVisualizarOp2.setToolTipText("Produzir");
+        btnVisualizarOp2.setContentAreaFilled(false);
+        btnVisualizarOp2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVisualizarOp2.setEnabled(false);
+        btnVisualizarOp2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnProduzirOp2MouseEntered(evt);
+                btnVisualizarOp2MouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnProduzirOp2MouseExited(evt);
+                btnVisualizarOp2MouseExited(evt);
             }
         });
-        btnProduzirOp2.addActionListener(new java.awt.event.ActionListener() {
+        btnVisualizarOp2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProduzirOp2ActionPerformed(evt);
+                btnVisualizarOp2ActionPerformed(evt);
             }
         });
-        jPanel7.add(btnProduzirOp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 71, 25));
+        jPanel7.add(btnVisualizarOp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 25));
 
-        jPanel5.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(777, 12, 70, -1));
+        jPanel5.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(757, 12, -1, -1));
 
         lbltext.setText("Reaproveitado: R$");
         jPanel5.add(lbltext, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 43, -1, -1));
@@ -509,7 +559,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaCadInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
-        fecharFramPesq();
+        fecharFram();
     }//GEN-LAST:event_btnMinimiActionPerformed
 
     private void btnFecharMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseEntered
@@ -527,7 +577,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
         // gerar mensagem de salvar antes de sair
         this.dispose();
-        fecharFramPesq();
+        fecharFram();
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void formInternalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameDeiconified
@@ -547,6 +597,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         }
         this.rec.pesquisarReceita();
         this.util.comandoInternal2(this.framePesReceita);
+        limparCampos();
         TelaPesquisarReceita.confirmarEscolha = 3;
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
@@ -587,6 +638,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
                 this.tblProducaoPastaOp1.removeAll();
                 this.tblProducaoPastaOp2.removeAll();
+                EstoquePastaFinalDao.listFinalOp22.clear();
+                EstoquePastaFinalDao.pastaProduzirOp22.clear();
+                this.lblValorReaproveitadoOpc1.setText("0,00");
                 this.estPasFinal.limparVariaveis(true);
                 this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
                 this.estPasFinal.buscarInsumos(codigo, quantidade, true);
@@ -602,7 +656,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos.");
         }
-        
+
     }//GEN-LAST:event_btnProcurarActionPerformed
 
     private void txtCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyPressed
@@ -631,6 +685,9 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
 
                     this.tblProducaoPastaOp1.removeAll();
                     this.tblProducaoPastaOp2.removeAll();
+                    EstoquePastaFinalDao.listFinalOp22.clear();
+                    EstoquePastaFinalDao.pastaProduzirOp22.clear();
+                    this.lblValorReaproveitadoOpc1.setText("0,00");
                     this.estPasFinal.limparVariaveis(true);
                     this.estPasFinal.pastaCompativel(this.estPasFinal.buscaCodigoInsumos(codigo));
                     this.estPasFinal.buscarInsumos(codigo, quantidade, true);
@@ -648,53 +705,72 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtQuantidadeKeyPressed
 
-    private void btnProduzirOp1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp1MouseEntered
+    private void btnVisualizarOp1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVisualizarOp1MouseEntered
         // quando o mouse estiver em cima
-        if (this.btnProduzirOp1.isEnabled()) {
-            alteraCor(this.jPanel8, this.btnProduzirOp1);
+        if (this.btnVisualizarOp1.isEnabled()) {
+            alteraCor(this.jPanel8, this.btnVisualizarOp1);
         }
-    }//GEN-LAST:event_btnProduzirOp1MouseEntered
+    }//GEN-LAST:event_btnVisualizarOp1MouseEntered
 
-    private void btnProduzirOp1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp1MouseExited
+    private void btnVisualizarOp1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVisualizarOp1MouseExited
         // quando o mouse sair de cima
-        if (this.btnProduzirOp1.isEnabled()) {
-            retornaCor(this.jPanel8, this.btnProduzirOp1);
+        if (this.btnVisualizarOp1.isEnabled()) {
+            retornaCor(this.jPanel8, this.btnVisualizarOp1);
         }
-    }//GEN-LAST:event_btnProduzirOp1MouseExited
+    }//GEN-LAST:event_btnVisualizarOp1MouseExited
 
-    private void btnProduzirOp2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp2MouseEntered
+    private void btnVisualizarOp2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVisualizarOp2MouseEntered
         // quando o mouse estiver em cima
-        if (this.btnProduzirOp2.isEnabled()) {
-            alteraCor(this.jPanel7, this.btnProduzirOp2);
+        if (this.btnVisualizarOp2.isEnabled()) {
+            alteraCor(this.jPanel7, this.btnVisualizarOp2);
         }
-    }//GEN-LAST:event_btnProduzirOp2MouseEntered
+    }//GEN-LAST:event_btnVisualizarOp2MouseEntered
 
-    private void btnProduzirOp2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProduzirOp2MouseExited
+    private void btnVisualizarOp2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVisualizarOp2MouseExited
         // quando o mouse sair de cima
-        if (this.btnProduzirOp2.isEnabled()) {
-            retornaCor(this.jPanel7, this.btnProduzirOp2);
+        if (this.btnVisualizarOp2.isEnabled()) {
+            retornaCor(this.jPanel7, this.btnVisualizarOp2);
         }
-    }//GEN-LAST:event_btnProduzirOp2MouseExited
+    }//GEN-LAST:event_btnVisualizarOp2MouseExited
 
-    private void btnProduzirOp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProduzirOp1ActionPerformed
-        // chama os metodos para fazer a produção da pasta, tendo como base a primeira opção de produção
-        if (this.estPasFinal.produzirOpc1() == true) {
-            insertPasta();
-            limparCampos();
+    private void btnVisualizarOp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizarOp1ActionPerformed
+        //chama a tela para confirmar a produção de pasta
+        if (this.frameOpPasta == null) {
+            this.frameOpPasta = new TelaOpcaoPasta();
+            this.util.retirarBordas(this.frameOpPasta);
         } else {
-            JOptionPane.showMessageDialog(null, "Erro na produção!");
+            this.frameOpPasta.dispose();
+            this.frameOpPasta = new TelaOpcaoPasta();
+            this.util.retirarBordas(this.frameOpPasta);
         }
-    }//GEN-LAST:event_btnProduzirOp1ActionPerformed
+        this.util.comandoInternal(this.frameOpPasta);
+        TelaOpcaoPasta.lblPasta.setText(this.descricao);
+        TelaOpcaoPasta.lblQuantidade.setText(this.txtQuantidade.getText() + " Kg");
+        TelaOpcaoPasta.lblOpcao.setText("Primeira Opção -");
+        TelaOpcaoPasta.lblOpDescricao.setText("Utilizando apenas Pastas do estoque");
+        TelaOpcaoPasta.lblReaproveitado.setText(EstoquePastaFinalDao.valorReap);
+        setaTabelaOpcPasta1();
+    }//GEN-LAST:event_btnVisualizarOp1ActionPerformed
 
-    private void btnProduzirOp2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProduzirOp2ActionPerformed
-        // chama os metodos para fazer a produção da pasta, tendo como base a segunda opção de produção
-        if (this.estPasFinal.produzirOpc2() == true) {
-            insertPasta();
-            limparCampos();
+    private void btnVisualizarOp2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizarOp2ActionPerformed
+        //chama a tela para confirmar a produção de pasta
+        if (this.frameOpPasta == null) {
+            this.frameOpPasta = new TelaOpcaoPasta();
+            this.util.retirarBordas(this.frameOpPasta);
         } else {
-            JOptionPane.showMessageDialog(null, "Erro na produção!");
+            this.frameOpPasta.dispose();
+            this.frameOpPasta = new TelaOpcaoPasta();
+            this.util.retirarBordas(this.frameOpPasta);
         }
-    }//GEN-LAST:event_btnProduzirOp2ActionPerformed
+        this.util.comandoInternal(this.frameOpPasta);
+        TelaOpcaoPasta.lblPasta.setText(this.descricao);
+        TelaOpcaoPasta.lblQuantidade.setText(this.txtQuantidade.getText() + " Kg");
+        TelaOpcaoPasta.lblOpcao.setText("Segunda Opção -");
+        TelaOpcaoPasta.lblOpDescricao.setText("Utilizando Pastas mais Insumos");
+        TelaOpcaoPasta.lblReaproveitado.setText(EstoquePastaFinalDao.valorReap);
+        TelaOpcaoPasta.lblCustoProducao.setText(EstoquePastaFinalDao.custoProd);
+        setaTabelaOpcPasta2();
+    }//GEN-LAST:event_btnVisualizarOp2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -703,8 +779,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnMinimi;
     private javax.swing.JButton btnPesquisar;
     private javax.swing.JButton btnProcurar;
-    public static javax.swing.JButton btnProduzirOp1;
-    public static javax.swing.JButton btnProduzirOp2;
+    public static javax.swing.JButton btnVisualizarOp1;
+    public static javax.swing.JButton btnVisualizarOp2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -720,8 +796,8 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
+    public static javax.swing.JPanel jPanel7;
+    public static javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JLabel lblCustoProducao;

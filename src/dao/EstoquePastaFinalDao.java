@@ -41,17 +41,20 @@ public class EstoquePastaFinalDao {
 
     private List<EstoquePastaDto> listTemp = new ArrayList<>();
     private List<EstoquePastaDto> listTempX = new ArrayList<>();
-    private List<EstoquePastaDto> listFinalOp1 = new ArrayList<>();
+    public static List<EstoquePastaDto> listFinalOp1 = new ArrayList<>();
+    public static List<EstoquePastaDto> listFinalOp22 = new ArrayList<>();
     private List<EstoquePastaDto> listFinalOp2 = new ArrayList<>();
     private List<ReceitaInsumoDto> pastaProduzirOp1 = new ArrayList<>();
-    private List<ReceitaInsumoDto> pastaProduzirOp2 = new ArrayList<>();
+    public static List<ReceitaInsumoDto> pastaProduzirOp2 = new ArrayList<>();
+    public static List<ReceitaInsumoDto> pastaProduzirOp22 = new ArrayList<>();
     private List<ReceitaInsumoDto> pastaEstoque = new ArrayList<>();
     private List<Integer> verificaID = new ArrayList<>();
-    private List<InsumoDto> insumosOp2 = new ArrayList<>();
+    public static List<InsumoDto> insumosOp2 = new ArrayList<>();
 
     private boolean cofirmaProduzirOp2 = true, confirmaUrl = true, confirmaListTempX = true;
     private String componenteDeletado = null, insumosDeletados, consultarMin = ") as tb1 order by tb1.vencimento";
     private double usadoDaPastaEstoque, pesoRestantePastaProduzir, valorReaproveitado;
+    public static String valorReap, custoProd;
     private int proximaPastaEstoque = 0;
 
     public EstoquePastaFinalDao() {
@@ -62,7 +65,9 @@ public class EstoquePastaFinalDao {
     public void buscarInsumos(int codigo, double quantidade, boolean confirma) {
         String sql = "select i.codigo, i.descricao, i.quantidade, i.UM, ri.consumo from tbReceitaInsumo as ri"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
-                + " where ri.codigoReceita = '" + codigo + "'";
+                + " inner join tbTipoInsumo as ti on ti.codigo = i.codigoTipoInsumo"
+                + " where ri.codigoReceita = '" + codigo + "'"
+                + " order by ti.ordenacao";
 
         PreparedStatement pst;
 
@@ -92,7 +97,7 @@ public class EstoquePastaFinalDao {
     private void setaPastaProduzir(ResultSet rs, double quantidade) throws SQLException {
         ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
         recInsDto.setCodigoInsumo(rs.getInt(1));
-        recInsDto.setConsumo(this.util.formatador4(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5) * 100, quantidade)));
+        recInsDto.setConsumo(this.util.formatador6(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5) * 100, quantidade)));
         recInsDto.setUm(rs.getString(4));
         this.pastaProduzirOp1.add(recInsDto);
     }
@@ -101,7 +106,7 @@ public class EstoquePastaFinalDao {
     private void setaPastaEstoque(ResultSet rs, double quantidade) throws SQLException {
         ReceitaInsumoDto recInsDto = new ReceitaInsumoDto();
         recInsDto.setCodigoInsumo(rs.getInt(1));
-        recInsDto.setConsumo(this.util.formatador4(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5) * 100, quantidade)));
+        recInsDto.setConsumo(this.util.formatador6(this.util.conversaoUMInsumos(rs.getString(4), rs.getDouble(5) * 100, quantidade)));
         recInsDto.setUm(rs.getString(4));
         this.pastaEstoque.add(recInsDto);
     }
@@ -159,7 +164,7 @@ public class EstoquePastaFinalDao {
         estPastDto.setId(rs.getInt(5));
         estPastDto.setCodigo(rs.getInt(1));
         estPastDto.setDescricao(rs.getString(2));
-        estPastDto.setEstoque(this.util.formatador3(rs.getDouble(3)));
+        estPastDto.setEstoque(this.util.formatador6(rs.getDouble(3)));
         estPastDto.setVencimento(this.util.inverterData(rs.getString(4)).replace("-", "/"));
 
         this.listTemp.add(estPastDto);
@@ -183,7 +188,7 @@ public class EstoquePastaFinalDao {
                         quantidadeConvertidaPast = this.util.conversaoUMparaKG(this.pastaProduzirOp1.get(in).getUm(), this.pastaProduzirOp1.get(in).getConsumo());
                         quantidadeConvertidaEst = this.util.conversaoUMparaKG(this.pastaEstoque.get(ind).getUm(), this.pastaEstoque.get(ind).getConsumo());
                         //verifica a % que pode ser usada em determinado insumo
-                        porcentoTemp = this.util.formatador4(this.util.regraDeTres1(quantidadeConvertidaPast, quantidadeConvertidaEst));
+                        porcentoTemp = this.util.formatador6(this.util.regraDeTres1(quantidadeConvertidaPast, quantidadeConvertidaEst));
                         //se a porcentagem temporária for maior que a Atual então é realizado a troca
                         if (porcentoTemp <= porcentoTotal) {
                             porcentoTotal = porcentoTemp;
@@ -194,9 +199,9 @@ public class EstoquePastaFinalDao {
             }
             //Recalcula o maximo a ser usada de todos os insumos da pasta estoque, com base na % total que this.util.formatador3(this.util.regraDeTres2(porcentoTotal, this.pastaEstoque.get(inde).getConsumo()))pode ser uasda
             for (int inde = 0; inde < this.pastaEstoque.size(); inde++) {
-                this.pastaEstoque.get(inde).setConsumo(this.util.formatador4(this.util.regraDeTres2(porcentoTotal, this.pastaEstoque.get(inde).getConsumo())));
+                this.pastaEstoque.get(inde).setConsumo(this.util.formatador6(this.util.regraDeTres2(porcentoTotal, this.pastaEstoque.get(inde).getConsumo())));
             }
-            printInfo();
+            //printInfo();
             //chama o metodo que ira fazer a subtração
             subtrairPelaQuantidade();
             setaListFinal(usadoDaPastaEstoque, i);
@@ -220,8 +225,8 @@ public class EstoquePastaFinalDao {
     // seta a listfinal com os dados da pasta do estoque que foi usada 
     private void setaListFinal(double usadoDaPastaEstoque, int iT) {
         this.verificaID.add(this.listTemp.get(iT).getId());
-        this.listTemp.get(iT).setUsar(this.util.formatador4(usadoDaPastaEstoque));
-        double porcent = this.util.formatador4(this.util.regraDeTres1(usadoDaPastaEstoque, Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))));
+        this.listTemp.get(iT).setUsar(this.util.formatador6(usadoDaPastaEstoque));
+        double porcent = this.util.formatador6(this.util.regraDeTres1(usadoDaPastaEstoque, Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))));
         //verifica se a % ultrapassa os 100%, caso isso acontece o objeto recebe 100%
         if (porcent > 100) {
             this.listTemp.get(iT).setEquivalencia(100);
@@ -257,7 +262,6 @@ public class EstoquePastaFinalDao {
                 limparTblOp1();
             }
         } else {
-            System.out.println("Porcento TOTAL: " + porcentoTotal);
             DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
             modelo.setNumRows(0);
 
@@ -266,14 +270,15 @@ public class EstoquePastaFinalDao {
                     this.listFinalOp1.get(i).getId(),
                     this.listFinalOp1.get(i).getCodigo(),
                     this.listFinalOp1.get(i).getDescricao(),
-                    this.util.formatadorQuant3(this.listFinalOp1.get(i).getEstoque()) + " kg",
-                    this.util.formatadorQuant3(this.listFinalOp1.get(i).getUsar()) + " kg",
+                    this.util.formatadorQuant6(this.listFinalOp1.get(i).getEstoque()) + " kg",
+                    this.util.formatadorQuant6(this.listFinalOp1.get(i).getUsar()) + " kg",
                     this.util.formatadorQuant(this.listFinalOp1.get(i).getEquivalencia()) + "%",
                     this.listFinalOp1.get(i).getVencimento()
                 });
                 valorReaproveitado(this.listFinalOp1.get(i).getCodigo(), this.listFinalOp1.get(i).getUsar());
             }
             TelaEstoquePasta.lblValorReaproveitadoOpc1.setText(this.util.formatadorQuant(this.valorReaproveitado));
+            this.valorReap = this.util.formatadorQuant(this.valorReaproveitado);
             this.valorReaproveitado = 0;
             ativarTblOp1();
         }
@@ -287,35 +292,35 @@ public class EstoquePastaFinalDao {
             } else {
                 retorno = false;
             }
-            movimentarPastasOpc(this.listFinalOp1 ,"-", i);
+            movimentarPastasOpc(this.listFinalOp1, "-", i);
         }
         this.confirmaListTempX = true;
         this.listTempX.clear();
         return retorno;
     }
-    
+
     //metodo que seta movDto para atualizar a tabela de movimentação seta com os dados da pasta
-    private void movimentarPastasOpc(List<EstoquePastaDto> estPasDto ,String entradaSaida, int i){
+    private void movimentarPastasOpc(List<EstoquePastaDto> estPasDto, String entradaSaida, int i) {
         this.movDto.setTipo("Pasta");
         this.movDto.setCodigoID(estPasDto.get(i).getCodigo());
         this.movDto.setDescricao(estPasDto.get(i).getDescricao());
         this.movDto.setQuantidade(entradaSaida + estPasDto.get(i).getUsar());
         this.movDto.setData(this.util.dataAtual());
-                
+
         this.movDao.movimentacao(movDto);
     }
-    
+
     //metodo que seta movDto para atualizar a tabela de movimentação, seta com os dados dos insumos
-    private void movimentarInsumosOpc(List<ReceitaInsumoDto> recInsDto, String entradaSaida, int i){
+    private void movimentarInsumosOpc(List<ReceitaInsumoDto> recInsDto, String entradaSaida, int i) {
         this.movDto.setTipo("Insumo");
         this.movDto.setCodigoID(this.insumosOp2.get(i).getCodigo());
         this.movDto.setDescricao(this.insumosOp2.get(i).getDescricao());
-        this.movDto.setQuantidade(entradaSaida + this.util.formatador(recInsDto.get(i).getConsumo()));
+        this.movDto.setQuantidade(entradaSaida + this.util.formatador6(recInsDto.get(i).getConsumo()));
         this.movDto.setData(this.util.dataAtual());
-        
+
         this.movDao.movimentacao(movDto);
     }
-    
+
     //Faz a produção da receita, dando update na pasta/ insumos da opc2
     public boolean produzirOpc2() {
         boolean retorno = true;
@@ -359,9 +364,10 @@ public class EstoquePastaFinalDao {
         return confirma;
     }
 
-    private void valorReaproveitado(int codigoReceita, double quantidade){
+    private void valorReaproveitado(int codigoReceita, double quantidade) {
         this.valorReaproveitado += quantidade * buscaCustoReceita(codigoReceita);
-}
+    }
+
     //busca o custo por kg de determinada receita através do código
     private double buscaCustoReceita(int codigoReceita) {
         String sql = "select custoPorKg from tbReceitaInsumo where codigoReceita = " + codigoReceita + "";
@@ -375,7 +381,7 @@ public class EstoquePastaFinalDao {
             }
             pst.close();
         } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, e);
         }
         return custo;
     }
@@ -383,21 +389,21 @@ public class EstoquePastaFinalDao {
     private void limparTblOp1() {
         TelaEstoquePasta.tblProducaoPastaOp1.setVisible(false);
         TelaEstoquePasta.tblProducaoPastaOp1.setEnabled(false);
-        TelaEstoquePasta.btnProduzirOp1.setEnabled(false);
-        TelaEstoquePasta.btnProduzirOp1.setForeground(new Color(201, 201, 201));
+        TelaEstoquePasta.btnVisualizarOp1.setEnabled(false);
+        TelaEstoquePasta.btnVisualizarOp1.setForeground(new Color(201, 201, 201));
     }
 
     private void ativarTblOp1() {
         TelaEstoquePasta.tblProducaoPastaOp1.setVisible(true);
         TelaEstoquePasta.tblProducaoPastaOp1.setEnabled(true);
-        TelaEstoquePasta.btnProduzirOp1.setEnabled(true);
-        TelaEstoquePasta.btnProduzirOp1.setForeground(new Color(66, 66, 66));
+        TelaEstoquePasta.btnVisualizarOp1.setEnabled(true);
+        TelaEstoquePasta.btnVisualizarOp1.setForeground(new Color(66, 66, 66));
     }
 
     private void avitarTblOp2() {
         TelaEstoquePasta.tblProducaoPastaOp2.setEnabled(true);
         TelaEstoquePasta.tblProducaoPastaOp2.setVisible(true);
-        TelaEstoquePasta.btnProduzirOp2.setEnabled(true);
+        TelaEstoquePasta.btnVisualizarOp2.setEnabled(true);
     }
 
     //seta a tabelaOp2
@@ -408,15 +414,15 @@ public class EstoquePastaFinalDao {
 
         // verifica se a lista nestá vazia, de pois seta a tabela com os dados da pasta com menor validade 
         if (!this.listFinalOp1.isEmpty()) {
-
+            this.listFinalOp22.add(this.listFinalOp1.get(0));
             this.listFinalOp2.add(this.listFinalOp1.get(0));
-
+            //tabela recebe o primeiro objeto da listFinalOp1
             modelo.addRow(new Object[]{
                 this.listFinalOp1.get(0).getId(),
                 this.listFinalOp1.get(0).getCodigo(),
                 this.listFinalOp1.get(0).getDescricao(),
-                this.util.formatadorQuant3(this.listFinalOp1.get(0).getEstoque()) + " kg",
-                this.util.formatadorQuant3(this.listFinalOp1.get(0).getUsar()) + " kg",
+                this.util.formatadorQuant6(this.listFinalOp1.get(0).getEstoque()) + " kg",
+                this.util.formatadorQuant6(this.listFinalOp1.get(0).getUsar()) + " kg",
                 this.util.formatadorQuant(this.listFinalOp1.get(0).getEquivalencia()) + "%",
                 this.listFinalOp1.get(0).getVencimento()
             });
@@ -429,22 +435,27 @@ public class EstoquePastaFinalDao {
                 "Insumo",
                 this.insumosOp2.get(i).getCodigo(),
                 this.insumosOp2.get(i).getDescricao(),
-                this.util.formatadorQuant3(Double.parseDouble(this.insumosOp2.get(i).getQuantidade())) + " " + this.insumosOp2.get(i).getUM(),
-                this.util.formatadorQuant3(this.pastaProduzirOp2.get(i).getConsumo()) + " " + this.insumosOp2.get(i).getUM(),
-                this.util.formatadorQuant(this.util.formatador4(this.util.regraDeTres1(this.util.conversaoUMparaKG(this.insumosOp2.get(i).getUM(), this.pastaProduzirOp2.get(i).getConsumo()), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))))) + "%",
+                this.util.formatadorQuant6(Double.parseDouble(this.insumosOp2.get(i).getQuantidade())) + " " + this.insumosOp2.get(i).getUM(),
+                this.util.formatadorQuant6(this.pastaProduzirOp2.get(i).getConsumo()) + " " + this.insumosOp2.get(i).getUM(),
+                this.util.formatadorQuant(this.util.formatador6(this.util.regraDeTres1(this.util.conversaoUMparaKG(this.insumosOp2.get(i).getUM(), this.pastaProduzirOp2.get(i).getConsumo()), Double.parseDouble(TelaEstoquePasta.txtQuantidade.getText().replace(".", "").replace(",", "."))))) + "%",
                 ""
             });
         }
         avitarTblOp2();
         TelaEstoquePasta.lblValorReaproveitadoOpc2.setText(this.util.formatadorQuant(this.valorReaproveitado));
+        this.valorReap = this.util.formatadorQuant(this.valorReaproveitado);
         this.valorReaproveitado = 0;
         TelaEstoquePasta.lblCustoProducao.setText(this.util.formatadorQuant(custoProducao));
+        this.custoProd = this.util.formatadorQuant(custoProducao);
         mudarCorLinha.CorNaLinhaQuantidade(tabela);
     }
 
     //busca os insumos faltante pra compar a opção 2
     private void buscaInsumosFaltantes(String url) {
-        String sql = "select codigo, descricao, UM, quantidade, preco from tbinsumos where codigo in(" + url + ")";
+        String sql = "select i.codigo, i.descricao, i.UM, i.quantidade, i.preco from tbinsumos as i"
+                + " inner join tbTipoInsumo as ti on ti.codigo = i.codigoTipoInsumo"
+                + " where i.codigo in(" + url + ")"
+                + " order by ti.ordenacao";
         PreparedStatement pst;
         try {
             pst = this.conexao.prepareStatement(sql);
@@ -499,7 +510,7 @@ public class EstoquePastaFinalDao {
         this.pesoRestantePastaProduzir = 0;
         for (int i = 0; i < produzir.size(); i++) {
             //variavel recebe a soma do restante dos insumos, gerando assim o peso restante da pasta
-            this.pesoRestantePastaProduzir += this.util.formatador3(this.util.conversaoUMparaKG(produzir.get(i).getUm(), produzir.get(i).getConsumo()));
+            this.pesoRestantePastaProduzir += this.util.formatador6(this.util.conversaoUMparaKG(produzir.get(i).getUm(), produzir.get(i).getConsumo()));
             //verifica se é = "0", se for verdadeiro o insumo será eliminado da lista
             if (produzir.get(i).getConsumo() <= 0.001) {
                 this.componenteDeletado += produzir.get(i).getCodigoInsumo() + ",";
@@ -523,8 +534,9 @@ public class EstoquePastaFinalDao {
                 recInsDto.setCodigoReceita(this.pastaProduzirOp1.get(i).getCodigoReceita());
                 recInsDto.setCodigoInsumo(this.pastaProduzirOp1.get(i).getCodigoInsumo());
                 recInsDto.setUm(this.pastaProduzirOp1.get(i).getUm());
-                 recInsDto.setConsumo(this.pastaProduzirOp1.get(i).getConsumo());
+                recInsDto.setConsumo(this.pastaProduzirOp1.get(i).getConsumo());
                 this.pastaProduzirOp2.add(recInsDto);
+                this.pastaProduzirOp22.add(recInsDto);
                 this.cofirmaProduzirOp2 = false;
 
             }
@@ -595,34 +607,33 @@ public class EstoquePastaFinalDao {
 //    }
     //busca o insumo e o consumo 
     //MOSTRA AS INFORMAÇÕES ATRAVÉS DO SYSTEM.OUT
-    public void printInfo() {
-
-        System.out.println("PASTA MAIS ANTIGA COMPATÍVEL: ");
-        System.out.println("ID: " + this.listTemp.get(0).getId());
-        System.out.println("CÓDIGO: " + this.listTemp.get(0).getCodigo());
-        System.out.println("DESCRIÇÃO: " + this.listTemp.get(0).getDescricao());
-        System.out.println("ESTOQUE: " + this.listTemp.get(0).getEstoque());
-        System.out.println("USAR: " + this.listTemp.get(0).getUsar());
-        System.out.println("EQUIVALÊNCIA %: " + this.listTemp.get(0).getEquivalencia());
-        System.out.println("VENCIMENTO: " + this.listTemp.get(0).getVencimento());
-
-        System.out.println("INSUMO DA PASTA MAIS ANTIGA: ");
-        for (int i = 0; i < this.pastaEstoque.size(); i++) {
-            System.out.print("ID: " + this.pastaEstoque.get(i).getId() + ", ");
-            System.out.print("INSUMO: " + this.pastaEstoque.get(i).getCodigoInsumo() + ", ");
-            System.out.print("UM: " + this.pastaEstoque.get(i).getUm() + ", ");
-            System.out.println("CONSUMO: " + this.pastaEstoque.get(i).getConsumo());
-        }
-
-        System.out.println("INSUMO DA PASTA QUE DESEJO PRODUZIR: ");
-        for (int i = 0; i < this.pastaProduzirOp1.size(); i++) {
-            System.out.print("ID: " + this.pastaProduzirOp1.get(i).getId() + ", ");
-            System.out.print("INSUMO: " + this.pastaProduzirOp1.get(i).getCodigoInsumo() + ", ");
-            System.out.print("UM: " + this.pastaProduzirOp1.get(i).getUm() + ", ");
-            System.out.println("CONSUMO: " + this.pastaProduzirOp1.get(i).getConsumo());
-        }
-    }
-
+//    public void printInfo() {
+//
+//        System.out.println("PASTA MAIS ANTIGA COMPATÍVEL: ");
+//        System.out.println("ID: " + this.listTemp.get(0).getId());
+//        System.out.println("CÓDIGO: " + this.listTemp.get(0).getCodigo());
+//        System.out.println("DESCRIÇÃO: " + this.listTemp.get(0).getDescricao());
+//        System.out.println("ESTOQUE: " + this.listTemp.get(0).getEstoque());
+//        System.out.println("USAR: " + this.listTemp.get(0).getUsar());
+//        System.out.println("EQUIVALÊNCIA %: " + this.listTemp.get(0).getEquivalencia());
+//        System.out.println("VENCIMENTO: " + this.listTemp.get(0).getVencimento());
+//
+//        System.out.println("INSUMO DA PASTA MAIS ANTIGA: ");
+//        for (int i = 0; i < this.pastaEstoque.size(); i++) {
+//            System.out.print("ID: " + this.pastaEstoque.get(i).getId() + ", ");
+//            System.out.print("INSUMO: " + this.pastaEstoque.get(i).getCodigoInsumo() + ", ");
+//            System.out.print("UM: " + this.pastaEstoque.get(i).getUm() + ", ");
+//            System.out.println("CONSUMO: " + this.pastaEstoque.get(i).getConsumo());
+//        }
+//
+//        System.out.println("INSUMO DA PASTA QUE DESEJO PRODUZIR: ");
+//        for (int i = 0; i < this.pastaProduzirOp1.size(); i++) {
+//            System.out.print("ID: " + this.pastaProduzirOp1.get(i).getId() + ", ");
+//            System.out.print("INSUMO: " + this.pastaProduzirOp1.get(i).getCodigoInsumo() + ", ");
+//            System.out.print("UM: " + this.pastaProduzirOp1.get(i).getUm() + ", ");
+//            System.out.println("CONSUMO: " + this.pastaProduzirOp1.get(i).getConsumo());
+//        }
+//    }
     //limpa as variaveis para iniciar uma nova busca 
     public void limparVariaveis(boolean confirma) {
         if (confirma == true) {

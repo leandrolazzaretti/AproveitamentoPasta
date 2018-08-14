@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.sf.jasperreports.engine.JRException;
 import util.Relatorio;
+import util.UpperCaseDocument;
 
 /**
  *
@@ -39,6 +40,7 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.rbNao.setSelected(true);
+        upperCase();
     }
 
     private void emitirRelatorio(boolean confFiltro) {
@@ -106,6 +108,11 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         this.txtDataAte.setEnabled(false);
     }
 
+    //chama o método para tornar as letras do campo Maiusculas
+    private void upperCase(){
+        this.txtFiltroDescricao.setDocument(new UpperCaseDocument());
+    }
+    
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(192, 221, 147));
@@ -412,10 +419,10 @@ public class FiltroRelatorioMovimentacao extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
         );
 
-        setSize(new java.awt.Dimension(338, 383));
+        setSize(new java.awt.Dimension(338, 389));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

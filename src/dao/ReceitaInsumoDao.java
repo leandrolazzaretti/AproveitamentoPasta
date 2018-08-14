@@ -32,44 +32,44 @@ public class ReceitaInsumoDao {
     }
 
     //verifica se o valor total do consumo ultrapassa 1kg enquanto estamos no adicionar
-    public boolean verificaConsumoTotalAdd(double consumo){
-        return consumoTotal + consumo <= 1;
+    public boolean verificaConsumoTotalAdd(double consumo) {
+        return consumoTotal + (consumo / 1000) <= 1;
     }
-    
+
     //verifica se o valor total do consumo ultrapassa 1kg enquanto estamos no atualizar
-    public boolean verificaConsumoTotalUpdate(int linha, double consumo){
+    public boolean verificaConsumoTotalUpdate(int linha, double consumo) {
         this.consumoTotalTemp = 0;
         this.consumoTotal2.set(linha, consumo);
-        for(int i = 0; i < this.consumoTotal2.size(); i++){
+        for (int i = 0; i < this.consumoTotal2.size(); i++) {
             this.consumoTotalTemp += this.consumoTotal2.get(i);
         }
         return this.consumoTotalTemp <= 1;
     }
-    
+
     //retorna o valor anterior do consumo, antes da auteração
-    public double retornaValorConsumo(int i){
-        this.consumoTotal2.set(i, this.consumoTotal3.get(i));        
+    public double retornaValorConsumo(int i) {
+        this.consumoTotal2.set(i, this.consumoTotal3.get(i));
         return this.consumoTotal3.get(i);
     }
-    
+
     //seta a posição removida com o valor "0"
-    public void removerConsumoDaList(int index, double consumo){
+    public void removerConsumoDaList(int index, double consumo) {
         this.consumoTotal2.remove(index);
         this.consumoTotal3.remove(index);
         this.consumoTotal -= consumo;
         this.consumoTotal = this.util.formatador4(consumoTotal);
     }
-    
+
     //limpa algumas variáveis 
-    public void limparVariaveis(){
+    public void limparVariaveis() {
         this.consumoTotal = 0;
         this.consumoTotal2.clear();
         this.consumoTotal3.clear();
     }
-    
+
     //Adiciona componente
     public void adicionarComponentes(int codReceita, int codigo, double consumo, double custo) {
-       
+
         String sql = "insert into tbReceitaInsumo(codigoReceita,codigoInsumo,consumo, custoPorKg)values(?,?,?,?)";
 
         PreparedStatement pst;
@@ -102,6 +102,7 @@ public class ReceitaInsumoDao {
     //busca a UM e o preço por kg/g/mg/L do insumo desejado e chama o metodo para calcular o custo por kg
     public double custoPorComponenteKg(int codigo, double consumo) {
         double custo = 0;
+        consumo = consumo / 1000;
         String UM = null, sql = "select UM, preco from tbinsumos where codigo = '" + codigo + "'";
         PreparedStatement pst;
         try {
@@ -143,7 +144,7 @@ public class ReceitaInsumoDao {
                 cons = "0";
             }
             int codg = Integer.parseInt(TelaCadReceita.tblCadRecComponentes.getModel().getValueAt(linha, 0).toString());
-            double custo = custoPorComponenteKg(codg, Double.parseDouble(cons.replace(".", "").replace(",", ".")));
+            double custo = custoPorComponenteKg(codg, (Double.parseDouble(cons.replace(".", "").replace(",", "."))) * 1000);
 
             pst.setString(1, cons.replace(",", "."));
             pst.setDouble(2, custo);
@@ -317,5 +318,23 @@ public class ReceitaInsumoDao {
             JOptionPane.showMessageDialog(null, e);
         }
         return retorno;
+    }
+
+    public double buscarCustoporKg(int codigo) {
+        double custoPorKg = 0;
+        String sql = "select ri.custoPorKg from tbReceitaInsumo as ri"
+                + " where ri.codigoReceita = " + codigo + "";
+        PreparedStatement pst;
+        try {
+            pst = this.conexao.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                custoPorKg += rs.getDouble(1);
+            }
+            pst.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return custoPorKg;
     }
 }

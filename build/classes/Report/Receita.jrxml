@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receita" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c6087826-188e-45a5-b718-6c2429acd4f3">
-	<property name="ireport.zoom" value="1.9487171000000025"/>
+	<property name="ireport.zoom" value="1.4641000000000024"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
@@ -10,7 +10,7 @@
 		<![CDATA[select ri.codigoReceita, r.descricao as descRec, tp.descricao as descTp, r.pantone, r.datavencimento,ri.custoPorKg from tbReceitaInsumo as ri
 inner join tbreceita as r on r.codigorec = ri.codigoReceita
 inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta
-]]>
+group by  ri.codigoReceita]]>
 	</queryString>
 	<field name="codigoReceita" class="java.lang.Object"/>
 	<field name="descRec" class="java.lang.Object"/>
@@ -97,28 +97,28 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="72" uuid="2e4f2950-f929-44b6-9758-3f94d645ce02"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="469" y="28" width="82" height="20" forecolor="#246012" uuid="faea0849-d980-4d69-adc6-2ab7e8cdf81d"/>
+				<reportElement x="455" y="28" width="82" height="20" forecolor="#246012" uuid="faea0849-d980-4d69-adc6-2ab7e8cdf81d"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Consumo por kg]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="390" y="28" width="53" height="20" forecolor="#246012" uuid="a3edc2b7-3690-4fe2-9e66-9e5d17adde57"/>
+				<reportElement x="376" y="28" width="53" height="20" forecolor="#246012" uuid="a3edc2b7-3690-4fe2-9e66-9e5d17adde57"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[UM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="295" y="28" width="89" height="20" forecolor="#246012" uuid="fa581f38-ee5c-4e4c-a2bc-dcd02471b5a3"/>
+				<reportElement x="281" y="28" width="89" height="20" forecolor="#246012" uuid="fa581f38-ee5c-4e4c-a2bc-dcd02471b5a3"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Insumos]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="297" y="48" width="256" height="19" uuid="9a1212bb-d2cb-458e-93a5-7c3569982d99"/>
+				<reportElement x="284" y="48" width="256" height="19" uuid="9a1212bb-d2cb-458e-93a5-7c3569982d99"/>
 				<subreportParameter name="codigoReceita">
 					<subreportParameterExpression><![CDATA[$F{codigoReceita}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -126,33 +126,36 @@ inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subReport.jasper"]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement stretchType="RelativeToBandHeight" x="290" y="26" width="1" height="46" uuid="ac5042d5-3885-4329-8638-2cfd7fc10c05"/>
-			</line>
-			<line>
-				<reportElement x="291" y="26" width="264" height="1" uuid="0f96c248-d1fd-4800-acd6-c503de91e208"/>
+				<reportElement x="13" y="25" width="526" height="1" uuid="0f96c248-d1fd-4800-acd6-c503de91e208"/>
 			</line>
 			<textField>
 				<reportElement x="82" y="4" width="113" height="20" uuid="e17045a0-1216-4f82-83cc-2612d9a8babb"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{descRec}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="392" y="4" width="79" height="20" uuid="0d20270a-f70d-4517-b698-b6e00a10152c"/>
+				<reportElement x="410" y="4" width="60" height="20" uuid="0d20270a-f70d-4517-b698-b6e00a10152c"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{datavencimento}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="11" y="4" width="71" height="20" uuid="066d1ae0-5575-41b2-8c2e-f07ff4c0ad1b"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="299" y="4" width="93" height="20" uuid="6aae693b-a5d9-4550-b4da-6cc8e4d6caa8"/>
+				<reportElement x="306" y="4" width="93" height="20" uuid="6aae693b-a5d9-4550-b4da-6cc8e4d6caa8"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{pantone}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="475" y="4" width="75" height="20" uuid="b65b3572-7a7e-4e0c-87d7-2b90b1da16ee"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{custoPorKg}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="199" y="4" width="94" height="20" uuid="5aadd537-53d0-4ab0-809d-eca12ae7766b"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{descTp}]]></textFieldExpression>
 			</textField>
 		</band>

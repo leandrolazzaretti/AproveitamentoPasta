@@ -10,10 +10,9 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import net.sf.jasperreports.engine.JRException;
-import util.ComboKeyHandler;
 import util.Relatorio;
+import util.UpperCaseDocument;
 
 /**
  *
@@ -35,6 +34,7 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
 
     /**
      * Creates new form FiltroRelatorioReceita
+     *
      * @param parent
      * @param modal
      */
@@ -44,6 +44,7 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
         this.rbNao.setSelected(true);
         this.tipoPastaDao.setarComboBox(cbFiltroTipoPasta);
         //cbAtivar();
+        upperCase();
     }
 
     private void emitirRelatorio(boolean confFiltro) {
@@ -88,7 +89,7 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
 //        JTextField text = (JTextField) this.cbFiltroTipoPasta.getEditor().getEditorComponent();
 //        text.addKeyListener(new ComboKeyHandler(this.cbFiltroTipoPasta));
 //    }
-
+    
     private void ativarCampos() {
         this.chCodigo.setEnabled(true);
         this.chReceita.setEnabled(true);
@@ -112,6 +113,13 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
         this.txtFiltroPantone.setEnabled(false);
         this.txtFiltroVencimento.setEnabled(false);
         this.txtFiltroInsumo.setEnabled(false);
+    }
+    
+    //chama o método para tornar as letras do campo Maiusculas
+    private void upperCase(){
+        this.txtFiltroReceita.setDocument(new UpperCaseDocument());
+        this.txtFiltroPantone.setDocument(new UpperCaseDocument());
+        this.txtFiltroInsumo.setDocument(new UpperCaseDocument());
     }
 
     // quando o mouse estiver em cima
@@ -404,10 +412,10 @@ public class FiltroRelatorioReceita extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
         );
 
-        setSize(new java.awt.Dimension(338, 387));
+        setSize(new java.awt.Dimension(338, 380));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

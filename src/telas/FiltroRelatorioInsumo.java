@@ -10,7 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.sf.jasperreports.engine.JRException;
+import org.apache.commons.lang.StringUtils;
 import util.Relatorio;
+import util.UpperCaseDocument;
 
 /**
  *
@@ -35,6 +37,7 @@ public class FiltroRelatorioInsumo extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.rbNao.setSelected(true);
+        upperCase();
     }
 
     private void emitirRelatorio(boolean confFiltro) {
@@ -88,6 +91,11 @@ public class FiltroRelatorioInsumo extends javax.swing.JDialog {
         this.txtFiltroQuant.setEnabled(false);
     }
 
+    //chama o método para tornar as letras do campo Maiusculas
+    private void upperCase(){
+        this.txtFiltroInsumo.setDocument(new UpperCaseDocument());
+    }
+    
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(192, 221, 147));
@@ -344,7 +352,7 @@ public class FiltroRelatorioInsumo extends javax.swing.JDialog {
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        setSize(new java.awt.Dimension(338, 331));
+        setSize(new java.awt.Dimension(338, 319));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

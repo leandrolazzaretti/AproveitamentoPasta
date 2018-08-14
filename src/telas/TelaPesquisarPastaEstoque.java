@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 import util.CoresAlternadasTabela;
+import util.UpperCaseDocument;
 import util.Util;
 
 /**
@@ -29,7 +30,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
     private final MovimentacaoEstoqueDao movEstDao = new MovimentacaoEstoqueDao();
     private final CoresAlternadasTabela mudarCorLinha = new CoresAlternadasTabela();
     
-    private String cbPesquisar = "ep.ID";
+    private String cbPesquisar = "r.descricao";
     
     /**
      * Creates new form TelaPesquisarPastaEstoque
@@ -40,6 +41,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         retirarBordas();
         this.tblEstPasta.getTableHeader().setReorderingAllowed(false);
         setarTabelaPasta();
+        upperCase();
     }
     
      // metodo para retirar as bordas do JinternalFrame
@@ -68,7 +70,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtMovEst.getText() + "%");
+            pst.setString(1,"%"+ this.txtMovEst.getText() + "%");
             ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar
             while (rs.next()) {
@@ -88,6 +90,10 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
             System.out.println(e);
         }
         this.mudarCorLinha.CorNaLinhaValidade(tblEstPasta);
+    }
+    
+     private void upperCase(){
+        this.txtMovEst.setDocument(new UpperCaseDocument());
     }
     
      private String inverterData(String data) {
@@ -144,7 +150,7 @@ public class TelaPesquisarPastaEstoque extends javax.swing.JInternalFrame {
         jLabel6.setText("Pesquisar por:");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 53, -1, -1));
 
-        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Pasta", "Quantidade", "Validade" }));
+        cbPesMovEst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pasta", "ID", "Quantidade", "Validade" }));
         cbPesMovEst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbPesMovEstActionPerformed(evt);

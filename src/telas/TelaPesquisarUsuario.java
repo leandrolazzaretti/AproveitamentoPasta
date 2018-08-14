@@ -23,7 +23,7 @@ import util.Util;
 public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
 
     private Connection conexao = null;
-    private String cbPesquisar = "codigo";
+    private String cbPesquisar = "Nome";
     public UsuarioDto guardar = new UsuarioDto();
     private final Util frame = new Util();
 
@@ -39,15 +39,15 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
     }
 
     // metodo para retirar as bordas do JinternalFrame
-  private void retirarBordas() {
+    private void retirarBordas() {
         ((BasicInternalFrameUI) this.getUI()).setNorthPane(null); //retirar o painel superior
         this.setBorder(null);//retirar bordas
-    }  
-  
+    }
+
     // pesquizar/ carregar usuarios atraves da tabela
     public void pesquisarUsuario() {
         String sql = "select codigo, nome, login, perfil from tbusuarios where " + this.cbPesquisar + " like ?";
-        
+
         PreparedStatement pst;
 
         DefaultTableModel modelo = (DefaultTableModel) this.tblCadUsuario.getModel();
@@ -57,11 +57,10 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         this.tblCadUsuario.getColumnModel().getColumn(1).setPreferredWidth(80);
         this.tblCadUsuario.getColumnModel().getColumn(2).setPreferredWidth(40);
         this.tblCadUsuario.getColumnModel().getColumn(3).setPreferredWidth(40);
-        
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1, this.txtCadUsuarioPesquisar.getText() + "%");
+            pst.setString(1, "%" + this.txtCadUsuarioPesquisar.getText() + "%");
             ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar
             while (rs.next()) {
@@ -71,14 +70,14 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
                     rs.getString(3),
                     rs.getString(4)});
             }
-            
+
             pst.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-     private void setarCampos() {
+
+    private void setarCampos() {
         int setar = this.tblCadUsuario.getSelectedRow();
         TelaCadUsuario.txtCadUsuId.setEnabled(false);
         TelaCadUsuario.txtCadUsuLogin.setEnabled(false);
@@ -162,7 +161,7 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
         });
         getContentPane().add(txtCadUsuarioPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 260, -1));
 
-        cbCadUsuarioPesquisar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Código", "Nome", "Perfil" }));
+        cbCadUsuarioPesquisar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nome", "Código", "Perfil" }));
         cbCadUsuarioPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbCadUsuarioPesquisarActionPerformed(evt);
@@ -212,7 +211,7 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
             setarCampos();
             this.dispose();
         }
-       
+
     }//GEN-LAST:event_tblCadUsuarioMouseClicked
 
     private void txtCadUsuarioPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadUsuarioPesquisarKeyReleased
@@ -241,7 +240,7 @@ public final class TelaPesquisarUsuario extends javax.swing.JInternalFrame {
 
     private void btnFecharMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFecharMouseExited
         // quando o mouse sair de cima
-        this.jPanel1.setBackground(new Color(143,165,110));
+        this.jPanel1.setBackground(new Color(143, 165, 110));
         this.btnFechar.setForeground(new Color(79, 79, 79));
     }//GEN-LAST:event_btnFecharMouseExited
 

@@ -48,6 +48,8 @@ public class Relatorio {
 
     public void gerarRelatorio() throws JRException {
 
+//        Map parametros = new HashMap();
+//        parametros.put("SUBREPORT_DIR", Conexao());
         InputStream arq = Relatorio.class.getResourceAsStream(this.url);
         JasperReport report = JasperCompileManager.compileReport(arq);
         JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(this.lista));
@@ -159,7 +161,7 @@ public class Relatorio {
         String sql = "select ep.ID, ep.codigoReceita, r.descricao, ep.quantidade, ep.data, ep.dataVencimento"
                 + " from tbEstoquePasta as ep"
                 + " inner join tbreceita as r on r.codigorec = ep.codigoReceita"
-                + " where (ep.ID ='" + id + "' or '" + id + "'='" + vazio + "')"
+                + " where (ep.quantidade != 0) and (ep.ID ='" + id + "' or '" + id + "'='" + vazio + "')"
                 + " and (ep.codigoReceita ='" + codigo + "' or '" + codigo + "'='" + vazio + "') and"
                 + " (r.descricao = '" + descricao + "' or '" + descricao + "' = '" + vazio + "') and"
                 + " (ep.data >= '" + dataDe + "' and ep.data <= '" + dataAte + "' or"
@@ -232,6 +234,7 @@ public class Relatorio {
             System.out.println(e);
         }
     }
+
     public void relatorioReceitaSetarTeste(String codigo, String receita, String tipoPasta, String pantone, String vencimento, String insumo) {
         String vazio = "";
         String sql = "select ri.codigoReceita, r.descricao as descRec, tp.descricao as descTp, r.pantone, r.datavencimento, ri.custoPorKg from tbReceitaInsumo as ri"
@@ -270,5 +273,4 @@ public class Relatorio {
             System.out.println(e);
         }
     }
-
 }

@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -26,9 +27,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import util.ComboKeyHandler;
-import util.MascaraMoeda3;
 import util.SoNumeros;
+import util.UpperCaseDocument;
 import util.Util;
 
 /**
@@ -39,7 +42,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
     private Connection conexao = null;
     public int codigoTipo;
-    private String descIns;
+    private String descIns, temp;
     private final TipoPastaDao pasta = new TipoPastaDao();
     private final ReceitaInsumoDao recInsDao = new ReceitaInsumoDao();
     private final TelaPesquisarReceita rec = new TelaPesquisarReceita();
@@ -47,6 +50,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     private final Util util = new Util();
     private boolean verifica = false, confKeyEnter = true;
     private String armazena = null;
+    private boolean confirmaMascaraConsumo = false;
 
     public static JInternalFrame framePesInsumo;
     public static JInternalFrame framePesReceita;
@@ -58,7 +62,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         initComponents();
         this.conexao = ModuloConexao.conector();
         this.txtCadRecConsumo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        this.txtCadRecConsumo.setDocument(new MascaraMoeda3());
         this.txtCadRecCodigo.setDocument(new SoNumeros());
         this.txtCadRecVal.setDocument(new SoNumeros());
         this.tblCadRecComponentes.getColumnModel().getColumn(1).setPreferredWidth(20);
@@ -67,8 +70,19 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.cbCadReceitaTipo.setSelectedItem(null);
         desabilitarTabela();
         cbAtivar();
+        upperCase();
+        formatardor();
 
-//      cbAtivar();
+    }
+
+    //mascara para formatar o compo donsumo
+    private void formatardor() {
+        DecimalFormat dFormat = new DecimalFormat("#,###,###.000");
+        NumberFormatter formatter = new NumberFormatter(dFormat);
+        formatter.setFormat(dFormat);
+        formatter.setAllowsInvalid(false);
+
+        this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
 
     //Abilitar campos area da tabela
@@ -113,14 +127,16 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
     private void limparCampos() {
+        this.temp = null;
         this.txtCadRecCodigo.setEnabled(true);
         this.txtCadRecCodigo.setText(null);
         this.txtCadRecDes.setText(null);
         this.txtCadRecPan.setText(null);
         this.txtCadRecVal.setText(null);
+        this.txtCustoPorKg.setText(null);
+        this.txtCadRecConsumo.setValue(null);
         this.txtCadRecComponentesCodigo.setText(null);
         this.txtCadRecComponentesDesc.setText(null);
-        this.txtCadRecConsumo.setDocument(new MascaraMoeda3());
         this.recInsDao.limparVariaveis();
         ((DefaultTableModel) this.tblCadRecComponentes.getModel()).setRowCount(0);
         this.cbCadReceitaTipo.setSelectedItem(null);
@@ -134,10 +150,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         String codg = this.txtCadRecComponentesCodigo.getText().trim();
         String comp = this.txtCadRecComponentesDesc.getText().trim();
-        String cons = this.txtCadRecConsumo.getText().trim();
+        String cons = (this.util.formatadorQuant6(Double.parseDouble(this.txtCadRecConsumo.getText().trim().replace(".", ",").replace(",", ".")) / 1000));
 
         DefaultTableModel val = (DefaultTableModel) this.tblCadRecComponentes.getModel();
-        val.addRow(new String[]{codg, comp, cons});
+        val.addRow(new String[]{codg, comp, cons.replace(".", ",")});
     }
 
     //evento para remover tblCadRecComponentes/ chama o metodo deletar componente
@@ -146,8 +162,10 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         if (this.tblCadRecComponentes.getSelectedRow() != -1) {
             DefaultTableModel remov = (DefaultTableModel) this.tblCadRecComponentes.getModel();
             this.recInsDao.removerConsumoDaList(this.tblCadRecComponentes.getSelectedRow(), Double.parseDouble(this.tblCadRecComponentes.getModel().getValueAt(this.tblCadRecComponentes.getSelectedRow(), 2).toString().replace(".", "").replace(",", ".")));
-            recInsDao.deletarComponente(Integer.parseInt(this.txtCadRecCodigo.getText()));
-            remov.removeRow(this.tblCadRecComponentes.getSelectedRow());
+            this.recInsDao.deletarComponente(Integer.parseInt(this.txtCadRecCodigo.getText()));
+            this.tblCadRecComponentes.removeAll();
+            this.recInsDao.limparVariaveis();
+            this.rec.setarTbComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
         }
     }
 
@@ -238,9 +256,18 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         }
     }
 
+    //chama o método para tornar as letras do campo Maiusculas
+    private void upperCase() {
+        this.txtCadRecComponentesDesc.setDocument(new UpperCaseDocument());
+        this.txtCadRecDes.setDocument(new UpperCaseDocument());
+        this.txtCadRecPan.setDocument(new UpperCaseDocument());
+        this.txtCadRecComponentesDesc.setDocument(new UpperCaseDocument());
+    }
+
     private void cbAtivar() {
         JTextField text = (JTextField) this.cbCadReceitaTipo.getEditor().getEditorComponent();
         text.addKeyListener(new ComboKeyHandler(this.cbCadReceitaTipo));
+        text.setDocument(new UpperCaseDocument());
     }
 
     // quando o mouse estiver em cima
@@ -294,6 +321,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         txtCadRecConsumo = new javax.swing.JFormattedTextField();
         txtCadRecComponentesCodigo = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         cbCadReceitaTipo = new javax.swing.JComboBox<>();
         tbnCadRecTipo = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -307,6 +335,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         btnCadRecDeletar = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         btnCadRecLimpar = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        txtCustoPorKg = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -415,7 +446,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Componentes", "Consumo"
+                "Código", "Componentes", "Consumo por kg"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -441,7 +472,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tblCadRecComponentes);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 820, 280));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 820, 280));
 
         jLabel8.setForeground(new java.awt.Color(79, 79, 79));
         jLabel8.setText("Componentes:");
@@ -449,7 +480,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jPanel1.add(txtCadRecComponentesDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 240, -1));
 
         jLabel7.setForeground(new java.awt.Color(79, 79, 79));
-        jLabel7.setText("Consumo por kg:");
+        jLabel7.setText("Consumo G por kg:");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 10, -1, -1));
 
         btnInsumoPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
@@ -472,8 +503,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 btnAddConsumoActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAddConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 38, 30, -1));
+        jPanel1.add(btnAddConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 38, 30, -1));
 
+        txtCadRecConsumo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         txtCadRecConsumo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCadRecConsumoKeyPressed(evt);
@@ -481,6 +513,11 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         });
         jPanel1.add(txtCadRecConsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 40, 110, -1));
 
+        txtCadRecComponentesCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCadRecComponentesCodigoFocusGained(evt);
+            }
+        });
         txtCadRecComponentesCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCadRecComponentesCodigoKeyPressed(evt);
@@ -492,9 +529,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         jLabel9.setText("Código Insumo:");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel10.setText("g");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(645, 42, -1, -1));
+
         jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 820, 360));
 
         cbCadReceitaTipo.setEditable(true);
+        cbCadReceitaTipo.setToolTipText("");
         jPanel2.add(cbCadReceitaTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 110, 150, -1));
 
         tbnCadRecTipo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
@@ -641,6 +683,17 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
 
         jPanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(104, 150, 80, 25));
 
+        jLabel11.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel11.setText("Custo por kg: ");
+        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 130, -1, 20));
+
+        txtCustoPorKg.setEnabled(false);
+        jPanel2.add(txtCustoPorKg, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 160, 120, -1));
+
+        jLabel12.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel12.setText("R$:");
+        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(693, 163, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -715,8 +768,8 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 this.pasta.addComboBox(this.cbCadReceitaTipo.getSelectedItem().toString());
                 this.cbCadReceitaTipo.removeAllItems();
                 this.pasta.setarComboBox(cbCadReceitaTipo);
-                this.cbCadReceitaTipo.setSelectedItem(pastaAdicionada);
                 cbAtivar();
+                this.cbCadReceitaTipo.setSelectedItem(pastaAdicionada);
             }
         }
     }//GEN-LAST:event_tbnCadRecTipoActionPerformed
@@ -896,12 +949,19 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             } else {
                 this.txtCadRecComponentesDesc.setText(this.recInsDao.codIns(Integer.parseInt(this.txtCadRecComponentesCodigo.getText())));
                 this.txtCadRecConsumo.requestFocus();
+                String consumoFaltante = "" + ((1 - ReceitaInsumoDao.consumoTotal) * 1000);
+                this.txtCadRecConsumo.setText(consumoFaltante.replace(".", ","));
             }
         }
     }//GEN-LAST:event_txtCadRecComponentesCodigoKeyPressed
 
     private void txtCadRecConsumoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadRecConsumoKeyPressed
         // quando ENTER é pressionado
+        if ((this.txtCadRecConsumo.getText().equals(",000")) && (evt.getKeyCode() == KeyEvent.VK_BACKSPACE)) {
+            this.txtCadRecConsumo.setValue(null);
+            formatardor();
+        }
+
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // chama metodo para setar a tabela
             boolean total;
@@ -924,10 +984,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                             if (this.recInsDao.verificaConsumoTotalAdd(Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))) == false) {
                                 JOptionPane.showMessageDialog(null, "Consumo exede o total de 1kg.");
                             } else {
-                                this.recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ".")), this.recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))));
+                                this.recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ".")) / 1000, this.recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))));
                                 setarTabela();
                                 this.txtCadRecComponentesCodigo.setText(null);
                                 this.txtCadRecComponentesDesc.setText(null);
+                                this.txtCadRecConsumo.setValue(null);
+                                String consumoFaltante = "" + ((1 - ReceitaInsumoDao.consumoTotal) * 1000);
+                                this.txtCadRecConsumo.setText(consumoFaltante.replace(".", ","));
+                                this.txtCustoPorKg.setText(this.util.formatadorQuant(this.recInsDao.buscarCustoporKg(Integer.parseInt(this.txtCadRecCodigo.getText()))));
                                 this.txtCadRecComponentesCodigo.requestFocus();
                             }
                         }
@@ -935,6 +999,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 }
             }
         }
+
     }//GEN-LAST:event_txtCadRecConsumoKeyPressed
 
     private void btnAddConsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddConsumoActionPerformed
@@ -959,10 +1024,13 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                         if (this.recInsDao.verificaConsumoTotalAdd(Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))) == false) {
                             JOptionPane.showMessageDialog(null, "Consumo exede o total de 1kg.");
                         } else {
-                            this.recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ".")), this.recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ""))));
+                            this.recInsDao.adicionarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()), Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", ".")) / 1000, this.recInsDao.custoPorComponenteKg(Integer.parseInt(this.txtCadRecComponentesCodigo.getText()), Double.parseDouble(this.txtCadRecConsumo.getText().replace(".", "").replace(",", "."))));
                             setarTabela();
                             this.txtCadRecComponentesCodigo.setText(null);
                             this.txtCadRecComponentesDesc.setText(null);
+                            this.txtCadRecConsumo.setValue(null);
+                            this.txtCadRecConsumo.setValue("" + ReceitaInsumoDao.consumoTotal);
+                            this.txtCustoPorKg.setText(this.util.formatadorQuant(this.recInsDao.buscarCustoporKg(Integer.parseInt(this.txtCadRecCodigo.getText()))));
                             this.txtCadRecComponentesCodigo.requestFocus();
                         }
                     }
@@ -992,7 +1060,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
                 int linha = this.tblCadRecComponentes.getSelectedRow();
                 if (this.recInsDao.verificaConsumoTotalUpdate(linha, setarConsumo()) == false) {
                     JOptionPane.showMessageDialog(null, "Consumo não deve ultrapassar o total de 1kg.");
-                    this.tblCadRecComponentes.getModel().setValueAt(this.util.formatadorQuant3(this.recInsDao.retornaValorConsumo(linha)), linha, 2);
+                    this.tblCadRecComponentes.getModel().setValueAt(this.util.formatadorQuant6(this.recInsDao.retornaValorConsumo(linha)), linha, 2);
                 } else {
                     this.recInsDao.atualizarComponentes(Integer.parseInt(this.txtCadRecCodigo.getText()));
                     this.tblCadRecComponentes.removeAll();
@@ -1022,6 +1090,14 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
         this.confKeyEnter = true;
     }//GEN-LAST:event_tblCadRecComponentesMouseClicked
 
+    private void txtCadRecComponentesCodigoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCadRecComponentesCodigoFocusGained
+//        // quando ganha o foco o campo txtConsumo será setado com o restando que falta para completar 1kg de sonsumo
+//            this.txtCadRecConsumo.setDocument(new SoNumeros());
+//            double consumoFaltante = this.util.formatador3(ReceitaInsumoDao.consumoTotal - 1);
+//            String consumoString = "" + consumoFaltante;
+//            this.txtCadRecConsumo.setText(consumoString.replace("-", ""));
+    }//GEN-LAST:event_txtCadRecComponentesCodigoFocusGained
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddConsumo;
     private javax.swing.JButton btnCadRecAdicionar;
@@ -1034,6 +1110,9 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public static javax.swing.JComboBox<String> cbCadReceitaTipo;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1059,5 +1138,6 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtCadRecDes;
     public static javax.swing.JTextField txtCadRecPan;
     public static javax.swing.JTextField txtCadRecVal;
+    public static javax.swing.JTextField txtCustoPorKg;
     // End of variables declaration//GEN-END:variables
 }

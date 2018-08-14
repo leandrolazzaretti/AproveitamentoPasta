@@ -12,13 +12,15 @@ package dto;
 public class InsumoDto {
 
     private int codigo;
+    private int codigoTipoInsumo;
     private String descricao;
     private String UM;
     private String quantidade;
     private String preco;
 
-    public InsumoDto(int codigo, String descricao, String UM, String quantidade, String preco) {
+    public InsumoDto(int codigo, int codigoTipoInsumo, String descricao, String UM, String quantidade, String preco) {
         this.codigo = codigo;
+        this.codigoTipoInsumo = codigoTipoInsumo;
         this.descricao = descricao;
         this.UM = UM;
         this.quantidade = quantidade;
@@ -67,6 +69,14 @@ public class InsumoDto {
 
     public void setPreco(String preco) {
         this.preco = preco;
+    }
+
+    public int getCodigoTipoInsumo() {
+        return codigoTipoInsumo;
+    }
+
+    public void setCodigoTipoInsumo(int codigoTipoInsumo) {
+        this.codigoTipoInsumo = codigoTipoInsumo;
     }
     
     

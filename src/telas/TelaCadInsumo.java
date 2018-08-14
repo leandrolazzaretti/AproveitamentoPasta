@@ -8,6 +8,7 @@ package telas;
 import com.sun.glass.events.KeyEvent;
 import conexao.ModuloConexao;
 import dao.InsumoDao;
+import dao.TipoInsumoDao;
 import dto.InsumoDto;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
@@ -20,8 +21,11 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import util.ComboKeyHandler;
 import util.MascaraMoeda;
 import util.SoNumeros;
+import util.UpperCaseDocument;
 import util.Util;
 
 /**
@@ -33,6 +37,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private Connection conexao = null;
     public static JInternalFrame framePesqInsumo;
     private final Util util = new Util();
+    private final TipoInsumoDao tipoInsumoDao = new TipoInsumoDao();
     private final TelaPesquisarInsumos insumo = new TelaPesquisarInsumos();
     private boolean confirmaMascaraMoeda = false;
 
@@ -48,6 +53,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         //this.txtCadInsPreco.setDocument(new SoNumeros()); 
         this.txtCadInsQuant.setDocument(new SoNumeros());
         limparCampos();
+        upperCase();
+        this.tipoInsumoDao.setarComboBox(cbTipoInsumo);
+        this.cbTipoInsumo.setSelectedItem(null);
+        cbAtivar();
     }
 
     private void confirmar(boolean confirmar) {
@@ -55,12 +64,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         InsumoDao insumoDao = new InsumoDao();
 
         insumoDto.setCodigo(Integer.parseInt(this.txtCadInsCodigo.getText()));
+        insumoDto.setCodigoTipoInsumo(this.tipoInsumoDao.buscaCodTipoInsumo(this.cbTipoInsumo.getSelectedItem().toString()));
         insumoDto.setDescricao(this.txtCadInsDes.getText());
         insumoDto.setUM(this.cbCadInsUm.getSelectedItem().toString());
 
         insumoDto.setQuantidade(this.txtCadInsQuant.getText().replace(".", "").replace(",", "."));
         insumoDto.setPreco(this.txtCadInsPreco.getText().replace(".", "").replace(",", "."));
-     
+
         if (confirmar == true) {
             insumoDao.adicionarInsumos(insumoDto);
 
@@ -73,11 +83,13 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.txtCadInsCodigo.setEnabled(true);
         this.txtCadInsCodigo.setText(null);
         this.txtCadInsDes.setText(null);
+        this.cbTipoInsumo.setSelectedItem("");
         this.cbCadInsUm.setSelectedItem("kg");
         this.txtCadInsQuant.setText("0");
         this.txtCadInsPreco.setText(null);
         this.txtCadInsPreco.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         this.txtCadInsPreco.setDocument(new MascaraMoeda());
+        this.txtCadInsCodigo.requestFocus();
     }
 
     //confirma se o codigo já existe
@@ -105,7 +117,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
     // confirma se os campos estão setados
     private boolean verificaCampos() {
-        if ((this.txtCadInsCodigo.getText().isEmpty()) || (this.txtCadInsDes.getText().isEmpty()) || (this.txtCadInsPreco.getText().isEmpty()) || (this.txtCadInsQuant.getText().isEmpty())) {
+        if ((this.txtCadInsCodigo.getText().isEmpty()) || (this.txtCadInsDes.getText().isEmpty()) || (this.cbTipoInsumo.getSelectedItem().equals("")) || (this.txtCadInsPreco.getText().isEmpty()) || (this.txtCadInsQuant.getText().isEmpty())) {
             return false;
         } else {
             return true;
@@ -142,10 +154,20 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         }
     }
 
+    private void upperCase() {
+        this.txtCadInsDes.setDocument(new UpperCaseDocument());
+    }
+
     private void fecharFramePesq() {
         if (this.framePesqInsumo != null) {
             this.framePesqInsumo.dispose();
         }
+    }
+
+    private void cbAtivar() {
+        JTextField text = (JTextField) this.cbTipoInsumo.getEditor().getEditorComponent();
+        text.addKeyListener(new ComboKeyHandler(this.cbTipoInsumo));
+        text.setDocument(new UpperCaseDocument());
     }
 
     // quando o mouse estiver em cima
@@ -198,6 +220,10 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         btnCadInsDeletar = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         btnMinimi = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        cbTipoInsumo = new javax.swing.JComboBox<>();
+        btnAdicionarTipoInsumo = new javax.swing.JButton();
+        btnExcluirTipoInsumo = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(229, 247, 203));
         setClosable(true);
@@ -261,22 +287,22 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 txtCadInsPrecoKeyPressed(evt);
             }
         });
-        jPanel2.add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 290, 270, -1));
+        jPanel2.add(txtCadInsPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 310, 270, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(79, 79, 79));
         jLabel6.setText("Cadastro de Insumos");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, -1, -1));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
 
         txtCadInsDes.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtCadInsDesKeyPressed(evt);
             }
         });
-        jPanel2.add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, 270, -1));
+        jPanel2.add(txtCadInsDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 150, 270, -1));
 
         txtCadInsQuant.setEnabled(false);
-        jPanel2.add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 250, 270, -1));
+        jPanel2.add(txtCadInsQuant, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, 270, -1));
 
         jButton1.setForeground(new java.awt.Color(53, 53, 53));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/pesquisar.png"))); // NOI18N
@@ -288,30 +314,30 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 120, 30, 30));
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 100, 30, 30));
 
-        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "g", "mg", "L" }));
-        jPanel2.add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 210, 140, -1));
+        cbCadInsUm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "kg", "L" }));
+        jPanel2.add(cbCadInsUm, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 180, -1));
 
         jLabel1.setForeground(new java.awt.Color(79, 79, 79));
         jLabel1.setText("Código:");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, -1, -1));
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
 
         jLabel5.setForeground(new java.awt.Color(79, 79, 79));
         jLabel5.setText("Preço:");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 290, -1, -1));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 310, -1, -1));
 
         jLabel4.setForeground(new java.awt.Color(79, 79, 79));
         jLabel4.setText("Quantidade:");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 250, -1, -1));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, -1, -1));
 
         jLabel3.setForeground(new java.awt.Color(79, 79, 79));
         jLabel3.setText("Unidade de Medida (UM):");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, -1, -1));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, -1, -1));
 
         jLabel2.setForeground(new java.awt.Color(79, 79, 79));
         jLabel2.setText("Descrição:");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 170, -1, -1));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, -1, -1));
 
         txtCadInsCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -323,7 +349,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
                 txtCadInsCodigoKeyPressed(evt);
             }
         });
-        jPanel2.add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 140, -1));
+        jPanel2.add(txtCadInsCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 140, -1));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 201, 201)));
@@ -424,15 +450,44 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
 
         jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 2, 40, 20));
 
+        jLabel7.setForeground(new java.awt.Color(79, 79, 79));
+        jLabel7.setText("Tipo de insumo:");
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, -1, -1));
+
+        cbTipoInsumo.setEditable(true);
+        jPanel2.add(cbTipoInsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, 180, -1));
+
+        btnAdicionarTipoInsumo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/++++.png"))); // NOI18N
+        btnAdicionarTipoInsumo.setToolTipText("Adicionar");
+        btnAdicionarTipoInsumo.setContentAreaFilled(false);
+        btnAdicionarTipoInsumo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdicionarTipoInsumo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarTipoInsumoActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnAdicionarTipoInsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 188, 20, -1));
+
+        btnExcluirTipoInsumo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/x.png"))); // NOI18N
+        btnExcluirTipoInsumo.setToolTipText("Apagar");
+        btnExcluirTipoInsumo.setContentAreaFilled(false);
+        btnExcluirTipoInsumo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnExcluirTipoInsumo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirTipoInsumoActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnExcluirTipoInsumo, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 188, 20, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 548, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 384, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
         );
 
         setBounds(148, 72, 564, 416);
@@ -601,7 +656,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private void txtCadInsDesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCadInsDesKeyPressed
         // quando ENTER é pressionado
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.cbCadInsUm.requestFocus();
+            this.cbTipoInsumo.requestFocus();
         }
     }//GEN-LAST:event_txtCadInsDesKeyPressed
 
@@ -622,14 +677,55 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
         this.confirmaMascaraMoeda = false;
     }//GEN-LAST:event_txtCadInsPrecoFocusLost
 
+    private void btnAdicionarTipoInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarTipoInsumoActionPerformed
+        // chama o metodo adicionar tipo de pasta
+        if (this.cbTipoInsumo.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "Tipo de insumo inválido.");
+        } else {
+
+            boolean conf = this.tipoInsumoDao.buscaCodTipoInsumo(this.cbTipoInsumo.getSelectedItem().toString()) <= 0;
+            if (conf == false) {
+                JOptionPane.showMessageDialog(null, "Tipo de insumo já existe.");
+            } else {
+                String pastaAdicionada = this.cbTipoInsumo.getSelectedItem().toString();
+                this.tipoInsumoDao.addTipoInsumo(this.cbTipoInsumo.getSelectedItem().toString());
+                this.cbTipoInsumo.removeAllItems();
+                this.tipoInsumoDao.setarComboBox(cbTipoInsumo);
+                cbAtivar();
+                this.cbTipoInsumo.setSelectedItem(pastaAdicionada);
+            }
+        }
+    }//GEN-LAST:event_btnAdicionarTipoInsumoActionPerformed
+
+    private void btnExcluirTipoInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirTipoInsumoActionPerformed
+        //Chama o metodo remover tipo de pasta
+        if (this.cbTipoInsumo.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "Tipo de insumo inválido.");
+        } else {
+            int conf = this.tipoInsumoDao.buscaCodTipoInsumo(this.cbTipoInsumo.getSelectedItem().toString());
+            boolean confirmar = this.tipoInsumoDao.contTipoInsumo(conf);
+            if (confirmar == true) {
+                JOptionPane.showMessageDialog(null, "Esse Tipo de insumo não pode ser removido.");
+            } else {
+                this.tipoInsumoDao.removeTipoInsumo(this.cbTipoInsumo.getSelectedItem().toString());
+                this.cbTipoInsumo.removeAllItems();
+                this.tipoInsumoDao.setarComboBox(cbTipoInsumo);
+                cbAtivar();
+            }
+        }
+    }//GEN-LAST:event_btnExcluirTipoInsumoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdicionarTipoInsumo;
     private javax.swing.JButton btnCadInsAdicionar;
     private javax.swing.JButton btnCadInsDeletar;
     private javax.swing.JButton btnCadInsLimpar;
+    private javax.swing.JButton btnExcluirTipoInsumo;
     private javax.swing.JButton btnFechar;
     private javax.swing.JButton btnMinimi;
     public static javax.swing.JComboBox<String> cbCadInsUm;
+    public static javax.swing.JComboBox<String> cbTipoInsumo;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -637,6 +733,7 @@ public class TelaCadInsumo extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

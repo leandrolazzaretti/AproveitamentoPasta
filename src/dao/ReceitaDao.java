@@ -164,6 +164,7 @@ public class ReceitaDao {
         return total <= 0;
     }
 
+    //confirma se o TipoPasta com determinada descrição já existe
     public boolean confirmaTipoPasta(String tipoPasta) {
         String sql = "select count (descricao) as total from tbTipoPasta where descricao = '" + tipoPasta + "'";
         int total = 0;
@@ -227,7 +228,7 @@ public class ReceitaDao {
 
     public void pesquisarProducaoPasta(int codigo) {
 
-        String sql = "select codigorec from tbreceita where codigorec ='" + codigo + "'";
+        String sql = "select codigorec, descricao from tbreceita where codigorec ='" + codigo + "'";
 
         PreparedStatement pst;
 
@@ -236,6 +237,7 @@ public class ReceitaDao {
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 TelaEstoquePasta.txtCodigo.setEnabled(false);
+                TelaEstoquePasta.descricao = rs.getString(2);
                 TelaEstoquePasta.txtQuantidade.setEnabled(true);
                 TelaEstoquePasta.txtQuantidade.requestFocus();
             } else {
@@ -293,8 +295,5 @@ public class ReceitaDao {
             JOptionPane.showMessageDialog(null, e);
         }
         return codigo;
-    }
-    
-    
-
+    }    
 }

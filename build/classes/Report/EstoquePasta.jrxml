@@ -60,7 +60,7 @@
 				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="271" y="5" width="92" height="20" forecolor="#246012" uuid="03f83b09-53b9-4495-bb43-7b5900331837"/>
+				<reportElement x="263" y="5" width="92" height="20" forecolor="#246012" uuid="03f83b09-53b9-4495-bb43-7b5900331837"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -93,7 +93,7 @@
 				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="149" y="0" width="114" height="20" uuid="b48ff470-b75c-4135-aaa4-ea91388ff208"/>
+				<reportElement x="146" y="0" width="114" height="20" uuid="b48ff470-b75c-4135-aaa4-ea91388ff208"/>
 				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
 			</textField>
 			<textField>

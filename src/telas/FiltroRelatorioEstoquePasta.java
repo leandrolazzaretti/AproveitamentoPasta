@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.sf.jasperreports.engine.JRException;
 import util.Relatorio;
+import util.UpperCaseDocument;
 import util.Util;
 
 /**
@@ -43,6 +44,7 @@ public class FiltroRelatorioEstoquePasta extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.rbNao.setSelected(true);
+        upperCase();
     }
 
     private void emitirRelatorio(boolean confFiltro) {
@@ -133,7 +135,12 @@ public class FiltroRelatorioEstoquePasta extends javax.swing.JDialog {
         this.txtDataDe.setEnabled(false);
         this.txtDataAte.setEnabled(false);
     }
-
+    
+    //chama o método para tornar as letras do campo Maiusculas
+    private void upperCase(){
+        this.txtFiltroDescricao.setDocument(new UpperCaseDocument());
+    }
+    
     // quando o mouse estiver em cima
     private void alteraCor(JPanel painel, JButton botao) {
         painel.setBackground(new Color(192, 221, 147));
@@ -440,9 +447,9 @@ public class FiltroRelatorioEstoquePasta extends javax.swing.JDialog {
 
         jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 300, 50));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 338, 400));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 338, 410));
 
-        setSize(new java.awt.Dimension(338, 398));
+        setSize(new java.awt.Dimension(338, 411));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

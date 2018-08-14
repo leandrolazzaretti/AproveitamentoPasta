@@ -27,6 +27,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static JInternalFrame frameReceita;
     public static JInternalFrame frameMovimentacao;
     public static JInternalFrame frameEstoquePasta;
+    public static JInternalFrame frameOrdenacaoInsumo;
     public static boolean jDialogUsuario;
     public static boolean jDialogInsumo;
     public static boolean jDialogReceita;
@@ -65,28 +66,29 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // quando o botão for pressionado
-    private void alteraCorPressionado(JPanel painel, JSeparator separador, JButton botao) {
+    private void alteraCorPressionado(JPanel painel, JButton botao) {
         painel.setBackground(new Color(198, 226, 163));
-        separador.setBackground(new Color(198, 226, 163));
-        separador.setForeground(new Color(198, 226, 163));
         botao.setForeground(new Color(255, 255, 255));
     }
 
     private void fecharTelas() {
-        if ((this.frameEstoquePasta != null) && (!this.frameEstoquePasta.isIcon())) {
+        if ((this.frameEstoquePasta != null)) {
             this.frameEstoquePasta.dispose();
         }
-        if ((this.frameInsumo != null) && (!this.frameInsumo.isIcon())) {
+        if ((this.frameInsumo != null)) {
             this.frameInsumo.dispose();
         }
-        if ((this.frameMovimentacao != null) && (!this.frameMovimentacao.isIcon())) {
+        if ((this.frameMovimentacao != null)) {
             this.frameMovimentacao.dispose();
         }
-        if ((this.frameReceita != null) && (!this.frameReceita.isIcon())) {
+        if ((this.frameReceita != null)) {
             this.frameReceita.dispose();
         }
-        if ((this.frameUsuario != null) && (!this.frameUsuario.isIcon())) {
+        if ((this.frameUsuario != null)) {
             this.frameUsuario.dispose();
+        }
+        if ((this.frameOrdenacaoInsumo != null)) {
+            this.frameOrdenacaoInsumo.dispose();
         }
     }
 
@@ -130,6 +132,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menCadIns = new javax.swing.JMenuItem();
         menCadRec = new javax.swing.JMenuItem();
         menCadUsu = new javax.swing.JMenuItem();
+        menCadOrdIns = new javax.swing.JMenuItem();
         menControle = new javax.swing.JMenu();
         menConMovEst = new javax.swing.JMenuItem();
         menConEstPas = new javax.swing.JMenuItem();
@@ -204,7 +207,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
         jPanel5.add(btnUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 40));
 
-        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 238, 40));
+        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 200, 238, 40));
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -314,7 +317,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         tbnEstPasta.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         tbnEstPasta.setForeground(new java.awt.Color(66, 66, 66));
-        tbnEstPasta.setText("Estoque Pasta");
+        tbnEstPasta.setText("Produção Pasta");
         tbnEstPasta.setContentAreaFilled(false);
         tbnEstPasta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         tbnEstPasta.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -413,6 +416,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menCadastro.add(menCadUsu);
+
+        menCadOrdIns.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK));
+        menCadOrdIns.setText("Ordenação Insumo");
+        menCadOrdIns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadOrdInsActionPerformed(evt);
+            }
+        });
+        menCadastro.add(menCadOrdIns);
 
         menu.add(menCadastro);
 
@@ -554,7 +566,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.util.retirarBordas(this.frameInsumo);
         }
         this.util.comandoInternal(this.frameInsumo);
-//        }
     }//GEN-LAST:event_btnInsumoActionPerformed
 
     private void menCadInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadInsActionPerformed
@@ -753,27 +764,27 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnInsumoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInsumoMouseClicked
         // quando pressionado altera a cor
-        alteraCorPressionado(this.jPanel8, this.jSeparator1, this.btnInsumo);
+        alteraCorPressionado(this.jPanel8, this.btnInsumo);
     }//GEN-LAST:event_btnInsumoMouseClicked
 
     private void btnReceitaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReceitaMouseClicked
         // quando pressionado altera a cor
-        alteraCorPressionado(this.jPanel7, this.jSeparator3, this.btnReceita);
+        alteraCorPressionado(this.jPanel7, this.btnReceita);
     }//GEN-LAST:event_btnReceitaMouseClicked
 
     private void btnUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUsuarioMouseClicked
         // quando pressionado altera a cor
-        alteraCorPressionado(this.jPanel5, this.jSeparator4, this.btnUsuario);
+        alteraCorPressionado(this.jPanel5, this.btnUsuario);
     }//GEN-LAST:event_btnUsuarioMouseClicked
 
     private void btnMovEstoqueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMovEstoqueMouseClicked
         // quando pressionado altera a cor
-        alteraCorPressionado(this.jPanel6, this.jSeparator2, this.btnMovEstoque);
+        alteraCorPressionado(this.jPanel6, this.btnMovEstoque);
     }//GEN-LAST:event_btnMovEstoqueMouseClicked
 
     private void tbnEstPastaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbnEstPastaMouseClicked
         // quando pressionado altera a cor
-        alteraCorPressionado(this.jPanel9, this.jSeparator6, this.tbnEstPasta);
+        alteraCorPressionado(this.jPanel9, this.tbnEstPasta);
     }//GEN-LAST:event_tbnEstPastaMouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -783,6 +794,20 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.jDialogEstoquePasta = true;
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void menCadOrdInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadOrdInsActionPerformed
+          // chama TelaOrdenacaoInsumo
+        fecharTelas();
+        if (this.frameOrdenacaoInsumo == null) {
+            this.frameOrdenacaoInsumo = new TelaOrdenacaoInsumo();
+            this.util.retirarBordas(this.frameOrdenacaoInsumo);
+        } else {
+            this.frameOrdenacaoInsumo.dispose();
+            this.frameOrdenacaoInsumo = new TelaOrdenacaoInsumo();
+            this.util.retirarBordas(this.frameOrdenacaoInsumo);
+        }
+        this.util.comandoInternal(this.frameOrdenacaoInsumo);
+    }//GEN-LAST:event_menCadOrdInsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -848,6 +873,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator7;
     public static javax.swing.JLabel lblUsuario;
     private javax.swing.JMenuItem menCadIns;
+    private javax.swing.JMenuItem menCadOrdIns;
     private javax.swing.JMenuItem menCadRec;
     public static javax.swing.JMenuItem menCadUsu;
     private javax.swing.JMenu menCadastro;

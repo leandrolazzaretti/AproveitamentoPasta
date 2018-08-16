@@ -7,6 +7,7 @@ package telas;
 
 import conexao.ModuloConexao;
 import dao.MovimentacaoEstoqueDao;
+import dao.ReceitaInsumoDao;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,7 +70,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
 
         try {
             pst = this.conexao.prepareStatement(sql);
-            pst.setString(1,"%"+ this.txtPesquisarInsumos.getText() + "%");
+            pst.setString(1, "%" + this.txtPesquisarInsumos.getText() + "%");
             ResultSet rs = pst.executeQuery();
             //Preencher a tabela usando a bibliotéca rs2xml.jar
             while (rs.next()) {
@@ -119,13 +120,18 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         int setar = this.tblCadInsumos.getSelectedRow();
         TelaCadReceita.txtCadRecComponentesCodigo.setText(this.tblCadInsumos.getModel().getValueAt(setar, 0).toString());
         TelaCadReceita.txtCadRecComponentesDesc.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
+
         TelaCadReceita.txtCadRecConsumo.requestFocus();
-        
+        TelaCadReceita.txtCadRecConsumo.setDocument(new SoNumeros());
+        String consumoFaltante =  this.util.formatadorQuant((1 - ReceitaInsumoDao.consumoTotal) * 1000);
+        TelaCadReceita.txtCadRecConsumo.setText(consumoFaltante);
+
     }
 
-     private void upperCase(){
+    private void upperCase() {
         this.txtPesquisarInsumos.setDocument(new UpperCaseDocument());
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

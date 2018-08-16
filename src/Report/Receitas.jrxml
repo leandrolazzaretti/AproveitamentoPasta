@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receitas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7e7a5a59-7f87-45fa-9706-77cdc107106c">
-	<property name="ireport.zoom" value="1.4641000000000015"/>
-	<property name="ireport.x" value="23"/>
+	<property name="ireport.zoom" value="2.593742460100004"/>
+	<property name="ireport.x" value="492"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\Leandro\\Documents\\NetBeansProjects\\prjAproveitamentoPastas\\src\\Report\\"]]></defaultValueExpression>
@@ -13,8 +13,8 @@
 	<field name="pantone" class="java.lang.String"/>
 	<field name="dataVencimento" class="java.lang.String"/>
 	<field name="descIns" class="java.lang.String"/>
-	<field name="UM" class="java.lang.String"/>
 	<field name="consumo" class="java.lang.String"/>
+	<field name="valor" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -52,58 +52,58 @@
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="70" y="5" width="87" height="20" forecolor="#246012" uuid="a93f6854-9336-4e53-b34e-5e546b959f15"/>
+				<reportElement x="70" y="5" width="73" height="20" forecolor="#246012" uuid="a93f6854-9336-4e53-b34e-5e546b959f15"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Receita]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="157" y="5" width="69" height="20" forecolor="#246012" uuid="b7741d61-978d-4c9d-92e6-76a83aefac63"/>
+				<reportElement x="148" y="5" width="69" height="20" forecolor="#246012" uuid="b7741d61-978d-4c9d-92e6-76a83aefac63"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tipo Pasta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="226" y="5" width="69" height="20" forecolor="#246012" uuid="10cec47b-e02c-4dda-ba02-5218d6d96c0c"/>
+				<reportElement x="223" y="5" width="56" height="20" forecolor="#246012" uuid="10cec47b-e02c-4dda-ba02-5218d6d96c0c"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Pantone]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="295" y="5" width="58" height="20" forecolor="#246012" uuid="e4f2b358-b437-45c9-891b-514aa9c9bd4c"/>
+				<reportElement x="286" y="5" width="52" height="20" forecolor="#246012" uuid="e4f2b358-b437-45c9-891b-514aa9c9bd4c"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Vencimento]]></text>
+				<text><![CDATA[Validade]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="353" y="5" width="89" height="20" forecolor="#246012" uuid="60cd5ea3-3491-47e9-b265-85f801ef5034"/>
+				<reportElement x="429" y="5" width="54" height="20" forecolor="#246012" uuid="60cd5ea3-3491-47e9-b265-85f801ef5034"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Insumo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="446" y="5" width="54" height="20" forecolor="#246012" uuid="6c60a6a2-695f-48b3-9fc6-8b1445e50f31"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[UM]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="500" y="5" width="53" height="20" forecolor="#246012" uuid="24523dcc-0f4c-44f1-b598-044923bfe9e9"/>
+				<reportElement x="488" y="5" width="64" height="20" forecolor="#246012" uuid="24523dcc-0f4c-44f1-b598-044923bfe9e9"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Consumo]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="351" y="5" width="62" height="20" forecolor="#246012" uuid="ac23ef13-ec65-4279-8a20-7d11490685de"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor  kg]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="63" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField>
 				<reportElement x="7" y="0" width="63" height="20" uuid="16742293-9ca6-4eea-a36b-1e7086cd26a7"/>
 				<textFieldExpression><![CDATA[$F{codigoReceita}]]></textFieldExpression>
@@ -113,37 +113,29 @@
 				<textFieldExpression><![CDATA[$F{descRec}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="156" y="0" width="69" height="20" uuid="b5a1c6ab-e32f-4e4d-9741-64a131522434"/>
+				<reportElement x="154" y="0" width="56" height="20" uuid="b5a1c6ab-e32f-4e4d-9741-64a131522434"/>
 				<textFieldExpression><![CDATA[$F{descTP}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="225" y="0" width="69" height="20" uuid="07617ed0-81dc-49cd-b349-d77a0ab887d9"/>
+				<reportElement x="224" y="0" width="68" height="20" uuid="07617ed0-81dc-49cd-b349-d77a0ab887d9"/>
 				<textFieldExpression><![CDATA[$F{pantone}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="294" y="0" width="58" height="20" uuid="a2f9b3d2-d972-487e-bc64-4e3b1cb97314"/>
+				<reportElement x="298" y="0" width="33" height="20" uuid="a2f9b3d2-d972-487e-bc64-4e3b1cb97314"/>
 				<textFieldExpression><![CDATA[$F{dataVencimento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="351" y="0" width="91" height="20" uuid="58b1834a-7455-4249-a708-7e2f4f2962ff"/>
+				<reportElement x="425" y="0" width="68" height="20" uuid="58b1834a-7455-4249-a708-7e2f4f2962ff"/>
 				<textFieldExpression><![CDATA[$F{descIns}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="445" y="0" width="54" height="20" uuid="6b131534-0ebe-4bf8-90ba-2e30291abbb6"/>
-				<textFieldExpression><![CDATA[$F{UM}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="499" y="0" width="53" height="20" uuid="6f19e3bd-d611-48ff-a97c-85f121c45cfd"/>
 				<textFieldExpression><![CDATA[$F{consumo}]]></textFieldExpression>
 			</textField>
-			<subreport>
-				<reportElement x="3" y="31" width="350" height="20" uuid="ac46b176-412c-420d-b040-f33b4c6361b6"/>
-				<subreportParameter name="codigoReceita">
-					<subreportParameterExpression><![CDATA[$F{codigoReceita}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subReport.jasper"]]></subreportExpression>
-			</subreport>
+			<textField>
+				<reportElement x="350" y="0" width="70" height="20" uuid="56b03b0a-48f0-4b49-85a1-b5fef2e09ea7"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

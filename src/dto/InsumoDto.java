@@ -17,14 +17,16 @@ public class InsumoDto {
     private String UM;
     private String quantidade;
     private String preco;
+    private String totalQuantidade;
 
-    public InsumoDto(int codigo, int codigoTipoInsumo, String descricao, String UM, String quantidade, String preco) {
+    public InsumoDto(int codigo, int codigoTipoInsumo, String descricao, String UM, String quantidade, String preco, String totalQuantidade) {
         this.codigo = codigo;
         this.codigoTipoInsumo = codigoTipoInsumo;
         this.descricao = descricao;
         this.UM = UM;
         this.quantidade = quantidade;
         this.preco = preco;
+        this.totalQuantidade = totalQuantidade;
     }
     
     public InsumoDto(){
@@ -77,6 +79,14 @@ public class InsumoDto {
 
     public void setCodigoTipoInsumo(int codigoTipoInsumo) {
         this.codigoTipoInsumo = codigoTipoInsumo;
+    }
+
+    public String getTotalQuantidade() {
+        return totalQuantidade;
+    }
+
+    public void setTotalQuantidade(String totalQuantidade) {
+        this.totalQuantidade = totalQuantidade;
     }
     
     

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Insumos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="389dbee9-ae60-4fdf-a6eb-3ec3c33bdc8a">
 	<property name="ireport.zoom" value="1.6105100000000014"/>
-	<property name="ireport.x" value="209"/>
-	<property name="ireport.y" value="136"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="66"/>
 	<field name="codigo" class="java.lang.String"/>
 	<field name="descricao" class="java.lang.String"/>
 	<field name="UM" class="java.lang.String"/>
 	<field name="quantidade" class="java.lang.String"/>
 	<field name="preco" class="java.lang.String"/>
+	<field name="totalQuantidade" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -63,7 +64,7 @@
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Quantidade]]></text>
+				<text><![CDATA[Quantidade kg]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="481" y="5" width="45" height="20" forecolor="#246012" uuid="5897cf51-63e6-4f3b-b83c-0832f2e9d476"/>
@@ -103,7 +104,22 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="9" width="111" height="20" forecolor="#246012" uuid="90c327fd-2ecd-4f1d-88fc-b9dbfd721c07"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total em estoque]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="5" width="555" height="1" uuid="a415aa26-654c-474d-85b5-6cd85f1887ea"/>
+			</line>
+			<textField>
+				<reportElement x="355" y="9" width="110" height="20" uuid="4c39c0f6-38f2-4721-b473-59c05ee7c97e"/>
+				<textFieldExpression><![CDATA[$F{totalQuantidade}]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">

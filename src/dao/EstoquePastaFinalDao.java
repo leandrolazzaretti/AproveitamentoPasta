@@ -43,6 +43,7 @@ public class EstoquePastaFinalDao {
     private List<EstoquePastaDto> listTempX = new ArrayList<>();
     public static List<EstoquePastaDto> listFinalOp1 = new ArrayList<>();
     public static List<EstoquePastaDto> listFinalOp22 = new ArrayList<>();
+    public static List<EstoquePastaDto> listFinalOp23 = new ArrayList<>();
     private List<EstoquePastaDto> listFinalOp2 = new ArrayList<>();
     private List<ReceitaInsumoDto> pastaProduzirOp1 = new ArrayList<>();
     public static List<ReceitaInsumoDto> pastaProduzirOp2 = new ArrayList<>();
@@ -266,6 +267,7 @@ public class EstoquePastaFinalDao {
             modelo.setNumRows(0);
 
             for (int i = 0; i < this.listFinalOp1.size(); i++) {
+                    this.listFinalOp23.add(this.listFinalOp1.get(i));
                 modelo.addRow(new Object[]{
                     this.listFinalOp1.get(i).getId(),
                     this.listFinalOp1.get(i).getCodigo(),
@@ -292,7 +294,6 @@ public class EstoquePastaFinalDao {
             } else {
                 retorno = false;
             }
-            movimentarPastasOpc(this.listFinalOp1, "-", i);
         }
         this.confirmaListTempX = true;
         this.listTempX.clear();
@@ -330,14 +331,12 @@ public class EstoquePastaFinalDao {
             } else {
                 retorno = false;
             }
-            movimentarPastasOpc(this.listFinalOp2, "-", 0);
         }
         for (int i = 0; i < this.insumosOp2.size(); i++) {
             if (this.insumoDao.saidaInsumo(this.pastaProduzirOp2.get(i).getConsumo(), this.insumosOp2.get(i).getCodigo()) == true) {
             } else {
                 retorno = false;
             }
-            movimentarInsumosOpc(this.pastaProduzirOp2, "-", i);
         }
         this.confirmaListTempX = true;
         this.listTempX.clear();
@@ -649,6 +648,7 @@ public class EstoquePastaFinalDao {
         this.pastaEstoque.clear();
         this.verificaID.clear();
         this.insumosOp2.clear();
+        this.listFinalOp23.clear();
 
         this.confirmaUrl = true;
         this.cofirmaProduzirOp2 = true;

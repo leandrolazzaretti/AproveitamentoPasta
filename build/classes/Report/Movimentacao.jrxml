@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Movimentacao" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="26b84805-870a-4f21-8d67-1fbf959912de">
-	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.zoom" value="1.6105100000000012"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="67"/>
 	<field name="tipo" class="java.lang.String"/>
 	<field name="codigoID" class="java.lang.String"/>
 	<field name="descricao" class="java.lang.String"/>
 	<field name="data" class="java.lang.String"/>
 	<field name="quantidade" class="java.lang.String"/>
+	<field name="totQuantEntrada" class="java.lang.String"/>
+	<field name="totQuantSaida" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -45,61 +47,87 @@
 				<text><![CDATA[Tipo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="98" y="5" width="96" height="20" forecolor="#246012" uuid="7deac4a7-d4aa-44cf-89c3-0c3582eb00ab"/>
+				<reportElement x="92" y="5" width="96" height="20" forecolor="#246012" uuid="7deac4a7-d4aa-44cf-89c3-0c3582eb00ab"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Codigo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="207" y="5" width="126" height="20" forecolor="#246012" uuid="7ba55364-8f8e-4389-bac7-85b9d499cd4e"/>
+				<reportElement x="214" y="5" width="76" height="20" forecolor="#246012" uuid="7ba55364-8f8e-4389-bac7-85b9d499cd4e"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Descrição]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="333" y="5" width="111" height="20" forecolor="#246012" uuid="0bd334ed-eef4-440d-9f05-5585215aa07c"/>
+				<reportElement x="470" y="5" width="74" height="20" forecolor="#246012" uuid="0bd334ed-eef4-440d-9f05-5585215aa07c"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Data]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="455" y="5" width="81" height="20" forecolor="#246012" uuid="c15e9cf1-0083-46c8-a6b1-9224f74d3abc"/>
+				<reportElement x="357" y="5" width="96" height="20" forecolor="#246012" uuid="c15e9cf1-0083-46c8-a6b1-9224f74d3abc"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Quantidade]]></text>
+				<text><![CDATA[Quantidade kg]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement x="10" y="0" width="88" height="20" uuid="b10af995-abeb-42cd-85f5-fab3d2b66098"/>
+				<reportElement x="10" y="0" width="78" height="20" uuid="b10af995-abeb-42cd-85f5-fab3d2b66098"/>
 				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="98" y="0" width="109" height="20" uuid="44a15966-db85-4426-98fa-432dd3854880"/>
+				<reportElement x="96" y="0" width="82" height="20" uuid="44a15966-db85-4426-98fa-432dd3854880"/>
 				<textFieldExpression><![CDATA[$F{codigoID}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="207" y="0" width="126" height="20" uuid="bc121616-9d4b-41e4-8ff3-3f3075038c9c"/>
+				<reportElement x="212" y="0" width="135" height="20" uuid="bc121616-9d4b-41e4-8ff3-3f3075038c9c"/>
 				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="334" y="0" width="111" height="20" uuid="8db2b863-4d77-4d51-99a0-03d628043030"/>
+				<reportElement x="473" y="0" width="78" height="20" uuid="8db2b863-4d77-4d51-99a0-03d628043030"/>
 				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="455" y="0" width="90" height="20" uuid="ffb33e86-a7c5-4061-af8d-cf95e00117a8"/>
+				<reportElement x="361" y="0" width="104" height="20" uuid="ffb33e86-a7c5-4061-af8d-cf95e00117a8"/>
 				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="72" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="5" width="555" height="1" uuid="b45dfaab-77ad-4b93-a88c-e83bc0c0b0c4"/>
+			</line>
+			<staticText>
+				<reportElement x="11" y="9" width="82" height="20" forecolor="#246012" uuid="4703e338-5a0d-4f4d-a060-796048800596"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="31" width="82" height="20" forecolor="#246012" uuid="3426c91e-344b-42f7-b1c9-f5a52135403e"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Saída]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="361" y="9" width="81" height="20" uuid="27741408-1312-4889-b53b-af7bc0d438cd"/>
+				<textFieldExpression><![CDATA[$F{totQuantEntrada}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="361" y="31" width="81" height="20" uuid="6a83ff2c-6f69-44d2-8aa7-1b2494f36d54"/>
+				<textFieldExpression><![CDATA[$F{totQuantSaida}]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">

@@ -10,6 +10,7 @@ import conexao.ModuloConexao;
 import java.awt.Color;
 import java.sql.Connection;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,6 +29,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static JInternalFrame frameMovimentacao;
     public static JInternalFrame frameEstoquePasta;
     public static JInternalFrame frameOrdenacaoInsumo;
+    private JDialog dialogUsuario;
+    private JDialog dialogInsumo;
+    private JDialog dialogReceita;
+    private JDialog dialogMovimentacao;
+    private JDialog dialogEstoquePasta;
     public static boolean jDialogUsuario;
     public static boolean jDialogInsumo;
     public static boolean jDialogReceita;
@@ -89,6 +95,30 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         if ((this.frameOrdenacaoInsumo != null)) {
             this.frameOrdenacaoInsumo.dispose();
+        }
+    }
+
+    
+    private void fecharJDialog() {
+        if (this.jDialogUsuario == true) {
+            this.dialogUsuario.dispose();
+            this.jDialogUsuario = false;
+        }
+        if (this.jDialogInsumo == true) {
+            this.dialogInsumo.dispose();
+            this.jDialogInsumo = false;
+        }
+        if (this.jDialogReceita == true) {
+            this.dialogReceita.dispose();
+            this.jDialogReceita = false;
+        }
+        if (this.jDialogMovimentacao == true) {
+            this.dialogMovimentacao.dispose();
+            this.jDialogMovimentacao = false;
+        }
+        if (this.jDialogEstoquePasta == true) {
+            this.dialogEstoquePasta.dispose();
+            this.jDialogEstoquePasta = false;
         }
     }
 
@@ -440,7 +470,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menControle.add(menConMovEst);
 
         menConEstPas.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
-        menConEstPas.setText("Estoque Pasta");
+        menConEstPas.setText("Produção Pasta");
         menConEstPas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menConEstPasActionPerformed(evt);
@@ -669,7 +699,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void menRelMovEstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelMovEstActionPerformed
         // Gerando um relatório de Movimentação
         if (this.jDialogMovimentacao == false) {
-            (new FiltroRelatorioMovimentacao(this, false)).setVisible(true);
+            fecharJDialog();
+            (this.dialogMovimentacao = new FiltroRelatorioMovimentacao(this, false)).setVisible(true);
             this.jDialogMovimentacao = true;
         }
     }//GEN-LAST:event_menRelMovEstActionPerformed
@@ -677,7 +708,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void menRelUsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelUsuActionPerformed
         // Gerando um relatório de Usuario
         if (this.jDialogUsuario == false) {
-            (new FiltroRelatorioUsuario(this, false)).setVisible(true);
+            fecharJDialog();
+            (this.dialogUsuario = new FiltroRelatorioUsuario(this, false)).setVisible(true);
             this.jDialogUsuario = true;
         }
     }//GEN-LAST:event_menRelUsuActionPerformed
@@ -685,15 +717,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void menRelRecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelRecActionPerformed
         // Gerando um relatório de Receita
         if (this.jDialogReceita == false) {
-            (new FiltroRelatorioReceita(this, false)).setVisible(true);
+            fecharJDialog();
+            (this.dialogReceita = new FiltroRelatorioReceita(this, false)).setVisible(true);
             this.jDialogReceita = true;
         }
     }//GEN-LAST:event_menRelRecActionPerformed
 
     private void menRelInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelInsActionPerformed
-        // Gerando um relatório de clientes
+        // Gerando um relatório de insumos
         if (this.jDialogInsumo == false) {
-            (new FiltroRelatorioInsumo(this, false)).setVisible(true);
+            fecharJDialog();
+            (this.dialogInsumo = new FiltroRelatorioInsumo(this, false)).setVisible(true);
             this.jDialogInsumo = true;
         }
     }//GEN-LAST:event_menRelInsActionPerformed
@@ -790,13 +824,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // Gerando um relatório de Estoque Pasta
         if (this.jDialogEstoquePasta == false) {
-            (new FiltroRelatorioEstoquePasta(this, false)).setVisible(true);
+            fecharJDialog();
+            (this.dialogEstoquePasta = new FiltroRelatorioEstoquePasta(this, false)).setVisible(true);
             this.jDialogEstoquePasta = true;
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void menCadOrdInsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadOrdInsActionPerformed
-          // chama TelaOrdenacaoInsumo
+        // chama TelaOrdenacaoInsumo
         fecharTelas();
         if (this.frameOrdenacaoInsumo == null) {
             this.frameOrdenacaoInsumo = new TelaOrdenacaoInsumo();

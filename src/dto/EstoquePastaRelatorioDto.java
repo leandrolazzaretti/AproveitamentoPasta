@@ -15,19 +15,25 @@ public class EstoquePastaRelatorioDto {
     private int codigoReceita;
     private String descricao;
     private String quantidade;
+    private String custoPorKg;
     private String data;
     private String dataVencimento;
+    private String totalQuantidade;
+    private String totalValor;
 
     public EstoquePastaRelatorioDto() {
     }
 
-    public EstoquePastaRelatorioDto(int ID, int codigoReceita, String descricao, String quantidade, String data, String dataVencimento) {
+    public EstoquePastaRelatorioDto(int ID, int codigoReceita, String descricao, String quantidade, String custoPorKg, String data, String dataVencimento, String totalQuantidade, String totalValor) {
         this.ID = ID;
         this.codigoReceita = codigoReceita;
         this.descricao = descricao;
         this.quantidade = quantidade;
+        this.custoPorKg = custoPorKg;
         this.data = data;
         this.dataVencimento = dataVencimento;
+        this.totalQuantidade = totalQuantidade;
+        this.totalValor = totalValor;
     }
 
     public int getID() {
@@ -76,5 +82,29 @@ public class EstoquePastaRelatorioDto {
 
     public void setDataVencimento(String dataVencimento) {
         this.dataVencimento = dataVencimento;
+    }
+
+    public String getCustoPorKg() {
+        return custoPorKg;
+    }
+
+    public void setCustoPorKg(String custoPorKg) {
+        this.custoPorKg = custoPorKg;
+    }
+
+    public String getTotalQuantidade() {
+        return totalQuantidade;
+    }
+
+    public void setTotalQuantidade(String totalQuantidade) {
+        this.totalQuantidade = totalQuantidade;
+    }
+
+    public String getTotalValor() {
+        return totalValor;
+    }
+
+    public void setTotalValor(String totalValor) {
+        this.totalValor = totalValor;
     }
 }

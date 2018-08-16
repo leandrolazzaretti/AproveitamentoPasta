@@ -16,13 +16,17 @@ public class MovimentacaoDto {
     private String descricao;
     private String data;
     private String quantidade;
+    private String totQuantEntrada = "";
+    private String totQuantSaida = "";
 
-    public MovimentacaoDto(String tipo, int codigoID, String descricao, String data, String quantidade) {
+    public MovimentacaoDto(String tipo, int codigoID, String descricao, String data, String quantidade, String totQuantEntrada, String totQuantSaida) {
         this.tipo = tipo;
         this.codigoID = codigoID;
         this.descricao = descricao;
-        this.data = data; 
+        this.data = data;
         this.quantidade = quantidade;
+        this.totQuantEntrada = totQuantEntrada;
+        this.totQuantSaida = totQuantSaida;
     }
 
     public MovimentacaoDto() {
@@ -67,5 +71,21 @@ public class MovimentacaoDto {
 
     public void setQuantidade(String quantidade) {
         this.quantidade = quantidade;
+    }
+    
+    public String getTotQuantEntrada() {
+        return totQuantEntrada;
+    }
+
+    public void setTotQuantEntrada(String totQuantEntrada) {
+        this.totQuantEntrada = totQuantEntrada;
+    }
+
+    public String getTotQuantSaida() {
+        return totQuantSaida;
+    }
+
+    public void setTotQuantSaida(String totQuantSaida) {
+        this.totQuantSaida = totQuantSaida;
     }
 }

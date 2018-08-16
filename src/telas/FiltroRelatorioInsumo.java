@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.sf.jasperreports.engine.JRException;
-import org.apache.commons.lang.StringUtils;
 import util.Relatorio;
 import util.UpperCaseDocument;
 

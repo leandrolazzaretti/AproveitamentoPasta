@@ -11,21 +11,21 @@ package dto;
  */
 public class RelatorioReceitaDto {
 
-    private int codigoReceita;
+    private String codigoReceita;
     private String descRec;
     private String descTP;
     private String pantone;
-    private int dataVencimento;
+    private String dataVencimento;
     private String custoPorKg;
     private String descIns;
-    private String UM;
+    private String valor;
     private String consumo;
 
     public RelatorioReceitaDto() {
 
     }
 
-    public RelatorioReceitaDto(int codigoReceita, String descRec, String descTP, String pantone, int dataVencimento, String custoPorKg, String descIns, String UM, String consumo) {
+    public RelatorioReceitaDto(String codigoReceita, String descRec, String descTP, String pantone, String dataVencimento, String custoPorKg, String descIns, String valor, String consumo) {
         this.codigoReceita = codigoReceita;
         this.descRec = descRec;
         this.descTP = descTP;
@@ -33,15 +33,15 @@ public class RelatorioReceitaDto {
         this.dataVencimento = dataVencimento;
         this.custoPorKg = custoPorKg;
         this.descIns = descIns;
-        this.UM = UM;
+        this.valor = valor;
         this.consumo = consumo;
     }
 
-    public int getCodigoReceita() {
+    public String getCodigoReceita() {
         return codigoReceita;
     }
 
-    public void setCodigoReceita(int codigoReceita) {
+    public void setCodigoReceita(String codigoReceita) {
         this.codigoReceita = codigoReceita;
     }
 
@@ -69,11 +69,11 @@ public class RelatorioReceitaDto {
         this.pantone = pantone;
     }
 
-    public int getDataVencimento() {
+    public String getDataVencimento() {
         return dataVencimento;
     }
 
-    public void setDataVencimento(int dataVencimento) {
+    public void setDataVencimento(String dataVencimento) {
         this.dataVencimento = dataVencimento;
     }
 
@@ -83,14 +83,6 @@ public class RelatorioReceitaDto {
 
     public void setDescIns(String descIns) {
         this.descIns = descIns;
-    }
-
-    public String getUM() {
-        return UM;
-    }
-
-    public void setUM(String UM) {
-        this.UM = UM;
     }
 
     public String getConsumo() {
@@ -107,5 +99,13 @@ public class RelatorioReceitaDto {
 
     public void setCustoPorKg(String custoPorKg) {
         this.custoPorKg = custoPorKg;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
     }
 }

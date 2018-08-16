@@ -30,6 +30,8 @@ public class TelaOpcaoPasta extends javax.swing.JInternalFrame {
     private final InsumoDao insDao = new InsumoDao();
     private final Util util = new Util();
     private final MovimentacaoDao movDao = new MovimentacaoDao();
+    //false - OPC1    true - OPC2
+    public static boolean confirmaOpc = false;
 
     /**
      * Creates new form TelaOpcaoPasta
@@ -60,18 +62,52 @@ public class TelaOpcaoPasta extends javax.swing.JInternalFrame {
         movDto.setData(this.util.dataAtual());
         this.movDao.movimentacao(movDto);
 
-        //dar saida nos insumos
-        if (EstoquePastaFinalDao.insumosOp2.isEmpty()) {
+        //gera saída na pasta reaproveitada
+        if (this.confirmaOpc == true) {
         } else {
-            for (int i = 0; i < EstoquePastaFinalDao.insumosOp2.size(); i++) {
-                this.insDao.saidaInsumo2(EstoquePastaFinalDao.insumosOp2.get(i).getCodigo(), EstoquePastaFinalDao.pastaProduzirOp22.get(i).getConsumo());
+            if (EstoquePastaFinalDao.listFinalOp23.isEmpty()) {
+            } else {
+                for (int i = 0; i < EstoquePastaFinalDao.listFinalOp23.size(); i++) {
+                    MovimentacaoDto movDto2 = new MovimentacaoDto();
+                    movDto2.setTipo("Pasta");
+                    movDto2.setCodigoID(EstoquePastaFinalDao.listFinalOp23.get(i).getId());
+                    movDto2.setDescricao(EstoquePastaFinalDao.listFinalOp23.get(i).getDescricao());
+                    movDto2.setQuantidade("-" + EstoquePastaFinalDao.listFinalOp23.get(i).getUsar());
+                    movDto2.setData(this.util.dataAtual());
+                    this.movDao.movimentacao(movDto2);
+                }
+            }
+        }
+        //gera saída na pasta reaproveitada OPC2
+        if (this.confirmaOpc == false) {
+        } else {
+            if (EstoquePastaFinalDao.listFinalOp22.isEmpty()) {
+            } else {
                 MovimentacaoDto movDto2 = new MovimentacaoDto();
-                movDto2.setTipo("Insumo");
-                movDto2.setCodigoID(EstoquePastaFinalDao.insumosOp2.get(i).getCodigo());
-                movDto2.setDescricao(EstoquePastaFinalDao.insumosOp2.get(i).getDescricao());
-                movDto2.setQuantidade("-" + EstoquePastaFinalDao.pastaProduzirOp22.get(i).getConsumo());
+                movDto2.setTipo("Pasta");
+                movDto2.setCodigoID(EstoquePastaFinalDao.listFinalOp22.get(0).getId());
+                movDto2.setDescricao(EstoquePastaFinalDao.listFinalOp22.get(0).getDescricao());
+                movDto2.setQuantidade("-" + EstoquePastaFinalDao.listFinalOp22.get(0).getUsar());
                 movDto2.setData(this.util.dataAtual());
                 this.movDao.movimentacao(movDto2);
+            }
+        }
+
+        //gera saida nos insumos OPC2
+        if (this.confirmaOpc == false) {
+        } else {
+            if (EstoquePastaFinalDao.insumosOp2.isEmpty()) {
+            } else {
+                for (int i = 0; i < EstoquePastaFinalDao.insumosOp2.size(); i++) {
+                    this.insDao.saidaInsumo2(EstoquePastaFinalDao.insumosOp2.get(i).getCodigo(), EstoquePastaFinalDao.pastaProduzirOp22.get(i).getConsumo());
+                    MovimentacaoDto movDto3 = new MovimentacaoDto();
+                    movDto3.setTipo("Insumo");
+                    movDto3.setCodigoID(EstoquePastaFinalDao.insumosOp2.get(i).getCodigo());
+                    movDto3.setDescricao(EstoquePastaFinalDao.insumosOp2.get(i).getDescricao());
+                    movDto3.setQuantidade("-" + EstoquePastaFinalDao.pastaProduzirOp22.get(i).getConsumo());
+                    movDto3.setData(this.util.dataAtual());
+                    this.movDao.movimentacao(movDto3);
+                }
             }
         }
     }
@@ -88,6 +124,7 @@ public class TelaOpcaoPasta extends javax.swing.JInternalFrame {
         TelaEstoquePasta.btnVisualizarOp1.setEnabled(false);
         TelaEstoquePasta.btnVisualizarOp2.setEnabled(false);
         EstoquePastaFinalDao.listFinalOp22.clear();
+        EstoquePastaFinalDao.listFinalOp23.clear();
         EstoquePastaFinalDao.pastaProduzirOp22.clear();
         retornarCoresEnable();
         ((DefaultTableModel) TelaEstoquePasta.tblProducaoPastaOp1.getModel()).setRowCount(0);

@@ -744,6 +744,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             this.util.retirarBordas(this.frameOpPasta);
         }
         this.util.comandoInternal(this.frameOpPasta);
+        TelaOpcaoPasta.confirmaOpc = false;
         TelaOpcaoPasta.lblPasta.setText(this.descricao);
         TelaOpcaoPasta.lblQuantidade.setText(this.txtQuantidade.getText() + " Kg");
         TelaOpcaoPasta.lblOpcao.setText("Primeira Opção -");
@@ -763,6 +764,7 @@ public class TelaEstoquePasta extends javax.swing.JInternalFrame {
             this.util.retirarBordas(this.frameOpPasta);
         }
         this.util.comandoInternal(this.frameOpPasta);
+        TelaOpcaoPasta.confirmaOpc = true;
         TelaOpcaoPasta.lblPasta.setText(this.descricao);
         TelaOpcaoPasta.lblQuantidade.setText(this.txtQuantidade.getText() + " Kg");
         TelaOpcaoPasta.lblOpcao.setText("Segunda Opção -");

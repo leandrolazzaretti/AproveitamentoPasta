@@ -122,7 +122,7 @@ public class TelaPesquisarInsumos extends javax.swing.JInternalFrame {
         TelaCadReceita.txtCadRecComponentesDesc.setText(this.tblCadInsumos.getModel().getValueAt(setar, 1).toString());
 
         TelaCadReceita.txtCadRecConsumo.requestFocus();
-        TelaCadReceita.txtCadRecConsumo.setDocument(new SoNumeros());
+        this.util.formatador(TelaCadReceita.txtCadRecConsumo);
         String consumoFaltante =  this.util.formatadorQuant((1 - ReceitaInsumoDao.consumoTotal) * 1000);
         TelaCadReceita.txtCadRecConsumo.setText(consumoFaltante);
 

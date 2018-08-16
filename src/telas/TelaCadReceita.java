@@ -74,14 +74,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
     }
 
 //    //mascara para formatar o compo donsumo
-//    private void formatador() {
-//        DecimalFormat dFormat = new DecimalFormat("#,###,###.000");
-//        NumberFormatter formatter = new NumberFormatter(dFormat);
-//        formatter.setFormat(dFormat);
-//        formatter.setAllowsInvalid(false);
-//
-//        this.txtCadRecConsumo.setFormatterFactory(new DefaultFormatterFactory(formatter));
-//    }
+
 
     //Abilitar campos area da tabela
     public void abilitarTabela() {
@@ -952,7 +945,7 @@ public class TelaCadReceita extends javax.swing.JInternalFrame {
             } else {
                 this.txtCadRecComponentesDesc.setText(this.recInsDao.codIns(Integer.parseInt(this.txtCadRecComponentesCodigo.getText())));
                 this.txtCadRecConsumo.requestFocus();
-                this.txtCadRecConsumo.setDocument(new SoNumeros());
+                this.util.formatador(this.txtCadRecConsumo);
                 String consumoFaltante = this.util.formatadorQuant((1 - ReceitaInsumoDao.consumoTotal) * 1000);
                 this.txtCadRecConsumo.setText(consumoFaltante);
             }

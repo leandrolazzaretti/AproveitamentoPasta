@@ -234,13 +234,14 @@ public class Relatorio {
                 + " inner join tbreceita as r on r.codigorec = ri.codigoReceita"
                 + " inner join tbinsumos as i on i.codigo = ri.codigoInsumo"
                 + " inner join tbTipoPasta as tp on tp.codigo = r.codigoTipoPasta"
+                + " inner join tbTipoInsumo as ti on ti.codigo = i.codigoTipoInsumo"
                 + " where (ri.codigoReceita ='" + codigo + "' or '" + codigo + "'='" + vazio + "')"
                 + " and (r.descricao ='" + receita + "' or '" + receita + "'='" + vazio + "') and"
                 + " (tp.descricao = '" + tipoPasta + "' or '" + tipoPasta + "' = '" + vazio + "') and"
                 + " (r.pantone = '" + pantone + "' or '" + pantone + "' = '" + vazio + "') and"
                 + " (r.datavencimento = '" + vencimento + "' or '" + vencimento + "' = '" + vazio + "') and"
                 + " (i.descricao = '" + insumo + "' or '" + insumo + "' = '" + vazio + "')"
-                + " order by ri.codigoReceita;";
+                + " order by ri.codigoReceita, ti.ordenacao;";
         PreparedStatement pst;
         this.url = "/Report/Receitas.jrxml";
 

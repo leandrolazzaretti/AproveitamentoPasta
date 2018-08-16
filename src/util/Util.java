@@ -12,9 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import static telas.TelaPrincipal.Desktop;
 
 /**
@@ -157,7 +160,7 @@ public class Util {
 
         return quantFormatado;
     }
-    
+
     public String formatadorQuant6(Double quantidade) {
 
         DecimalFormat df = new DecimalFormat("#,##0.######");
@@ -191,7 +194,7 @@ public class Util {
         resultado = Double.parseDouble(resultado2.replace(",", "."));
         return resultado;
     }
-    
+
     public double formatador6(double valor) {
         DecimalFormat df = new DecimalFormat("#.000000");
         double resultado = 0;
@@ -199,7 +202,7 @@ public class Util {
         resultado = Double.parseDouble(resultado2.replace(",", "."));
         return resultado;
     }
-    
+
     public double formatador8(double valor) {
         DecimalFormat df = new DecimalFormat("#.00000000");
         double resultado = 0;
@@ -302,5 +305,14 @@ public class Util {
             total = total * 1000000;
         }
         return total;
+    }
+
+    public void formatador(JFormattedTextField campo) {
+        DecimalFormat dFormat = new DecimalFormat("#,###,###.000");
+        NumberFormatter formatter = new NumberFormatter(dFormat);
+        formatter.setFormat(dFormat);
+        formatter.setAllowsInvalid(false);
+
+        campo.setFormatterFactory(new DefaultFormatterFactory(formatter));
     }
 }
